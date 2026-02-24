@@ -1,4 +1,4 @@
-# FinTalk.ai
+# FinTalk.v
 
 **A Grounded Orchestration Framework for Multi-Agent Collaboration on Financial Tasks Leveraging the OSWorld Environment**
 
