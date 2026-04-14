@@ -39,8 +39,8 @@ logger = logging.getLogger(__name__)
 
 
 # ============== Configuration ==============
-API_URL = "https://qianfan.baidubce.com/v2/chat/completions"
-API_KEY = "bce-v3/ALTAK-dgZMQj7E5tByoRofFKlbM/e852481aaab5ebf3ffe6f2a50589e6e41646c127"
+API_URL = os.getenv("DEEPSEEK_API_URL", "https://api.deepseek.com/chat/completions")
+API_KEY = os.getenv("DEEPSEEK_API_KEY", "")
 
 
 # ============== LLM Caller ==============
@@ -48,10 +48,9 @@ def llm_caller(prompt: str, temperature: float = 0.3) -> str:
     """LLM调用函数"""
     import requests
     payload = {
-        "model": "deepseek-v3.2-think",
+        "model": os.getenv("DEEPSEEK_MODEL", "deepseek-chat"),
         "messages": [{"role": "user", "content": prompt}],
         "temperature": temperature,
-        "web_search": {"enable": False}
     }
     try:
         response = requests.post(API_URL, headers={
