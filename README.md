@@ -6,7 +6,7 @@
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-Apache_2.0-blue.svg" alt="License"></a>
   <a href="#"><img src="https://img.shields.io/badge/Python-3.10+-3776AB.svg?logo=python&logoColor=white" alt="Python"></a>
   <a href="#"><img src="https://img.shields.io/badge/MCP-Server-6366f1.svg" alt="MCP Server"></a>
-  <a href="#"><img src="https://img.shields.io/badge/Powered%20by-Qwen%20|%20vLLM%20|%20DeepSeek-orange" alt="Powered By"></a>
+  <a href="#"><img src="https://img.shields.io/badge/Powered%20by-Qwen%20|%20SGLang%20|%20DeepSeek-orange" alt="Powered By"></a>
 </p>
 
 ---
@@ -49,6 +49,13 @@ Most financial data tools make you choose: either a static dataset, or a generic
 ---
 
 ## Demo
+
+**Feishu Bot — Natural language financial analysis in chat:**
+
+<p align="center">
+  <img src="assets/feishu_1.jpeg" alt="Feishu Bot Demo 1" width="400"/>
+  <img src="assets/feishu_2.jpeg" alt="Feishu Bot Demo 2" width="400"/>
+</p>
 
 **Web App — Multi-Agent Trace Visualization:**
 
@@ -101,11 +108,11 @@ The core challenge of financial data analysis is accuracy: wrong SQL → wrong n
 
 A single financial question often requires multiple steps: rewrite the query, classify intent, check relevance, generate SQL, and produce a natural language answer. FinTalk runs these **in parallel** through an asymmetric dual-agent system.
 
-**Orchestrator Agent** (`Qwen3-8B` via vLLM)
+**Orchestrator Agent** (`Qwen3-8B` via SGLang)
 - Understands user intent, plans the analysis, synthesizes the final answer
 
 **Worker Agent** (`Qwen2.5-7B-Instruct-1M` with dynamic LoRA)
-- **Switches LoRA adapters on-the-fly** via vLLM+Punica — the same model handles NL2SQL, Classification, and Keyword Extraction without loading three separate models
+- **Switches LoRA adapters on-the-fly** via SGLang+Punica — the same model handles NL2SQL, Classification, and Keyword Extraction without loading three separate models
 - Result: lower latency, lower memory, higher throughput
 
 **Parallel NLU Pipeline** — 4 modules run simultaneously on every user turn:
@@ -330,7 +337,7 @@ Apache 2.0 — see [LICENSE](LICENSE).
 
 - **Qwen Team** — language models and embeddings
 - **OSWorld** — standardized agent execution environment
-- **vLLM & Punica** — efficient model serving with dynamic LoRA
+- **SGLang & Punica** — efficient model serving with dynamic LoRA
 - **verl** — reinforcement learning framework
 - **Model Context Protocol** — the agent interoperability standard
 - **DeepSeek** — API for natural language analysis
