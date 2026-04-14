@@ -642,7 +642,7 @@ const i18n = {
     researchPlaceholder: 'Enter a research topic (e.g. "Analyze governance structure of all live virtual banks")...',
     researchStart: 'Start Research',
     researchCancel: 'Cancel',
-    researchProgress: 'Researching with web search...',
+    researchProgress: 'Deep analysis in progress...',
     loading: 'Loading...',
     invalidKey: 'Invalid API key',
   },
@@ -674,7 +674,7 @@ const i18n = {
     researchPlaceholder: '输入研究主题（例如："分析所有活跃虚拟银行的治理结构"）...',
     researchStart: '开始研究',
     researchCancel: '取消',
-    researchProgress: '正在深度研究（含网络搜索）...',
+    researchProgress: '正在进行深度分析...',
     loading: '加载中...',
     invalidKey: 'API Key 无效',
   }
@@ -1254,8 +1254,8 @@ async function sendResearch(topic) {
 
 请按以下步骤进行：
 1. **数据分析**：基于已加载的数据集，提取相关信息
-2. **网络搜索**：搜索最新的相关新闻、行业报告和市场动态
-3. **综合分析**：将数据分析和网络信息结合，给出深度洞察
+2. **外部对比**：结合你的行业知识，与公开信息进行对比分析
+3. **综合分析**：给出深度洞察和发现
 4. **结论与建议**：总结关键发现，提出可行建议
 
 请用中文输出一份结构化的研究报告，包含标题、各章节和具体数据支撑。`
@@ -1265,8 +1265,8 @@ async function sendResearch(topic) {
 
 Follow these steps:
 1. **Data Analysis**: Extract relevant information from the loaded datasets
-2. **Web Research**: Search for latest news, industry reports, and market trends
-3. **Synthesis**: Combine data analysis with web findings for deep insights
+2. **Cross-reference**: Compare findings with industry benchmarks and known patterns
+3. **Synthesis**: Combine analyses for deep insights
 4. **Conclusions**: Summarize key findings with actionable recommendations
 
 Output a structured research report with clear sections and specific data points.`;
@@ -1285,8 +1285,7 @@ Output a structured research report with clear sections and specific data points
       body: JSON.stringify({
         model: 'deepseek-chat',
         messages: reqMsgs,
-        stream: true,
-        web_search: { enable: true }
+        stream: true
       })
     });
     progress.remove();
