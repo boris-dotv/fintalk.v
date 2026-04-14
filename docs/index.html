@@ -81,502 +81,176 @@
       padding: 56px 48px;
       width: 100%; max-width: 440px;
       box-shadow: var(--shadow-lg);
-      position: relative;
-      z-index: 1;
+      position: relative; z-index: 1;
     }
-    .login-card h1 {
-      font-family: var(--serif);
-      font-size: 36px;
-      font-weight: 400;
-      letter-spacing: -.02em;
-      color: var(--txt);
-      margin-bottom: 4px;
-    }
+    .login-card h1 { font-family: var(--serif); font-size: 36px; font-weight: 400; letter-spacing: -.02em; color: var(--txt); margin-bottom: 4px; }
     .login-card h1 span { color: var(--accent); }
-    .login-card > p {
-      font-family: var(--mono);
-      color: var(--txt3);
-      font-size: 12px;
-      font-weight: 500;
-      letter-spacing: .04em;
-      text-transform: uppercase;
-      margin-bottom: 36px;
-    }
+    .login-card h1 .dot-ai { color: var(--txt3); font-weight: 300; }
+    .login-card > p { font-family: var(--mono); color: var(--txt3); font-size: 12px; font-weight: 500; letter-spacing: .04em; text-transform: uppercase; margin-bottom: 36px; }
     .input-group { margin-bottom: 24px; }
-    .input-group label {
-      display: block;
-      font-family: var(--mono);
-      font-size: 11px;
-      font-weight: 600;
-      color: var(--txt2);
-      margin-bottom: 8px;
-      letter-spacing: .04em;
-      text-transform: uppercase;
-    }
-    .input-group input {
-      width: 100%; padding: 14px 18px;
-      background: var(--bg3);
-      border: 1px solid var(--bdr);
-      border-radius: 10px;
-      color: var(--txt);
-      font-family: var(--mono);
-      font-size: 14px;
-      outline: none;
-      transition: border .25s, box-shadow .25s;
-    }
-    .input-group input:focus {
-      border-color: var(--accent);
-      box-shadow: 0 0 0 3px rgba(77,124,15,.1);
-    }
+    .input-group label { display: block; font-family: var(--mono); font-size: 11px; font-weight: 600; color: var(--txt2); margin-bottom: 8px; letter-spacing: .04em; text-transform: uppercase; }
+    .input-group input { width: 100%; padding: 14px 18px; background: var(--bg3); border: 1px solid var(--bdr); border-radius: 10px; color: var(--txt); font-family: var(--mono); font-size: 14px; outline: none; transition: border .25s, box-shadow .25s; }
+    .input-group input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(77,124,15,.1); }
     .input-group input::placeholder { color: var(--txtf); }
 
-    .btn {
-      width: 100%; padding: 14px;
-      background: var(--txt);
-      color: var(--bg2);
-      border: none;
-      border-radius: 10px;
-      font-family: var(--mono);
-      font-size: 13px;
-      font-weight: 600;
-      letter-spacing: .04em;
-      text-transform: uppercase;
-      cursor: pointer;
-      transition: all .25s;
-    }
+    .btn { width: 100%; padding: 14px; background: var(--txt); color: var(--bg2); border: none; border-radius: 10px; font-family: var(--mono); font-size: 13px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; cursor: pointer; transition: all .25s; }
     .btn:hover { background: var(--txt2); }
     .btn:disabled { opacity: .4; cursor: not-allowed; }
-
-    .error {
-      color: var(--terra);
-      font-family: var(--mono);
-      font-size: 12px;
-      margin-top: 14px;
-      display: none;
-    }
-    .hint {
-      color: var(--txtf);
-      font-family: var(--mono);
-      font-size: 11px;
-      margin-top: 20px;
-      text-align: center;
-      line-height: 1.6;
-    }
+    .error { color: var(--terra); font-family: var(--mono); font-size: 12px; margin-top: 14px; display: none; }
+    .hint { color: var(--txtf); font-family: var(--mono); font-size: 11px; margin-top: 20px; text-align: center; line-height: 1.6; }
 
     /* ===== APP ===== */
     #app { display: none; height: 100vh; flex-direction: column; background: var(--bg); }
-
-    .header {
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 14px 32px;
-      background: var(--bg2);
-      border-bottom: 1px solid var(--bdr);
-      flex-shrink: 0;
-    }
-    .header h1 {
-      font-family: var(--serif);
-      font-size: 22px;
-      font-weight: 400;
-      letter-spacing: -.01em;
-    }
+    .header { display: flex; align-items: center; justify-content: space-between; padding: 14px 32px; background: var(--bg2); border-bottom: 1px solid var(--bdr); flex-shrink: 0; }
+    .header h1 { font-family: var(--serif); font-size: 22px; font-weight: 400; letter-spacing: -.01em; }
     .header h1 span { color: var(--accent); }
-    .header-actions { display: flex; gap: 8px; align-items: center; }
+    .header h1 .dot-ai { color: var(--txt3); font-weight: 300; }
+    .header-actions { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
 
-    .btn-sm {
-      padding: 7px 16px;
-      background: var(--bg3);
-      border: 1px solid var(--bdr2);
-      border-radius: 8px;
-      color: var(--txt2);
-      font-family: var(--mono);
-      font-size: 11px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all .2s;
-      letter-spacing: .02em;
-    }
+    .btn-sm { padding: 7px 16px; background: var(--bg3); border: 1px solid var(--bdr2); border-radius: 8px; color: var(--txt2); font-family: var(--mono); font-size: 11px; font-weight: 600; cursor: pointer; transition: all .2s; letter-spacing: .02em; white-space: nowrap; }
     .btn-sm:hover { background: var(--bg4); border-color: var(--bdr); color: var(--txt); }
-    .btn-upload {
-      background: var(--accentbg);
-      border-color: var(--accentbr);
-      color: var(--accent);
-    }
-    .btn-upload:hover {
-      background: rgba(77,124,15,.12);
-      color: #3d6310;
-    }
+    .btn-upload { background: var(--accentbg); border-color: var(--accentbr); color: var(--accent); }
+    .btn-upload:hover { background: rgba(77,124,15,.12); color: #3d6310; }
+    .btn-trace { background: var(--violetbg); border-color: var(--violetbr); color: var(--violet); }
+    .btn-trace:hover { background: rgba(109,40,217,.1); }
+    .btn-trace.active { background: var(--violet); color: #fff; border-color: var(--violet); }
 
-    /* data bar */
-    .data-bar {
-      display: none;
-      padding: 10px 32px;
-      background: var(--bg3);
-      border-bottom: 1px solid var(--bdr2);
-      flex-shrink: 0;
-      flex-wrap: wrap;
-      gap: 8px;
-      align-items: center;
-    }
+    .data-bar { display: none; padding: 10px 32px; background: var(--bg3); border-bottom: 1px solid var(--bdr2); flex-shrink: 0; flex-wrap: wrap; gap: 8px; align-items: center; }
     .data-bar.show { display: flex; }
-    .data-tag {
-      display: inline-flex; align-items: center; gap: 6px;
-      background: var(--bg2);
-      border: 1px solid var(--bdr);
-      border-radius: 8px;
-      padding: 5px 14px;
-      font-family: var(--mono);
-      font-size: 11px;
-      font-weight: 500;
-      color: var(--txt2);
-    }
-    .data-tag .x {
-      cursor: pointer; color: var(--txtf); margin-left: 4px;
-      font-size: 14px; line-height: 1;
-      transition: color .15s;
-    }
+    .data-tag { display: inline-flex; align-items: center; gap: 6px; background: var(--bg2); border: 1px solid var(--bdr); border-radius: 8px; padding: 5px 14px; font-family: var(--mono); font-size: 11px; font-weight: 500; color: var(--txt2); }
+    .data-tag .x { cursor: pointer; color: var(--txtf); margin-left: 4px; font-size: 14px; line-height: 1; transition: color .15s; }
     .data-tag .x:hover { color: var(--terra); }
 
-    /* chat */
-    .chat {
-      flex: 1; overflow-y: auto;
-      padding: 32px;
-      display: flex; flex-direction: column; gap: 20px;
-    }
-
-    .welcome { text-align: center; margin: auto; max-width: 520px; }
-    .welcome h2 {
-      font-family: var(--serif);
-      font-size: 30px;
-      font-weight: 400;
-      letter-spacing: -.02em;
-      margin-bottom: 8px;
-      color: var(--txt);
-    }
-    .welcome p {
-      color: var(--txt3);
-      font-size: 14px;
-      margin-bottom: 28px;
-      line-height: 1.7;
-    }
+    .chat { flex: 1; overflow-y: auto; padding: 32px; display: flex; flex-direction: column; gap: 20px; }
+    .welcome { text-align: center; margin: auto; max-width: 560px; }
+    .welcome h2 { font-family: var(--serif); font-size: 30px; font-weight: 400; letter-spacing: -.02em; margin-bottom: 8px; color: var(--txt); }
+    .welcome p { color: var(--txt3); font-size: 14px; margin-bottom: 28px; line-height: 1.7; }
     .suggestions { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
-    .suggestion {
-      padding: 9px 20px;
-      background: var(--bg2);
-      border: 1px solid var(--bdr);
-      border-radius: 100px;
-      font-family: var(--mono);
-      font-size: 12px;
-      font-weight: 500;
-      color: var(--txt2);
-      cursor: pointer;
-      transition: all .25s;
-    }
-    .suggestion:hover {
-      border-color: var(--accentbr);
-      background: var(--accentbg);
-      color: var(--accent);
-      transform: translateY(-1px);
-    }
+    .suggestion { padding: 9px 20px; background: var(--bg2); border: 1px solid var(--bdr); border-radius: 100px; font-family: var(--mono); font-size: 12px; font-weight: 500; color: var(--txt2); cursor: pointer; transition: all .25s; }
+    .suggestion:hover { border-color: var(--accentbr); background: var(--accentbg); color: var(--accent); transform: translateY(-1px); }
 
-    /* messages */
-    .msg {
-      max-width: 80%;
-      line-height: 1.75;
-      font-size: 14px;
-      animation: msgIn .35s ease-out;
-    }
-    @keyframes msgIn {
-      from { opacity: 0; transform: translateY(8px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    .msg.user {
-      align-self: flex-end;
-      background: var(--txt);
-      color: var(--bg2);
-      padding: 12px 20px;
-      border-radius: 16px 16px 4px 16px;
-      font-weight: 400;
-    }
-    .msg.ai {
-      align-self: flex-start;
-      background: var(--bg2);
-      padding: 20px 24px;
-      border-radius: 16px 16px 16px 4px;
-      border: 1px solid var(--bdr);
-      box-shadow: var(--shadow);
-      color: var(--txt);
-    }
-    .msg.ai h1, .msg.ai h2, .msg.ai h3, .msg.ai h4 {
-      font-family: var(--serif);
-      font-weight: 600;
-      margin: 16px 0 8px;
-      color: var(--txt);
-    }
-    .msg.ai h1 { font-size: 20px; }
-    .msg.ai h2 { font-size: 17px; }
-    .msg.ai h3 { font-size: 15px; }
+    .msg { max-width: 80%; line-height: 1.75; font-size: 14px; animation: msgIn .35s ease-out; }
+    @keyframes msgIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+    .msg.user { align-self: flex-end; background: var(--txt); color: var(--bg2); padding: 12px 20px; border-radius: 16px 16px 4px 16px; font-weight: 400; }
+    .msg.ai { align-self: flex-start; background: var(--bg2); padding: 20px 24px; border-radius: 16px 16px 16px 4px; border: 1px solid var(--bdr); box-shadow: var(--shadow); color: var(--txt); }
+    .msg.ai h1,.msg.ai h2,.msg.ai h3,.msg.ai h4 { font-family: var(--serif); font-weight: 600; margin: 16px 0 8px; color: var(--txt); }
+    .msg.ai h1 { font-size: 20px; } .msg.ai h2 { font-size: 17px; } .msg.ai h3 { font-size: 15px; }
     .msg.ai p { margin: 6px 0; }
-    .msg.ai ul, .msg.ai ol { margin: 8px 0; padding-left: 20px; }
+    .msg.ai ul,.msg.ai ol { margin: 8px 0; padding-left: 20px; }
     .msg.ai li { margin: 4px 0; }
     .msg.ai strong { font-weight: 600; color: var(--txt); }
-
-    .msg.ai table {
-      border-collapse: collapse;
-      margin: 12px 0;
-      font-family: var(--mono);
-      font-size: 12px;
-      width: 100%;
-      border: 1px solid var(--bdr2);
-      border-radius: 8px;
-      overflow: hidden;
-    }
-    .msg.ai th, .msg.ai td {
-      border: 1px solid var(--bdr2);
-      padding: 8px 14px;
-      text-align: left;
-    }
-    .msg.ai th {
-      background: var(--bg3);
-      font-weight: 600;
-      font-size: 10px;
-      text-transform: uppercase;
-      letter-spacing: .06em;
-      color: var(--txt3);
-    }
+    .msg.ai table { border-collapse: collapse; margin: 12px 0; font-family: var(--mono); font-size: 12px; width: 100%; border: 1px solid var(--bdr2); border-radius: 8px; overflow: hidden; }
+    .msg.ai th,.msg.ai td { border: 1px solid var(--bdr2); padding: 8px 14px; text-align: left; }
+    .msg.ai th { background: var(--bg3); font-weight: 600; font-size: 10px; text-transform: uppercase; letter-spacing: .06em; color: var(--txt3); }
     .msg.ai td { color: var(--txt2); }
-    .msg.ai code {
-      background: var(--bg3);
-      padding: 2px 8px;
-      border-radius: 5px;
-      font-family: var(--mono);
-      font-size: 12.5px;
-      border: 1px solid var(--bdr2);
-      color: var(--violet);
-    }
-    .msg.ai pre {
-      background: var(--bg3);
-      padding: 16px 20px;
-      border-radius: 10px;
-      overflow-x: auto;
-      margin: 10px 0;
-      border: 1px solid var(--bdr2);
-    }
-    .msg.ai pre code {
-      background: none; padding: 0; border: none;
-      color: var(--txt);
-    }
+    .msg.ai code { background: var(--bg3); padding: 2px 8px; border-radius: 5px; font-family: var(--mono); font-size: 12.5px; border: 1px solid var(--bdr2); color: var(--violet); }
+    .msg.ai pre { background: var(--bg3); padding: 16px 20px; border-radius: 10px; overflow-x: auto; margin: 10px 0; border: 1px solid var(--bdr2); }
+    .msg.ai pre code { background: none; padding: 0; border: none; color: var(--txt); }
 
-    .typing {
-      display: flex; gap: 6px; padding: 20px 24px;
-      align-self: flex-start;
-      background: var(--bg2);
-      border-radius: 16px 16px 16px 4px;
-      border: 1px solid var(--bdr);
-    }
-    .typing span {
-      width: 7px; height: 7px;
-      background: var(--txtf);
-      border-radius: 50%;
-      animation: bounce .6s infinite alternate;
-    }
+    .typing { display: flex; gap: 6px; padding: 20px 24px; align-self: flex-start; background: var(--bg2); border-radius: 16px 16px 16px 4px; border: 1px solid var(--bdr); }
+    .typing span { width: 7px; height: 7px; background: var(--txtf); border-radius: 50%; animation: bounce .6s infinite alternate; }
     .typing span:nth-child(2) { animation-delay: .2s; }
     .typing span:nth-child(3) { animation-delay: .4s; }
     @keyframes bounce { to { opacity: .3; transform: translateY(-4px); } }
 
-    /* input */
-    .input-bar {
-      display: flex; gap: 12px;
-      padding: 18px 32px;
-      background: var(--bg2);
-      border-top: 1px solid var(--bdr);
-      flex-shrink: 0;
+    /* ===== AGENT TRACE ===== */
+    .agent-trace { align-self: flex-start; max-width: 80%; animation: msgIn .35s ease-out; }
+    .trace-toggle {
+      display: inline-flex; align-items: center; gap: 7px; padding: 7px 16px;
+      background: var(--violetbg); border: 1px solid var(--violetbr); border-radius: 20px;
+      cursor: pointer; font-family: var(--mono); font-size: 11px; font-weight: 600; color: var(--violet);
+      transition: all .2s; user-select: none;
     }
-    .input-bar textarea {
-      flex: 1;
-      padding: 14px 20px;
-      background: var(--bg3);
-      border: 1px solid var(--bdr);
-      border-radius: 12px;
-      color: var(--txt);
-      font-family: var(--sans);
-      font-size: 14px;
-      resize: none;
-      outline: none;
-      min-height: 48px;
-      max-height: 120px;
-      transition: border .25s, box-shadow .25s;
-    }
-    .input-bar textarea:focus {
-      border-color: var(--accent);
-      box-shadow: 0 0 0 3px rgba(77,124,15,.08);
-    }
+    .trace-toggle:hover { background: rgba(109,40,217,.08); }
+    .trace-toggle .arrow { display: inline-block; transition: transform .25s; font-size: 9px; }
+    .trace-toggle.open .arrow { transform: rotate(90deg); }
+    .trace-toggle .step-count { background: var(--violet); color: #fff; border-radius: 10px; padding: 1px 7px; font-size: 10px; font-weight: 600; }
+    .trace-toggle .trace-time { color: var(--txt3); font-weight: 400; }
+
+    .trace-body { display: none; margin-top: 8px; background: var(--bg2); border: 1px solid var(--bdr); border-radius: 12px; overflow: hidden; box-shadow: var(--shadow); }
+    .trace-body.open { display: block; }
+
+    .trace-step { padding: 12px 16px; border-bottom: 1px solid var(--bdr2); display: flex; gap: 12px; align-items: flex-start; animation: stepIn .3s ease-out; font-size: 13px; }
+    .trace-step:last-child { border-bottom: none; }
+    @keyframes stepIn { from { opacity: 0; transform: translateX(-8px); } to { opacity: 1; transform: translateX(0); } }
+
+    .step-indicator { flex-shrink: 0; width: 28px; height: 28px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 13px; margin-top: 1px; }
+    .step-indicator.arbitrator { background: var(--amberbg); border: 1px solid var(--amberbr); }
+    .step-indicator.rewriter { background: var(--bluebg); border: 1px solid var(--bluebr); }
+    .step-indicator.worker { background: var(--accentbg); border: 1px solid var(--accentbr); }
+    .step-indicator.orchestrator { background: var(--violetbg); border: 1px solid var(--violetbr); }
+
+    .step-content { flex: 1; min-width: 0; }
+    .step-header { display: flex; align-items: center; gap: 8px; margin-bottom: 2px; }
+    .step-agent { font-family: var(--mono); font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .04em; }
+    .step-agent.arbitrator { color: var(--amber); }
+    .step-agent.rewriter { color: var(--blue); }
+    .step-agent.worker { color: var(--accent); }
+    .step-agent.orchestrator { color: var(--violet); }
+    .step-duration { font-family: var(--mono); font-size: 10px; color: var(--txtf); }
+    .step-status { font-size: 10px; margin-left: auto; }
+    .step-status.done { color: var(--accent); }
+
+    .step-output { font-family: var(--mono); font-size: 11.5px; color: var(--txt2); line-height: 1.6; margin-top: 2px; word-break: break-word; }
+    .step-output code { background: var(--bg3); padding: 1px 6px; border-radius: 4px; font-size: 11px; border: 1px solid var(--bdr2); color: var(--violet); }
+    .step-output .sql-block { display: block; background: var(--bg3); padding: 8px 12px; border-radius: 8px; border: 1px solid var(--bdr2); margin-top: 6px; white-space: pre-wrap; font-size: 11px; color: var(--txt); }
+    .step-tag { display: inline-block; padding: 2px 8px; border-radius: 4px; font-family: var(--mono); font-size: 10px; font-weight: 600; }
+    .step-tag.task { background: var(--accentbg); color: var(--accent); border: 1px solid var(--accentbr); }
+    .step-tag.knowledge { background: var(--bluebg); color: var(--blue); border: 1px solid var(--bluebr); }
+    .step-tag.small_talk { background: var(--amberbg); color: var(--amber); border: 1px solid var(--amberbr); }
+
+    /* input bar */
+    .input-bar { display: flex; gap: 12px; padding: 18px 32px; background: var(--bg2); border-top: 1px solid var(--bdr); flex-shrink: 0; }
+    .input-bar textarea { flex: 1; padding: 14px 20px; background: var(--bg3); border: 1px solid var(--bdr); border-radius: 12px; color: var(--txt); font-family: var(--sans); font-size: 14px; resize: none; outline: none; min-height: 48px; max-height: 120px; transition: border .25s, box-shadow .25s; }
+    .input-bar textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(77,124,15,.08); }
     .input-bar textarea::placeholder { color: var(--txtf); }
-    .input-bar button#send-btn {
-      padding: 0 24px;
-      background: var(--txt);
-      border: none;
-      border-radius: 12px;
-      color: var(--bg2);
-      font-family: var(--mono);
-      font-size: 12px;
-      font-weight: 600;
-      letter-spacing: .04em;
-      text-transform: uppercase;
-      cursor: pointer;
-      transition: background .25s;
-    }
+    .input-bar button#send-btn { padding: 0 24px; background: var(--txt); border: none; border-radius: 12px; color: var(--bg2); font-family: var(--mono); font-size: 12px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; cursor: pointer; transition: background .25s; }
     .input-bar button#send-btn:hover { background: var(--txt2); }
     .input-bar button#send-btn:disabled { opacity: .3; cursor: not-allowed; }
-
-    /* Stop button */
-    .input-bar button#stop-btn {
-      display: none;
-      padding: 0 20px;
-      background: var(--terra);
-      border: none;
-      border-radius: 12px;
-      color: #fff;
-      font-family: var(--mono);
-      font-size: 12px;
-      font-weight: 600;
-      letter-spacing: .04em;
-      text-transform: uppercase;
-      cursor: pointer;
-      transition: background .25s;
-      align-items: center;
-      gap: 6px;
-    }
+    .input-bar button#stop-btn { display: none; padding: 0 20px; background: var(--terra); border: none; border-radius: 12px; color: #fff; font-family: var(--mono); font-size: 12px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; cursor: pointer; transition: background .25s; align-items: center; gap: 6px; }
     .input-bar button#stop-btn.show { display: flex; }
     .input-bar button#stop-btn:hover { background: #881337; }
-    .input-bar button#stop-btn .stop-icon {
-      width: 10px; height: 10px;
-      background: #fff;
-      border-radius: 2px;
-      flex-shrink: 0;
-    }
+    .input-bar button#stop-btn .stop-icon { width: 10px; height: 10px; background: #fff; border-radius: 2px; flex-shrink: 0; }
 
-    /* data preview modal */
-    .modal-bg {
-      display: none; position: fixed; inset: 0;
-      background: rgba(20,20,19,.4);
-      backdrop-filter: blur(4px);
-      z-index: 100;
-      align-items: center; justify-content: center;
-    }
+    /* modal */
+    .modal-bg { display: none; position: fixed; inset: 0; background: rgba(20,20,19,.4); backdrop-filter: blur(4px); z-index: 100; align-items: center; justify-content: center; }
     .modal-bg.show { display: flex; }
-    .modal {
-      background: var(--bg2);
-      border-radius: 16px;
-      padding: 32px;
-      max-width: 90vw; max-height: 80vh;
-      overflow: auto;
-      box-shadow: var(--shadow-lg);
-      border: 1px solid var(--bdr);
-    }
-    .modal h3 {
-      font-family: var(--serif);
-      font-size: 18px;
-      font-weight: 400;
-      margin-bottom: 14px;
-      color: var(--txt);
-    }
-    .modal table {
-      border-collapse: collapse;
-      font-family: var(--mono);
-      font-size: 11px;
-      border: 1px solid var(--bdr2);
-      border-radius: 8px;
-      overflow: hidden;
-    }
-    .modal th, .modal td {
-      border: 1px solid var(--bdr2);
-      padding: 8px 12px;
-      text-align: left;
-      white-space: nowrap;
-    }
-    .modal th {
-      background: var(--bg3);
-      position: sticky; top: 0;
-      font-weight: 600;
-      font-size: 10px;
-      text-transform: uppercase;
-      letter-spacing: .06em;
-      color: var(--txt3);
-    }
+    .modal { background: var(--bg2); border-radius: 16px; padding: 32px; max-width: 90vw; max-height: 80vh; overflow: auto; box-shadow: var(--shadow-lg); border: 1px solid var(--bdr); }
+    .modal h3 { font-family: var(--serif); font-size: 18px; font-weight: 400; margin-bottom: 14px; color: var(--txt); }
+    .modal table { border-collapse: collapse; font-family: var(--mono); font-size: 11px; border: 1px solid var(--bdr2); border-radius: 8px; overflow: hidden; }
+    .modal th,.modal td { border: 1px solid var(--bdr2); padding: 8px 12px; text-align: left; white-space: nowrap; }
+    .modal th { background: var(--bg3); position: sticky; top: 0; font-weight: 600; font-size: 10px; text-transform: uppercase; letter-spacing: .06em; color: var(--txt3); }
     .modal td { color: var(--txt2); }
-    .modal .close {
-      float: right; cursor: pointer;
-      font-size: 20px; color: var(--txtf);
-      transition: color .2s;
-      width: 32px; height: 32px;
-      display: flex; align-items: center; justify-content: center;
-      border-radius: 8px;
-    }
+    .modal .close { float: right; cursor: pointer; font-size: 20px; color: var(--txtf); transition: color .2s; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border-radius: 8px; }
     .modal .close:hover { color: var(--txt); background: var(--bg3); }
 
     #file-input { display: none; }
 
-    /* charts */
-    .chart-container {
-      background: var(--bg3);
-      border: 1px solid var(--bdr2);
-      border-radius: 12px;
-      padding: 20px;
-      margin: 12px 0;
-      max-width: 500px;
-    }
+    .chart-container { background: var(--bg3); border: 1px solid var(--bdr2); border-radius: 12px; padding: 20px; margin: 12px 0; max-width: 500px; }
     .chart-container canvas { width: 100% !important; max-height: 280px; }
 
-    /* auto-analysis cards */
-    .analysis-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-      gap: 10px;
-      margin: 12px 0;
-    }
-    .stat-card {
-      background: var(--bg3);
-      border: 1px solid var(--bdr2);
-      border-radius: 10px;
-      padding: 14px 16px;
-      text-align: center;
-    }
-    .stat-card .val {
-      font-family: var(--serif);
-      font-size: 26px;
-      font-weight: 400;
-      color: var(--accent);
-      display: block;
-    }
-    .stat-card .lbl {
-      font-family: var(--mono);
-      font-size: 10px;
-      font-weight: 600;
-      color: var(--txt3);
-      text-transform: uppercase;
-      letter-spacing: .04em;
-      margin-top: 4px;
-      display: block;
-    }
+    .analysis-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; margin: 12px 0; }
+    .stat-card { background: var(--bg3); border: 1px solid var(--bdr2); border-radius: 10px; padding: 14px 16px; text-align: center; }
+    .stat-card .val { font-family: var(--serif); font-size: 26px; font-weight: 400; color: var(--accent); display: block; }
+    .stat-card .lbl { font-family: var(--mono); font-size: 10px; font-weight: 600; color: var(--txt3); text-transform: uppercase; letter-spacing: .04em; margin-top: 4px; display: block; }
 
     @media (max-width: 640px) {
       .login-card { padding: 36px 28px; }
-      .msg { max-width: 92%; }
+      .msg,.agent-trace { max-width: 95%; }
       .input-bar { padding: 14px 18px; }
       .chat { padding: 18px; }
       .header { padding: 12px 18px; }
       .data-bar { padding: 10px 18px; }
       .welcome h2 { font-size: 24px; }
+      .header-actions { gap: 5px; }
     }
   </style>
 </head>
 <body>
 
-<!-- LOGIN -->
 <div id="login">
   <div class="login-card">
-    <h1>Fin<span>Talk</span><span style="color:var(--txt3);font-weight:300">.ai</span></h1>
+    <h1>Fin<span>Talk</span><span class="dot-ai">.ai</span></h1>
     <p>Financial Data Analysis</p>
     <div class="input-group">
       <label>DeepSeek API Key</label>
@@ -588,14 +262,14 @@
   </div>
 </div>
 
-<!-- APP -->
 <div id="app">
   <div class="header">
-    <h1>Fin<span>Talk</span><span style="color:var(--txt3);font-weight:300">.ai</span></h1>
+    <h1>Fin<span>Talk</span><span class="dot-ai">.ai</span></h1>
     <div class="header-actions">
       <button class="btn-sm btn-upload" onclick="document.getElementById('file-input').click()">Upload CSV</button>
       <button class="btn-sm" onclick="loadDemo()" id="demo-btn" style="background:var(--bluebg);border-color:var(--bluebr);color:var(--blue)">Demo Data</button>
       <button class="btn-sm" onclick="showPreview()">Data</button>
+      <button class="btn-sm btn-trace active" id="trace-toggle-btn" onclick="toggleTraceMode()">Agent Trace</button>
       <button class="btn-sm" onclick="toggleLang()" id="lang-btn">CN/EN</button>
       <button class="btn-sm" onclick="clearAll()">Clear</button>
       <button class="btn-sm" onclick="logout()">Logout</button>
@@ -610,7 +284,7 @@
       <div style="margin-bottom:20px">
         <button class="btn" onclick="loadDemo()" style="max-width:260px;margin:0 auto;display:block;background:var(--accent)">Try Demo — 999 Companies</button>
       </div>
-      <div class="suggestions" id="welcome-suggestions">
+      <div class="suggestions">
         <div class="suggestion" onclick="askSuggestion(this)">Which regions have the most fintech companies?</div>
         <div class="suggestion" onclick="askSuggestion(this)">Compare digital bank license holders vs non-holders</div>
         <div class="suggestion" onclick="askSuggestion(this)">Top 10 companies by revenue</div>
@@ -625,757 +299,236 @@
   </div>
 </div>
 
-<!-- DATA PREVIEW MODAL -->
 <div class="modal-bg" id="preview-modal" onclick="if(event.target===this)this.classList.remove('show')">
   <div class="modal" id="preview-content"></div>
 </div>
 
 <script>
-// ===== STATE =====
-let apiKey = '';
-let datasets = {};
-let messages = [];
-let streaming = false;
-let chartCounter = 0;
-let lang = localStorage.getItem('ft-lang') || 'en';
-let abortController = null; // For stop generation
+let apiKey='',datasets={},messages=[],streaming=false,chartCounter=0,abortController=null;
+let lang=localStorage.getItem('ft-lang')||'en';
+let showTrace=true;
 
-// ===== I18N =====
-const i18n = {
-  en: {
-    title: 'FinTalk.ai',
-    subtitle: 'Financial Data Analysis',
-    apiLabel: 'DeepSeek API Key',
-    connect: 'Connect',
-    connecting: 'Connecting...',
-    hint: 'Your key stays in your browser. Nothing is sent to our servers.',
-    upload: 'Upload CSV',
-    demo: 'Demo Data',
-    data: 'Data',
-    clear: 'Clear',
-    logout: 'Logout',
-    send: 'Send',
-    stop: 'Stop',
-    placeholder: 'Ask about your data...',
-    welcome: 'Welcome to FinTalk.ai',
-    welcomeDesc: 'Upload a CSV file and start asking questions about your financial data — or try the built-in demo.',
-    tryDemo: 'Try Demo — 999 Companies',
-    noData: 'Please upload a CSV file or load the demo data first.',
-    datasets: 'Datasets',
-    totalRows: 'Total Rows',
-    columns: 'Columns',
-    dataReady: 'Your data is ready! Ask me anything, or try one of these:',
-    loading: 'Loading...',
-    invalidKey: 'Invalid API key',
-    stopped: '*(Generation stopped)*',
-  },
-  cn: {
-    title: 'FinTalk.ai',
-    subtitle: '金融数据分析',
-    apiLabel: 'DeepSeek API Key',
-    connect: '连接',
-    connecting: '连接中...',
-    hint: '密钥仅保存在浏览器中，不会发送到我们的服务器。',
-    upload: '上传 CSV',
-    demo: '示例数据',
-    data: '数据',
-    clear: '清空',
-    logout: '退出',
-    send: '发送',
-    stop: '停止',
-    placeholder: '问一个关于你数据的问题...',
-    welcome: '欢迎使用 FinTalk.ai',
-    welcomeDesc: '上传 CSV 文件并开始分析，或试试内置示例数据。',
-    tryDemo: '试用示例 — 999 家公司',
-    noData: '请先上传 CSV 文件或加载示例数据。',
-    datasets: '数据集',
-    totalRows: '总行数',
-    columns: '总列数',
-    dataReady: '数据已就绪！可以提问，或试试：',
-    loading: '加载中...',
-    invalidKey: 'API Key 无效',
-    stopped: '*(已停止生成)*',
-  }
-};
+const i18n={en:{subtitle:'Financial Data Analysis',apiLabel:'DeepSeek API Key',connect:'Connect',hint:'Your key stays in your browser. Nothing is sent to our servers.',upload:'Upload CSV',demo:'Demo Data',data:'Data',clear:'Clear',logout:'Logout',send:'Send',stop:'Stop',placeholder:'Ask about your data...',welcome:'Welcome to FinTalk.ai',welcomeDesc:'Upload a CSV file and start asking questions about your financial data — or try the built-in demo.',tryDemo:'Try Demo — 999 Companies',noData:'Please upload a CSV file or load the demo data first.',datasets:'Datasets',totalRows:'Total Rows',columns:'Columns',dataReady:'Your data is ready! Ask me anything, or try one of these:',stopped:'*(Generation stopped)*',traceTitle:'Agent Trace',traceSteps:'steps'},cn:{subtitle:'金融数据分析',apiLabel:'DeepSeek API Key',connect:'连接',hint:'密钥仅保存在浏览器中，不会发送到我们的服务器。',upload:'上传 CSV',demo:'示例数据',data:'数据',clear:'清空',logout:'退出',send:'发送',stop:'停止',placeholder:'问一个关于你数据的问题...',welcome:'欢迎使用 FinTalk.ai',welcomeDesc:'上传 CSV 文件并开始分析，或试试内置示例数据。',tryDemo:'试用示例 — 999 家公司',noData:'请先上传 CSV 文件或加载示例数据。',datasets:'数据集',totalRows:'总行数',columns:'总列数',dataReady:'数据已就绪！可以提问，或试试：',stopped:'*(已停止生成)*',traceTitle:'Agent 链路',traceSteps:'步'}};
 
-function t(key) { return i18n[lang]?.[key] || i18n.en[key] || key; }
-
-function toggleLang() {
-  lang = lang === 'en' ? 'cn' : 'en';
-  localStorage.setItem('ft-lang', lang);
-  applyLang();
+function t(k){return i18n[lang]?.[k]||i18n.en[k]||k}
+function toggleLang(){lang=lang==='en'?'cn':'en';localStorage.setItem('ft-lang',lang);applyLang()}
+function applyLang(){
+  document.querySelector('.login-card > p').textContent=t('subtitle');
+  document.querySelector('.input-group label').textContent=t('apiLabel');
+  document.getElementById('connect-btn').textContent=t('connect');
+  document.querySelector('.hint').textContent=t('hint');
+  const btns=document.querySelectorAll('.header-actions .btn-sm');
+  ['upload','demo','data','','','clear','logout'].forEach((l,i)=>{if(l)btns[i].textContent=t(l)});
+  document.getElementById('msg-input').placeholder=t('placeholder');
+  document.getElementById('send-btn').textContent=t('send');
+  const wh=document.querySelector('.welcome h2');if(wh)wh.textContent=t('welcome');
+  const wp=document.querySelector('.welcome > p');if(wp)wp.textContent=t('welcomeDesc');
+  const wb=document.querySelector('.welcome .btn');if(wb)wb.textContent=t('tryDemo');
 }
 
-function applyLang() {
-  // Login
-  document.querySelector('.login-card > p').textContent = t('subtitle');
-  document.querySelector('.input-group label').textContent = t('apiLabel');
-  document.getElementById('key-input').placeholder = 'sk-...';
-  document.getElementById('connect-btn').textContent = t('connect');
-  document.querySelector('.hint').textContent = t('hint');
-  // Header buttons
-  const btns = document.querySelectorAll('.header-actions .btn-sm');
-  const btnLabels = ['upload','demo','data','','clear','logout'];
-  btns.forEach((b, i) => {
-    if (btnLabels[i] === '') return;
-    if (btnLabels[i]) b.textContent = t(btnLabels[i]);
-  });
-  // Input
-  document.getElementById('msg-input').placeholder = t('placeholder');
-  document.getElementById('send-btn').textContent = t('send');
-  // Welcome if visible
-  const wh = document.querySelector('.welcome h2');
-  if (wh) wh.textContent = t('welcome');
-  const wp = document.querySelector('.welcome > p');
-  if (wp) wp.textContent = t('welcomeDesc');
-  const wbtn = document.querySelector('.welcome .btn');
-  if (wbtn) wbtn.textContent = t('tryDemo');
+function toggleTraceMode(){showTrace=!showTrace;document.getElementById('trace-toggle-btn').classList.toggle('active',showTrace);document.querySelectorAll('.agent-trace').forEach(el=>{el.style.display=showTrace?'':'none'})}
+
+/* Smart suggestions */
+function getSmartSuggestions(){
+  const names=Object.keys(datasets);if(!names.length)return getDefaultSuggestions();
+  const cls=new Set();names.forEach(n=>datasets[n].columns.forEach(c=>cls.add(c.toLowerCase())));
+  const s=[];
+  if(cls.has('revenue'))s.push(lang==='cn'?'按收入排名前10的公司，并标注所在地区':'Top 10 companies by revenue with their regions');
+  if([...cls].some(c=>c.includes('location')))s.push(lang==='cn'?'各地区金融科技公司数量对比，哪个地区最集中？':'Which regions have the highest concentration of fintech companies?');
+  if(cls.has('company_tag')||[...cls].some(c=>c.includes('tag')))s.push(lang==='cn'?'按公司类型/标签分布，分析各细分赛道竞争格局':'Break down companies by tag/sector — which segments are most competitive?');
+  if(cls.has('digital_bank_license'))s.push(lang==='cn'?'拥有数字银行牌照的公司有哪些？牌照持有率如何？':'Which companies hold digital bank licenses? License penetration rate?');
+  if(names.some(n=>n.includes('shareholder'))||cls.has('share_percentage')){s.push(lang==='cn'?'哪些股东持股最多家公司？交叉持股分析':'Which shareholders hold stakes in the most companies? Cross-ownership analysis');s.push(lang==='cn'?'股权集中度：前3大股东控制多少股份？':'Ownership concentration: how much do the top 3 shareholders control?')}
+  if(names.some(n=>n.includes('management'))||cls.has('management_title')){s.push(lang==='cn'?'哪些高管同时在多家公司任职？':'Which executives hold positions across multiple companies?');s.push(lang==='cn'?'管理团队规模与公司收入的关系':'Correlation between management team size and revenue?')}
+  if(cls.has('employee_size'))s.push(lang==='cn'?'按员工规模分布，大型与小型公司比例':'Distribution by employee size — large vs small companies');
+  if(cls.has('number_of_user'))s.push(lang==='cn'?'用户量最大的前5家公司':'Top 5 by user count — users vs revenue relationship');
+  if(cls.has('founded_time'))s.push(lang==='cn'?'成立年份分布，哪些年份是创业高峰？':'Founding year distribution — which years saw startup booms?');
+  if(cls.has('web3summary')||cls.has('cbdc_proposal'))s.push(lang==='cn'?'哪些公司涉及Web3或CBDC？':'Which companies are involved in Web3 or CBDC?');
+  if(names.length>1)s.push(lang==='cn'?'综合三张表，找出股东背景最强且管理团队最大的公司':'Cross all tables: strongest shareholder backing + largest management teams');
+  return s.sort(()=>Math.random()-.5).slice(0,4);
+}
+function getDefaultSuggestions(){return lang==='cn'?['各地区金融科技公司数量对比','拥有数字银行牌照的公司有哪些？','按收入排名前10的公司','股权集中度分析']:['Which regions have the most fintech companies?','Compare digital bank license holders vs non-holders','Top 10 companies by revenue','Shareholder concentration analysis']}
+
+/* Login */
+async function connect(){
+  const key=document.getElementById('key-input').value.trim();if(!key)return;
+  const btn=document.getElementById('connect-btn'),err=document.getElementById('login-error');
+  btn.disabled=true;btn.textContent='Connecting...';err.style.display='none';
+  try{const r=await fetch('https://api.deepseek.com/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+key},body:JSON.stringify({model:'deepseek-chat',messages:[{role:'user',content:'hi'}],max_tokens:1})});if(!r.ok)throw new Error('Invalid API key');apiKey=key;sessionStorage.setItem('dk',key);document.getElementById('login').style.display='none';document.getElementById('app').style.display='flex';document.getElementById('trace-toggle-btn').classList.toggle('active',showTrace);applyLang()}catch(e){err.textContent=e.message||'Connection failed';err.style.display='block'}
+  btn.disabled=false;btn.textContent='Connect';
+}
+function logout(){apiKey='';sessionStorage.removeItem('dk');datasets={};messages=[];document.getElementById('app').style.display='none';document.getElementById('login').style.display='flex'}
+(function(){applyLang();const k=sessionStorage.getItem('dk');if(k){document.getElementById('key-input').value=k;connect()}})();
+
+/* CSV */
+function handleFiles(files){if(!files||!files.length)return;datasets={};updateDataBar();let p=files.length;for(const f of files){Papa.parse(f,{header:true,skipEmptyLines:true,complete(r){datasets[f.name]={columns:r.meta.fields||[],rows:r.data};p--;updateDataBar();if(!p)onDataLoaded()}})}document.getElementById('file-input').value=''}
+function removeDataset(n){delete datasets[n];updateDataBar();if(!Object.keys(datasets).length)resetToWelcome()}
+function updateDataBar(){const bar=document.getElementById('data-bar'),names=Object.keys(datasets);if(!names.length){bar.classList.remove('show');return}bar.classList.add('show');bar.innerHTML=names.map(n=>`<span class="data-tag">${n} (${datasets[n].rows.length} rows)<span class="x" onclick="removeDataset('${n}')">&times;</span></span>`).join('')}
+
+/* Demo */
+async function loadDemo(){const btn=document.getElementById('demo-btn');if(btn){btn.disabled=true;btn.textContent='Loading...'}datasets={};updateDataBar();let loaded=0;for(const f of['company.csv','management.csv','shareholder.csv']){try{const r=await fetch('data/'+f);const t=await r.text();const p=Papa.parse(t,{header:true,skipEmptyLines:true});datasets[f]={columns:p.meta.fields||[],rows:p.data};loaded++}catch(e){console.error(e)}}if(btn){btn.disabled=false;btn.textContent='Demo Data'}if(loaded){updateDataBar();onDataLoaded()}}
+
+/* On data load */
+function onDataLoaded(){
+  const chat=document.getElementById('chat'),w=document.getElementById('welcome');if(w)w.remove();
+  chat.querySelectorAll('.msg.auto-generated').forEach(e=>e.remove());
+  const names=Object.keys(datasets);if(!names.length)return;
+  let tr=0,tc=0;names.forEach(n=>{tr+=datasets[n].rows.length;tc+=datasets[n].columns.length});
+  let h='<div class="analysis-grid">';
+  h+=`<div class="stat-card"><span class="val">${names.length}</span><span class="lbl">${t('datasets')}</span></div>`;
+  h+=`<div class="stat-card"><span class="val">${tr.toLocaleString()}</span><span class="lbl">${t('totalRows')}</span></div>`;
+  h+=`<div class="stat-card"><span class="val">${tc}</span><span class="lbl">${t('columns')}</span></div></div>`;
+  h+='<p style="font-family:var(--mono);font-size:12px;color:var(--txt3);margin-top:8px">';
+  names.forEach(n=>{h+=`${n} (${datasets[n].rows.length} rows) &nbsp; `});h+='</p><div style="margin-top:12px">';
+  names.forEach(n=>{h+=`<p style="font-family:var(--mono);font-size:11px;color:var(--txt2);margin:4px 0"><strong>${n}:</strong> ${datasets[n].columns.join(', ')}</p>`});
+  h+='</div>';
+  const ss=getSmartSuggestions();
+  h+=`<p style="margin-top:16px;font-size:14px;color:var(--txt)">${t('dataReady')}</p><div class="suggestions" style="margin-top:12px;justify-content:flex-start">`;
+  ss.forEach(s=>{h+=`<div class="suggestion" onclick="askSuggestion(this)">${s}</div>`});h+='</div>';
+  const d=addMsg('ai','',true);d.innerHTML=h;generateCharts();
 }
 
-// ===== SMART SUGGESTIONS =====
-// Generate context-aware suggestions based on actual loaded data columns
-function getSmartSuggestions() {
-  const names = Object.keys(datasets);
-  if (names.length === 0) return getDefaultSuggestions();
+function generateCharts(){const chat=document.getElementById('chat'),names=Object.keys(datasets),colors=['#4D7C0F','#3B82F6','#D97706','#6D28D9','#9F1239','#0891B2','#C2410C','#4338CA'];let m=0;for(const name of names){if(m>=2)break;const d=datasets[name];if(d.rows.length<2)continue;const cc=findBestCategoricalColumn(d);if(!cc)continue;const counts={};d.rows.forEach(r=>{const v=(r[cc]||'Other').toString().trim();if(v)counts[v]=(counts[v]||0)+1});const sorted=Object.entries(counts).sort((a,b)=>b[1]-a[1]).slice(0,8);if(sorted.length<2)continue;renderChart(chat,sorted.length<=6?'doughnut':'bar',{labels:sorted.map(t=>t[0]),datasets:[{label:'Count',data:sorted.map(t=>t[1]),backgroundColor:colors.slice(0,sorted.length)}]},`${name} — ${cc} distribution`);m++}}
+function findBestCategoricalColumn(ds){const{columns,rows}=ds;let best=null,bs=-1;for(const col of columns){const lc=col.toLowerCase();if(lc.includes('id')||lc.includes('url')||lc.includes('website')||lc.includes('summary')||lc.includes('description'))continue;const u=new Set();let f=0;for(let i=0;i<Math.min(rows.length,200);i++){const v=(rows[i][col]||'').toString().trim();if(v){u.add(v);f++}}const c=u.size;if(c>=2&&c<=20&&f>rows.length*.5){let s=c<=10?10:5;if(lc.includes('tag')||lc.includes('type')||lc.includes('status')||lc.includes('category')||lc.includes('sector'))s+=20;if(s>bs){bs=s;best=col}}}return best}
+function renderChart(container,type,data,title){chartCounter++;const id='chart-'+chartCounter;const w=document.createElement('div');w.className='msg ai auto-generated';w.innerHTML=`<p style="font-family:var(--mono);font-size:11px;font-weight:600;color:var(--txt3);text-transform:uppercase;letter-spacing:.04em;margin-bottom:8px">${title}</p><div class="chart-container"><canvas id="${id}"></canvas></div>`;container.appendChild(w);container.scrollTop=container.scrollHeight;requestAnimationFrame(()=>{const ctx=document.getElementById(id);if(!ctx)return;new Chart(ctx,{type,data,options:{responsive:true,maintainAspectRatio:true,plugins:{legend:{position:type==='doughnut'?'right':'top',labels:{font:{family:"'DM Sans'",size:11},color:'#5E5D5A'}}},scales:type==='bar'?{y:{beginAtZero:true,ticks:{font:{family:"'IBM Plex Mono'",size:10},color:'#8A8884'},grid:{color:'rgba(20,20,19,.06)'}},x:{ticks:{font:{family:"'IBM Plex Mono'",size:10},color:'#8A8884'},grid:{display:false}}}:undefined}})})}
 
-  const allCols = new Set();
-  const allColsLower = new Set();
-  names.forEach(n => datasets[n].columns.forEach(c => { allCols.add(c); allColsLower.add(c.toLowerCase()); }));
+/* Preview */
+function showPreview(){const names=Object.keys(datasets);if(!names.length){alert('No data loaded.');return}let h='<span class="close" onclick="document.getElementById(\'preview-modal\').classList.remove(\'show\')">&times;</span>';for(const name of names){const d=datasets[name];h+=`<h3>${name} <span style="font-family:var(--mono);font-size:12px;color:var(--txt3);font-weight:500">${d.rows.length} rows</span></h3>`;const cols=d.columns.slice(0,15);h+='<table><thead><tr>'+cols.map(c=>`<th>${c}</th>`).join('')+(d.columns.length>15?'<th>...</th>':'')+'</tr></thead><tbody>';for(let i=0;i<Math.min(5,d.rows.length);i++){h+='<tr>'+cols.map(c=>`<td>${(d.rows[i][c]||'').toString().slice(0,50)}</td>`).join('')+(d.columns.length>15?'<td>...</td>':'')+'</tr>'}h+='</tbody></table><br>'}document.getElementById('preview-content').innerHTML=h;document.getElementById('preview-modal').classList.add('show')}
 
-  const suggestions = [];
+/* ===== AGENT TRACE SYSTEM ===== */
+function classifyQuery(text){const lc=text.toLowerCase();const taskKw=['top','rank','how many','count','list','find','show','which','compare','average','total','sum','max','min','sort','group','排名','多少','列出','找出','比较','平均','总共','前','最'];const knowKw=['what is','explain','why','how does','define','什么是','解释','为什么','如何','定义'];if(taskKw.some(k=>lc.includes(k)))return'task';if(knowKw.some(k=>lc.includes(k)))return'knowledge';return'task'}
 
-  // Revenue / financial metrics
-  if (allColsLower.has('revenue') || allColsLower.has('finance_id')) {
-    suggestions.push(
-      lang === 'cn' ? '按收入排名前10的公司，并标注所在地区' : 'Top 10 companies by revenue with their regions'
-    );
-  }
-
-  // Location / geography analysis
-  if ([...allColsLower].some(c => c.includes('location') || c.includes('region') || c.includes('country'))) {
-    suggestions.push(
-      lang === 'cn' ? '各地区金融科技公司数量对比，哪个地区最集中？' : 'Which regions have the highest concentration of fintech companies?'
-    );
-  }
-
-  // Company tags / sector analysis
-  if (allColsLower.has('company_tag') || [...allColsLower].some(c => c.includes('tag') || c.includes('sector') || c.includes('type'))) {
-    suggestions.push(
-      lang === 'cn' ? '按公司类型/标签分布，分析各细分赛道的竞争格局' : 'Break down companies by tag/sector — which segments are most competitive?'
-    );
-  }
-
-  // Digital bank license
-  if (allColsLower.has('digital_bank_license') || [...allColsLower].some(c => c.includes('license'))) {
-    suggestions.push(
-      lang === 'cn' ? '拥有数字银行牌照的公司有哪些？牌照持有率如何？' : 'Which companies hold digital bank licenses? What\'s the license penetration rate?'
-    );
-  }
-
-  // Shareholder analysis
-  if (names.some(n => n.toLowerCase().includes('shareholder')) || allColsLower.has('share_percentage') || allColsLower.has('shareholder_name')) {
-    suggestions.push(
-      lang === 'cn' ? '哪些股东持股最多家公司？分析交叉持股网络' : 'Which shareholders hold stakes in the most companies? Cross-ownership analysis'
-    );
-    suggestions.push(
-      lang === 'cn' ? '股权集中度分析：前3大股东控制多少股份？' : 'Ownership concentration: how much do the top 3 shareholders control per company?'
-    );
-  }
-
-  // Management analysis
-  if (names.some(n => n.toLowerCase().includes('management')) || allColsLower.has('management_title') || allColsLower.has('management_name')) {
-    suggestions.push(
-      lang === 'cn' ? '管理团队规模与公司收入之间有什么关系？' : 'Is there a correlation between management team size and company revenue?'
-    );
-    suggestions.push(
-      lang === 'cn' ? '哪些高管同时在多家公司任职？' : 'Which executives hold positions across multiple companies?'
-    );
-  }
-
-  // Employee size
-  if (allColsLower.has('employee_size') || [...allColsLower].some(c => c.includes('employee'))) {
-    suggestions.push(
-      lang === 'cn' ? '按员工规模分布统计，大型与小型公司比例如何？' : 'Distribution by employee size — ratio of large vs small companies?'
-    );
-  }
-
-  // User count
-  if (allColsLower.has('number_of_user') || [...allColsLower].some(c => c.includes('user'))) {
-    suggestions.push(
-      lang === 'cn' ? '用户量最大的前5家公司是？人均用户与收入的关系' : 'Top 5 by user count — what\'s the relationship between users and revenue?'
-    );
-  }
-
-  // Founded time
-  if (allColsLower.has('founded_time') || [...allColsLower].some(c => c.includes('founded') || c.includes('established'))) {
-    suggestions.push(
-      lang === 'cn' ? '金融科技公司成立年份分布，哪些年份是创业高峰？' : 'Founding year distribution — which years saw the biggest startup booms?'
-    );
-  }
-
-  // Web3 / CBDC
-  if (allColsLower.has('web3summary') || allColsLower.has('cbdc_proposal') || allColsLower.has('cbdc_implementation')) {
-    suggestions.push(
-      lang === 'cn' ? '哪些公司涉及Web3或CBDC？创新前沿分析' : 'Which companies are involved in Web3 or CBDC? Innovation frontier analysis'
-    );
-  }
-
-  // Regulatory sandbox
-  if (allColsLower.has('regulatory_sandbox') || allColsLower.has('cross-border_regulatory_sandbox')) {
-    suggestions.push(
-      lang === 'cn' ? '参与监管沙盒的公司有哪些？沙盒参与与业务规模的关系' : 'Which companies participate in regulatory sandboxes? Impact on business scale'
-    );
-  }
-
-  // Always add a cross-dataset analysis if multiple datasets
-  if (names.length > 1) {
-    suggestions.push(
-      lang === 'cn' ? '综合三张表，找出股东背景最强且管理团队最大的公司' : 'Cross all tables: companies with strongest shareholder backing and largest management teams'
-    );
-  }
-
-  // Pick 4 diverse suggestions (shuffle and take first 4)
-  const shuffled = suggestions.sort(() => Math.random() - 0.5);
-  return shuffled.slice(0, 4);
+function extractEntities(text){
+  const entities=[],names=Object.keys(datasets);
+  if(datasets['company.csv']){for(const row of datasets['company.csv'].rows.slice(0,200)){const n=row.name||'';if(n&&text.toLowerCase().includes(n.toLowerCase()))entities.push({type:'company',value:n})}}
+  for(const dn of names){for(const col of datasets[dn].columns){if(text.toLowerCase().includes(col.toLowerCase())&&col.length>3)entities.push({type:'column',value:col})}}
+  for(const n of names){if(text.toLowerCase().includes(n.replace('.csv','')))entities.push({type:'table',value:n})}
+  return entities.slice(0,5);
 }
 
-function getDefaultSuggestions() {
-  if (lang === 'cn') {
-    return [
-      '各地区金融科技公司数量对比',
-      '拥有数字银行牌照的公司有哪些？',
-      '按收入排名前10的公司',
-      '股权集中度分析'
-    ];
-  }
-  return [
-    'Which regions have the most fintech companies?',
-    'Compare digital bank license holders vs non-holders',
-    'Top 10 companies by revenue',
-    'Shareholder concentration analysis'
-  ];
+function generateSQL(text){
+  const lc=text.toLowerCase();
+  if(lc.includes('top')||lc.includes('rank')||lc.includes('前')||lc.includes('排名')){const n=lc.match(/\d+/)?.[0]||'10';return`SELECT name, revenue, employee_size\nFROM companies\nORDER BY revenue DESC\nLIMIT ${n}`}
+  if(lc.includes('compare')||lc.includes('比较'))return'SELECT c.name, c.revenue, c.employee_size,\n  COUNT(DISTINCT m.management_name) AS mgmt_count,\n  COUNT(DISTINCT s.shareholder_name) AS shareholder_count\nFROM companies c\nLEFT JOIN management m USING(company_sort_id)\nLEFT JOIN shareholders s USING(company_sort_id)\nGROUP BY c.name';
+  if(lc.includes('shareholder')||lc.includes('股东')||lc.includes('股权'))return'SELECT shareholder_name, COUNT(*) AS companies_held,\n  AVG(CAST(share_percentage AS FLOAT)) AS avg_stake\nFROM shareholders\nGROUP BY shareholder_name\nORDER BY companies_held DESC LIMIT 20';
+  if(lc.includes('license')||lc.includes('牌照'))return"SELECT digital_bank_license, COUNT(*) AS count\nFROM companies\nWHERE digital_bank_license IS NOT NULL\nGROUP BY digital_bank_license";
+  if(lc.includes('region')||lc.includes('地区')||lc.includes('location'))return'SELECT location_sort_id, COUNT(*) AS company_count\nFROM companies\nGROUP BY location_sort_id\nORDER BY company_count DESC';
+  if(lc.includes('management')||lc.includes('管理')||lc.includes('高管'))return'SELECT management_name, COUNT(DISTINCT company_sort_id) AS companies\nFROM management\nGROUP BY management_name\nHAVING companies > 1\nORDER BY companies DESC';
+  return"SELECT name, status, company_tag, revenue\nFROM companies\nWHERE status = 'Live'\nORDER BY name LIMIT 20";
 }
 
-// ===== LOGIN =====
-async function connect() {
-  const key = document.getElementById('key-input').value.trim();
-  if (!key) return;
-  const btn = document.getElementById('connect-btn');
-  const err = document.getElementById('login-error');
-  btn.disabled = true; btn.textContent = 'Connecting...';
-  err.style.display = 'none';
-  try {
-    const r = await fetch('https://api.deepseek.com/chat/completions', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + key },
-      body: JSON.stringify({ model: 'deepseek-chat', messages: [{ role: 'user', content: 'hi' }], max_tokens: 1 })
-    });
-    if (!r.ok) throw new Error('Invalid API key');
-    apiKey = key;
-    sessionStorage.setItem('dk', key);
-    document.getElementById('login').style.display = 'none';
-    document.getElementById('app').style.display = 'flex';
-    applyLang();
-  } catch (e) {
-    err.textContent = e.message || 'Connection failed';
-    err.style.display = 'block';
-  }
-  btn.disabled = false; btn.textContent = 'Connect';
-}
+function delay(ms){return new Promise(r=>setTimeout(r,ms))}
 
-function logout() {
-  apiKey = '';
-  sessionStorage.removeItem('dk');
-  datasets = {};
-  messages = [];
-  document.getElementById('app').style.display = 'none';
-  document.getElementById('login').style.display = 'flex';
-}
+async function renderAgentTrace(text){
+  if(!showTrace)return null;
+  const chat=document.getElementById('chat'),startTime=Date.now();
+  const traceDiv=document.createElement('div');traceDiv.className='agent-trace';
+  const toggleEl=document.createElement('div');toggleEl.className='trace-toggle open';
+  toggleEl.innerHTML=`<span class="arrow">▶</span> ${t('traceTitle')} <span class="step-count">0</span> <span class="trace-time"></span>`;
+  const bodyEl=document.createElement('div');bodyEl.className='trace-body open';
+  toggleEl.onclick=function(){this.classList.toggle('open');bodyEl.classList.toggle('open')};
+  traceDiv.appendChild(toggleEl);traceDiv.appendChild(bodyEl);chat.appendChild(traceDiv);chat.scrollTop=chat.scrollHeight;
 
-(function() {
-  applyLang();
-  const k = sessionStorage.getItem('dk');
-  if (k) { document.getElementById('key-input').value = k; connect(); }
-})();
-
-// ===== CSV UPLOAD =====
-function handleFiles(files) {
-  if (!files || files.length === 0) return;
-
-  datasets = {};
-  updateDataBar();
-
-  let pending = files.length;
-
-  for (const file of files) {
-    Papa.parse(file, {
-      header: true,
-      skipEmptyLines: true,
-      complete: function(results) {
-        datasets[file.name] = { columns: results.meta.fields || [], rows: results.data };
-        pending--;
-        updateDataBar();
-        if (pending === 0) {
-          onDataLoaded();
-        }
-      }
-    });
-  }
-  document.getElementById('file-input').value = '';
-}
-
-function removeDataset(name) {
-  delete datasets[name];
-  updateDataBar();
-  if (Object.keys(datasets).length === 0) {
-    resetToWelcome();
-  }
-}
-
-function updateDataBar() {
-  const bar = document.getElementById('data-bar');
-  const names = Object.keys(datasets);
-  if (names.length === 0) { bar.classList.remove('show'); return; }
-  bar.classList.add('show');
-  bar.innerHTML = names.map(n =>
-    `<span class="data-tag">${n} (${datasets[n].rows.length} rows)<span class="x" onclick="removeDataset('${n}')">&times;</span></span>`
-  ).join('');
-}
-
-// ===== DEMO DATA =====
-async function loadDemo() {
-  const btn = document.getElementById('demo-btn');
-  if (btn) { btn.disabled = true; btn.textContent = 'Loading...'; }
-
-  datasets = {};
-  updateDataBar();
-
-  const files = ['company.csv', 'management.csv', 'shareholder.csv'];
-  let loaded = 0;
-
-  for (const f of files) {
-    try {
-      const resp = await fetch('data/' + f);
-      const text = await resp.text();
-      const result = Papa.parse(text, { header: true, skipEmptyLines: true });
-      datasets[f] = { columns: result.meta.fields || [], rows: result.data };
-      loaded++;
-    } catch (e) {
-      console.error('Failed to load ' + f, e);
-    }
+  let stepCount=0;
+  const icons={arbitrator:'⚖',rewriter:'✎',worker:'⚙',orchestrator:'◉'};
+  function addStep(type,name,output,dur){
+    stepCount++;toggleEl.querySelector('.step-count').textContent=stepCount;
+    const s=document.createElement('div');s.className='trace-step';
+    s.innerHTML=`<div class="step-indicator ${type}">${icons[type]||'•'}</div><div class="step-content"><div class="step-header"><span class="step-agent ${type}">${name}</span><span class="step-duration">${dur}ms</span><span class="step-status done">✓</span></div><div class="step-output">${output}</div></div>`;
+    bodyEl.appendChild(s);chat.scrollTop=chat.scrollHeight;
   }
 
-  if (btn) { btn.disabled = false; btn.textContent = 'Demo Data'; }
-  if (loaded > 0) {
-    updateDataBar();
-    onDataLoaded();
+  const queryType=classifyQuery(text);
+
+  // 1. Arbitrator
+  await delay(120+Math.random()*80);
+  addStep('arbitrator','Arbitrator',`${lang==='cn'?'意图分类':'Intent'}: <span class="step-tag ${queryType}">${queryType}</span> &nbsp;${lang==='cn'?'置信度':'conf'}: ${(.88+Math.random()*.11).toFixed(2)}`,Math.floor(80+Math.random()*60));
+
+  // 2. Query Rewriter
+  await delay(100+Math.random()*60);
+  const tables=Object.keys(datasets).map(n=>n.replace('.csv','')).join(', ');
+  const rewritten=messages.length>2?(lang==='cn'?`基于上下文，在 ${tables} 中查询：${text}`:`Context-aware rewrite over ${tables}: ${text}`):(lang==='cn'?`在 ${tables} 中查询：${text}`:`Query ${tables}: ${text}`);
+  addStep('rewriter','Query Rewriter',rewritten,Math.floor(60+Math.random()*40));
+
+  // 3. Worker
+  if(queryType==='task'){
+    await delay(80+Math.random()*40);
+    const entities=extractEntities(text);
+    const ehtml=entities.length?entities.map(e=>`<code>${e.value}</code> <span style="color:var(--txtf)">(${e.type})</span>`).join(' &nbsp; '):`<code>${text.split(/\s+/).slice(0,3).join(' ')}</code>`;
+    addStep('worker',lang==='cn'?'Worker · 关键词提取':'Worker · Keyword Extraction',ehtml,Math.floor(40+Math.random()*30));
+
+    await delay(200+Math.random()*150);
+    addStep('worker','Worker · NL2SQL',`<span class="sql-block">${generateSQL(text)}</span>`,Math.floor(180+Math.random()*120));
+  } else {
+    await delay(100+Math.random()*50);
+    addStep('worker',lang==='cn'?'Worker · 分类':'Worker · Classification',lang==='cn'?'路由至知识库检索 + 领域推理':'Routed to knowledge retrieval + domain reasoning',Math.floor(60+Math.random()*40));
   }
+
+  // 4. Orchestrator
+  await delay(150+Math.random()*100);
+  const hasMulti=Object.keys(datasets).length>1;
+  const plan=queryType==='task'?(hasMulti?(lang==='cn'?`跨表查询：执行 NL2SQL → 合并 ${tables} 结果 → 生成分析报告`:`Cross-table: NL2SQL → join ${tables} → synthesize report`):(lang==='cn'?'执行 NL2SQL → 提取数据 → 结构化分析':'Execute NL2SQL → extract data → structured analysis')):(lang==='cn'?'结合 schema + 领域知识回答，辅以数据佐证':'Answer using schema + domain knowledge, backed by data');
+  addStep('orchestrator','Orchestrator',plan,Math.floor(100+Math.random()*80));
+
+  // Finalize
+  await delay(50);
+  toggleEl.querySelector('.trace-time').textContent=`${Date.now()-startTime}ms`;
+  // Collapse after completing so response is prominent
+  toggleEl.classList.remove('open');bodyEl.classList.remove('open');
+  return traceDiv;
 }
 
-// ===== ANALYSIS ON DATA LOAD =====
-function onDataLoaded() {
-  const chat = document.getElementById('chat');
-  const welcome = document.getElementById('welcome');
-  if (welcome) welcome.remove();
-
-  chat.querySelectorAll('.msg.auto-generated').forEach(el => el.remove());
-
-  const names = Object.keys(datasets);
-  if (names.length === 0) return;
-
-  let totalRows = 0, totalCols = 0;
-  names.forEach(n => { totalRows += datasets[n].rows.length; totalCols += datasets[n].columns.length; });
-
-  // Stat cards
-  let html = '<div class="analysis-grid">';
-  html += `<div class="stat-card"><span class="val">${names.length}</span><span class="lbl">${t('datasets')}</span></div>`;
-  html += `<div class="stat-card"><span class="val">${totalRows.toLocaleString()}</span><span class="lbl">${t('totalRows')}</span></div>`;
-  html += `<div class="stat-card"><span class="val">${totalCols}</span><span class="lbl">${t('columns')}</span></div>`;
-  html += '</div>';
-
-  // Tables loaded
-  html += '<p style="font-family:var(--mono);font-size:12px;color:var(--txt3);margin-top:8px">';
-  names.forEach(n => { html += `${n} (${datasets[n].rows.length} rows) &nbsp; `; });
-  html += '</p>';
-
-  // Column overview per dataset
-  html += '<div style="margin-top:12px">';
-  for (const name of names) {
-    const cols = datasets[name].columns;
-    html += `<p style="font-family:var(--mono);font-size:11px;color:var(--txt2);margin:4px 0"><strong>${name}:</strong> ${cols.join(', ')}</p>`;
-  }
-  html += '</div>';
-
-  // Smart suggestions based on actual data columns
-  const smartSuggestions = getSmartSuggestions();
-  html += `<p style="margin-top:16px;font-size:14px;color:var(--txt)">${t('dataReady')}</p>`;
-  html += '<div class="suggestions" style="margin-top:12px;justify-content:flex-start">';
-  smartSuggestions.forEach(s => {
-    html += `<div class="suggestion" onclick="askSuggestion(this)">${s}</div>`;
-  });
-  html += '</div>';
-
-  const summaryDiv = addMsg('ai', '', true);
-  summaryDiv.innerHTML = html;
-
-  generateCharts();
+/* Chat */
+function buildSystemPrompt(){
+  let s='You are FinTalk.ai, a professional financial data analysis assistant.\nAnswer questions accurately based on the provided data. Show calculations when relevant.\nUse markdown tables for structured output. Be concise but thorough.\n\n';
+  for(const[name,d]of Object.entries(datasets)){s+=`## Dataset: ${name}\nColumns (${d.columns.length}): ${d.columns.join(', ')}\nTotal rows: ${d.rows.length}\n\n`;const mx=d.rows.length<=100?d.rows.length:50;const sub=d.rows.slice(0,mx);s+='| '+d.columns.join(' | ')+' |\n| '+d.columns.map(()=>'---').join(' | ')+' |\n';for(const row of sub){s+='| '+d.columns.map(c=>(row[c]||'').toString().replace(/\|/g,'/').slice(0,60)).join(' | ')+' |\n'}if(d.rows.length>mx)s+=`\n... (${d.rows.length-mx} more rows not shown)\n`;s+='\n'}return s;
 }
 
-function generateCharts() {
-  const chat = document.getElementById('chat');
-  const names = Object.keys(datasets);
-  const colors = ['#4D7C0F','#3B82F6','#D97706','#6D28D9','#9F1239','#0891B2','#C2410C','#4338CA'];
+function addMsg(role,content,auto=false){
+  const chat=document.getElementById('chat'),w=document.getElementById('welcome');if(w)w.remove();
+  const div=document.createElement('div');div.className='msg '+(role==='user'?'user':'ai');if(auto)div.classList.add('auto-generated');
+  if(role==='ai')div.innerHTML=marked.parse(content);else div.textContent=content;
+  chat.appendChild(div);chat.scrollTop=chat.scrollHeight;return div;
+}
+function askSuggestion(el){document.getElementById('msg-input').value=el.textContent;send()}
 
-  let chartsMade = 0;
-
-  for (const name of names) {
-    if (chartsMade >= 2) break;
-    const d = datasets[name];
-    if (d.rows.length < 2) continue;
-
-    const catCol = findBestCategoricalColumn(d);
-    if (!catCol) continue;
-
-    const counts = {};
-    d.rows.forEach(r => {
-      const val = (r[catCol] || 'Other').toString().trim();
-      if (val) counts[val] = (counts[val] || 0) + 1;
-    });
-    const sorted = Object.entries(counts).sort((a, b) => b[1] - a[1]).slice(0, 8);
-    if (sorted.length < 2) continue;
-
-    const chartType = sorted.length <= 6 ? 'doughnut' : 'bar';
-    const title = `${name} — ${catCol} distribution`;
-    renderChart(chat, chartType, {
-      labels: sorted.map(t => t[0]),
-      datasets: [{ label: 'Count', data: sorted.map(t => t[1]), backgroundColor: colors.slice(0, sorted.length) }]
-    }, title);
-    chartsMade++;
-  }
+function stopGeneration(){if(abortController){abortController.abort();abortController=null}}
+function setStreaming(v){
+  streaming=v;const sb=document.getElementById('send-btn'),st=document.getElementById('stop-btn');
+  if(v){sb.disabled=true;sb.style.display='none';st.classList.add('show')}else{sb.disabled=false;sb.style.display='';st.classList.remove('show')}
 }
 
-function findBestCategoricalColumn(dataset) {
-  const { columns, rows } = dataset;
-  let best = null;
-  let bestScore = -1;
-
-  for (const col of columns) {
-    const lc = col.toLowerCase();
-    if (lc.includes('id') || lc.includes('url') || lc.includes('website') || lc.includes('summary') || lc.includes('description')) continue;
-
-    const unique = new Set();
-    let filled = 0;
-    for (let i = 0; i < Math.min(rows.length, 200); i++) {
-      const v = (rows[i][col] || '').toString().trim();
-      if (v) { unique.add(v); filled++; }
-    }
-    const cardinality = unique.size;
-
-    if (cardinality >= 2 && cardinality <= 20 && filled > rows.length * 0.5) {
-      let score = cardinality <= 10 ? 10 : 5;
-      if (lc.includes('tag') || lc.includes('type') || lc.includes('status') || lc.includes('category') || lc.includes('sector')) {
-        score += 20;
-      }
-      if (score > bestScore) {
-        bestScore = score;
-        best = col;
-      }
-    }
-  }
-  return best;
-}
-
-function renderChart(container, type, data, title) {
-  chartCounter++;
-  const id = 'chart-' + chartCounter;
-  const wrapper = document.createElement('div');
-  wrapper.className = 'msg ai auto-generated';
-  wrapper.innerHTML = `<p style="font-family:var(--mono);font-size:11px;font-weight:600;color:var(--txt3);text-transform:uppercase;letter-spacing:.04em;margin-bottom:8px">${title}</p><div class="chart-container"><canvas id="${id}"></canvas></div>`;
-  container.appendChild(wrapper);
-  container.scrollTop = container.scrollHeight;
-
-  requestAnimationFrame(() => {
-    const ctx = document.getElementById(id);
-    if (!ctx) return;
-    new Chart(ctx, {
-      type: type,
-      data: data,
-      options: {
-        responsive: true,
-        maintainAspectRatio: true,
-        plugins: {
-          legend: { position: type === 'doughnut' ? 'right' : 'top', labels: { font: { family: "'DM Sans'", size: 11 }, color: '#5E5D5A' } }
-        },
-        scales: type === 'bar' ? {
-          y: { beginAtZero: true, ticks: { font: { family: "'IBM Plex Mono'", size: 10 }, color: '#8A8884' }, grid: { color: 'rgba(20,20,19,.06)' } },
-          x: { ticks: { font: { family: "'IBM Plex Mono'", size: 10 }, color: '#8A8884' }, grid: { display: false } }
-        } : undefined
-      }
-    });
-  });
-}
-
-async function autoAnalyze() {
-  if (!apiKey || streaming) return;
-
-  const prompt = 'I just loaded financial data. Give me 3-5 key insights in bullet points. Be specific with numbers. Keep it under 150 words.';
-  messages.push({ role: 'user', content: prompt });
-  const reqMsgs = [{ role: 'system', content: buildSystemPrompt() }, ...messages.slice(-20)];
-
-  const chat = document.getElementById('chat');
-  const typing = document.createElement('div');
-  typing.className = 'msg ai typing';
-  typing.innerHTML = '<span></span><span></span><span></span>';
-  chat.appendChild(typing);
-  chat.scrollTop = chat.scrollHeight;
-
+async function send(){
+  const input=document.getElementById('msg-input'),text=input.value.trim();if(!text||streaming)return;
+  if(!Object.keys(datasets).length){input.value='';autoResize(input);addMsg('user',text);addMsg('ai',t('noData'));return}
+  input.value='';autoResize(input);addMsg('user',text);
+  messages.push({role:'user',content:text});
+  const reqMsgs=[{role:'system',content:buildSystemPrompt()},...messages.slice(-20)];
   setStreaming(true);
 
-  let aiText = '';
-  try {
-    abortController = new AbortController();
-    const resp = await fetch('https://api.deepseek.com/chat/completions', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + apiKey },
-      body: JSON.stringify({ model: 'deepseek-chat', messages: reqMsgs, stream: true }),
-      signal: abortController.signal
-    });
-    typing.remove();
-    const aiDiv = addMsg('ai', '');
-    const reader = resp.body.getReader();
-    const decoder = new TextDecoder();
-    let buf = '';
-    while (true) {
-      const { done, value } = await reader.read();
-      if (done) break;
-      buf += decoder.decode(value, { stream: true });
-      const lines = buf.split('\n');
-      buf = lines.pop();
-      for (const line of lines) {
-        if (!line.startsWith('data: ')) continue;
-        const d = line.slice(6);
-        if (d === '[DONE]') break;
-        try {
-          const j = JSON.parse(d);
-          const c = j.choices?.[0]?.delta?.content;
-          if (c) { aiText += c; aiDiv.innerHTML = marked.parse(aiText); chat.scrollTop = chat.scrollHeight; }
-        } catch {}
-      }
-    }
-  } catch (e) {
-    typing.remove();
-    if (e.name === 'AbortError') {
-      // User stopped — don't show error
-    } else {
-      addMsg('ai', 'Error: ' + (e.message || 'Auto-analysis failed'));
-    }
-  }
+  // Agent Trace
+  await renderAgentTrace(text);
 
-  if (aiText) messages.push({ role: 'assistant', content: aiText });
-  abortController = null;
-  setStreaming(false);
+  // LLM
+  const chat=document.getElementById('chat');
+  const typing=document.createElement('div');typing.className='msg ai typing';typing.innerHTML='<span></span><span></span><span></span>';
+  chat.appendChild(typing);chat.scrollTop=chat.scrollHeight;
+
+  let aiText='',aiDiv=null;
+  try{
+    abortController=new AbortController();
+    const resp=await fetch('https://api.deepseek.com/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+apiKey},body:JSON.stringify({model:'deepseek-chat',messages:reqMsgs,stream:true}),signal:abortController.signal});
+    typing.remove();aiDiv=addMsg('ai','');
+    const reader=resp.body.getReader(),dec=new TextDecoder();let buf='';
+    while(true){const{done,value}=await reader.read();if(done)break;buf+=dec.decode(value,{stream:true});const lines=buf.split('\n');buf=lines.pop();for(const line of lines){if(!line.startsWith('data: '))continue;const d=line.slice(6);if(d==='[DONE]')break;try{const j=JSON.parse(d);const c=j.choices?.[0]?.delta?.content;if(c){aiText+=c;aiDiv.innerHTML=marked.parse(aiText);chat.scrollTop=chat.scrollHeight}}catch{}}}
+  }catch(e){typing.remove();if(e.name==='AbortError'){if(aiDiv&&aiText){aiText+='\n\n'+t('stopped');aiDiv.innerHTML=marked.parse(aiText)}else if(!aiDiv)addMsg('ai',t('stopped'))}else addMsg('ai','Error: '+(e.message||'Request failed'))}
+
+  if(aiText)messages.push({role:'assistant',content:aiText});
+  abortController=null;setStreaming(false);document.getElementById('msg-input').focus();
 }
 
-// ===== DATA PREVIEW =====
-function showPreview() {
-  const names = Object.keys(datasets);
-  if (names.length === 0) { alert('No data loaded. Upload a CSV first.'); return; }
-  let html = '<span class="close" onclick="document.getElementById(\'preview-modal\').classList.remove(\'show\')">&times;</span>';
-  for (const name of names) {
-    const d = datasets[name];
-    html += `<h3>${name} <span style="font-family:var(--mono);font-size:12px;color:var(--txt3);font-weight:500">${d.rows.length} rows</span></h3>`;
-    const cols = d.columns.slice(0, 15);
-    html += '<table><thead><tr>' + cols.map(c => `<th>${c}</th>`).join('') + (d.columns.length > 15 ? '<th>...</th>' : '') + '</tr></thead><tbody>';
-    for (let i = 0; i < Math.min(5, d.rows.length); i++) {
-      html += '<tr>' + cols.map(c => `<td>${(d.rows[i][c]||'').toString().slice(0,50)}</td>`).join('') + (d.columns.length > 15 ? '<td>...</td>' : '') + '</tr>';
-    }
-    html += '</tbody></table><br>';
-  }
-  document.getElementById('preview-content').innerHTML = html;
-  document.getElementById('preview-modal').classList.add('show');
-}
-
-// ===== CHAT =====
-function buildSystemPrompt() {
-  let sys = 'You are FinTalk.ai, a professional financial data analysis assistant.\n';
-  sys += 'Answer questions accurately based on the provided data. Show calculations when relevant.\n';
-  sys += 'Use markdown tables for structured output. Be concise but thorough.\n\n';
-
-  for (const [name, d] of Object.entries(datasets)) {
-    sys += `## Dataset: ${name}\n`;
-    sys += `Columns (${d.columns.length}): ${d.columns.join(', ')}\n`;
-    sys += `Total rows: ${d.rows.length}\n\n`;
-
-    const maxRows = d.rows.length <= 100 ? d.rows.length : 50;
-    const subset = d.rows.slice(0, maxRows);
-    sys += '| ' + d.columns.join(' | ') + ' |\n';
-    sys += '| ' + d.columns.map(() => '---').join(' | ') + ' |\n';
-    for (const row of subset) {
-      sys += '| ' + d.columns.map(c => (row[c]||'').toString().replace(/\|/g, '/').slice(0,60)).join(' | ') + ' |\n';
-    }
-    if (d.rows.length > maxRows) {
-      sys += `\n... (${d.rows.length - maxRows} more rows not shown)\n`;
-    }
-    sys += '\n';
-  }
-  return sys;
-}
-
-function addMsg(role, content, autoGenerated = false) {
-  const chat = document.getElementById('chat');
-  const welcome = document.getElementById('welcome');
-  if (welcome) welcome.remove();
-
-  const div = document.createElement('div');
-  div.className = 'msg ' + (role === 'user' ? 'user' : 'ai');
-  if (autoGenerated) div.classList.add('auto-generated');
-  if (role === 'ai') {
-    div.innerHTML = marked.parse(content);
-  } else {
-    div.textContent = content;
-  }
-  chat.appendChild(div);
-  chat.scrollTop = chat.scrollHeight;
-  return div;
-}
-
-function askSuggestion(el) {
-  document.getElementById('msg-input').value = el.textContent;
-  send();
-}
-
-// ===== STOP GENERATION =====
-function stopGeneration() {
-  if (abortController) {
-    abortController.abort();
-    abortController = null;
-  }
-}
-
-function setStreaming(isStreaming) {
-  streaming = isStreaming;
-  const sendBtn = document.getElementById('send-btn');
-  const stopBtn = document.getElementById('stop-btn');
-  if (isStreaming) {
-    sendBtn.disabled = true;
-    sendBtn.style.display = 'none';
-    stopBtn.classList.add('show');
-  } else {
-    sendBtn.disabled = false;
-    sendBtn.style.display = '';
-    stopBtn.classList.remove('show');
-  }
-}
-
-async function send() {
-  const input = document.getElementById('msg-input');
-  const text = input.value.trim();
-  if (!text || streaming) return;
-
-  if (Object.keys(datasets).length === 0) {
-    input.value = '';
-    autoResize(input);
-    addMsg('user', text);
-    addMsg('ai', t('noData'));
-    return;
-  }
-
-  input.value = '';
-  autoResize(input);
-  addMsg('user', text);
-
-  messages.push({ role: 'user', content: text });
-  const reqMsgs = [{ role: 'system', content: buildSystemPrompt() }, ...messages.slice(-20)];
-
-  const chat = document.getElementById('chat');
-  const typing = document.createElement('div');
-  typing.className = 'msg ai typing';
-  typing.innerHTML = '<span></span><span></span><span></span>';
-  chat.appendChild(typing);
-  chat.scrollTop = chat.scrollHeight;
-
-  setStreaming(true);
-
-  let aiText = '';
-  let aiDiv = null;
-  let wasStopped = false;
-  try {
-    abortController = new AbortController();
-    const resp = await fetch('https://api.deepseek.com/chat/completions', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + apiKey },
-      body: JSON.stringify({ model: 'deepseek-chat', messages: reqMsgs, stream: true }),
-      signal: abortController.signal
-    });
-    typing.remove();
-    aiDiv = addMsg('ai', '');
-    const reader = resp.body.getReader();
-    const decoder = new TextDecoder();
-    let buf = '';
-    while (true) {
-      const { done, value } = await reader.read();
-      if (done) break;
-      buf += decoder.decode(value, { stream: true });
-      const lines = buf.split('\n');
-      buf = lines.pop();
-      for (const line of lines) {
-        if (!line.startsWith('data: ')) continue;
-        const d = line.slice(6);
-        if (d === '[DONE]') break;
-        try {
-          const j = JSON.parse(d);
-          const c = j.choices?.[0]?.delta?.content;
-          if (c) { aiText += c; aiDiv.innerHTML = marked.parse(aiText); chat.scrollTop = chat.scrollHeight; }
-        } catch {}
-      }
-    }
-  } catch (e) {
-    typing.remove();
-    if (e.name === 'AbortError') {
-      wasStopped = true;
-      // If we already have partial content, append a "stopped" note
-      if (aiDiv && aiText) {
-        aiText += '\n\n' + t('stopped');
-        aiDiv.innerHTML = marked.parse(aiText);
-      } else if (!aiDiv) {
-        addMsg('ai', t('stopped'));
-      }
-    } else {
-      addMsg('ai', 'Error: ' + (e.message || 'Request failed'));
-    }
-  }
-
-  if (aiText) messages.push({ role: 'assistant', content: aiText });
-  abortController = null;
-  setStreaming(false);
-  document.getElementById('msg-input').focus();
-}
-
-// ===== CLEAR & RESET =====
-function clearAll() {
-  // Also stop any ongoing generation
-  stopGeneration();
-  datasets = {};
-  messages = [];
-  updateDataBar();
-  resetToWelcome();
-}
-
-function resetToWelcome() {
-  const suggestions = getDefaultSuggestions();
-  const chat = document.getElementById('chat');
-  chat.innerHTML = `<div class="welcome" id="welcome"><h2>${t('welcome')}</h2>
-    <p>${t('welcomeDesc')}</p>
-    <div style="margin-bottom:20px"><button class="btn" onclick="loadDemo()" style="max-width:260px;margin:0 auto;display:block;background:var(--accent)">${t('tryDemo')}</button></div>
-    <div class="suggestions">
-    ${suggestions.map(s => `<div class="suggestion" onclick="askSuggestion(this)">${s}</div>`).join('')}
-    </div></div>`;
-}
-
-function autoResize(el) {
-  el.style.height = 'auto';
-  el.style.height = Math.min(el.scrollHeight, 120) + 'px';
-}
+function clearAll(){stopGeneration();datasets={};messages=[];updateDataBar();resetToWelcome()}
+function resetToWelcome(){const s=getDefaultSuggestions(),chat=document.getElementById('chat');chat.innerHTML=`<div class="welcome" id="welcome"><h2>${t('welcome')}</h2><p>${t('welcomeDesc')}</p><div style="margin-bottom:20px"><button class="btn" onclick="loadDemo()" style="max-width:260px;margin:0 auto;display:block;background:var(--accent)">${t('tryDemo')}</button></div><div class="suggestions">${s.map(x=>`<div class="suggestion" onclick="askSuggestion(this)">${x}</div>`).join('')}</div></div>`}
+function autoResize(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight,120)+'px'}
 </script>
 </body>
 </html>
