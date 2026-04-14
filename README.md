@@ -79,6 +79,12 @@ An asymmetric dual-agent system running inside the OSWorld sandbox for reproduci
 | `streaming_nlg` | Real-time natural language generation |
 | `conversation_manager` | Dialog history and slot management |
 
+**Web App — Multi-Agent Trace Visualization:**
+
+<img src="assets/web_page_demo.png" alt="FinTalk Web App Demo" width="100%"/>
+
+*The web interface shows real-time agent collaboration: Arbitrator classifies intent, Rewriter refines queries, Worker generates SQL, and Orchestrator synthesizes the final answer — all visible in the expandable trace panel.*
+
 ---
 
 ### Layer 3: Interface — MCP Server
