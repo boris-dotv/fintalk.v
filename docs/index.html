@@ -767,14 +767,20 @@ function onDataLoaded() {
   }
   html += '</div>';
 
+  // Add a prompt message encouraging the user to interact
+  html += '<p style="margin-top:16px;font-size:14px;color:var(--txt)">Your data is ready! Ask me anything, or try one of these:</p>';
+  html += '<div class="suggestions" style="margin-top:12px;justify-content:flex-start">';
+  html += '<div class="suggestion" onclick="askSuggestion(this)">Summarize the dataset</div>';
+  html += '<div class="suggestion" onclick="askSuggestion(this)">Show key insights</div>';
+  html += '<div class="suggestion" onclick="askSuggestion(this)">Find the top 5 by value</div>';
+  html += '<div class="suggestion" onclick="askSuggestion(this)">Generate a report</div>';
+  html += '</div>';
+
   const summaryDiv = addMsg('ai', '', true);
   summaryDiv.innerHTML = html;
 
-  // FIX: Generate charts generically — detect categorical columns in ANY dataset
+  // Generate charts as a visual overview (no AI call)
   generateCharts();
-
-  // Auto-analysis via AI
-  autoAnalyze();
 }
 
 // FIX: Charts are now generic — they find the best categorical column in each dataset
@@ -1011,7 +1017,10 @@ async function send() {
 
   // Must have data loaded to ask questions
   if (Object.keys(datasets).length === 0) {
-    addMsg('ai', 'Please upload a CSV file or load the demo data first.');
+    input.value = '';
+    autoResize(input);
+    addMsg('user', text);
+    addMsg('ai', 'Please upload a CSV file or load the demo data first — then I can help you analyze it.');
     return;
   }
 
