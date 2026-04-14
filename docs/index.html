@@ -7,6 +7,7 @@
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5/papaparse.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.10.3/sql-wasm.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;1,400&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -36,6 +37,12 @@
       --violet: #6D28D9;
       --violetbg: rgba(109,40,217,.04);
       --violetbr: rgba(109,40,217,.18);
+      --green: #059669;
+      --greenbg: rgba(5,150,105,.06);
+      --greenbr: rgba(5,150,105,.2);
+      --warn: #B45309;
+      --warnbg: rgba(180,83,9,.06);
+      --warnbr: rgba(180,83,9,.25);
       --serif: 'Playfair Display', Georgia, serif;
       --sans: 'DM Sans', system-ui, sans-serif;
       --mono: 'IBM Plex Mono', monospace;
@@ -117,6 +124,9 @@
     .data-tag { display: inline-flex; align-items: center; gap: 6px; background: var(--bg2); border: 1px solid var(--bdr); border-radius: 8px; padding: 5px 14px; font-family: var(--mono); font-size: 11px; font-weight: 500; color: var(--txt2); }
     .data-tag .x { cursor: pointer; color: var(--txtf); margin-left: 4px; font-size: 14px; line-height: 1; transition: color .15s; }
     .data-tag .x:hover { color: var(--terra); }
+    .db-status { display: inline-flex; align-items: center; gap: 5px; background: var(--greenbg); border: 1px solid var(--greenbr); border-radius: 8px; padding: 5px 12px; font-family: var(--mono); font-size: 10px; font-weight: 600; color: var(--green); }
+    .db-status .db-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); animation: pulse 2s infinite; }
+    @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: .4; } }
 
     .chat { flex: 1; overflow-y: auto; padding: 32px; display: flex; flex-direction: column; gap: 20px; }
     .welcome { text-align: center; margin: auto; max-width: 560px; }
@@ -144,12 +154,6 @@
     .msg.ai pre { background: var(--bg3); padding: 16px 20px; border-radius: 10px; overflow-x: auto; margin: 10px 0; border: 1px solid var(--bdr2); }
     .msg.ai pre code { background: none; padding: 0; border: none; color: var(--txt); }
 
-    .typing { display: flex; gap: 6px; padding: 20px 24px; align-self: flex-start; background: var(--bg2); border-radius: 16px 16px 16px 4px; border: 1px solid var(--bdr); }
-    .typing span { width: 7px; height: 7px; background: var(--txtf); border-radius: 50%; animation: bounce .6s infinite alternate; }
-    .typing span:nth-child(2) { animation-delay: .2s; }
-    .typing span:nth-child(3) { animation-delay: .4s; }
-    @keyframes bounce { to { opacity: .3; transform: translateY(-4px); } }
-
     /* ===== AGENT TRACE ===== */
     .agent-trace { align-self: flex-start; max-width: 80%; animation: msgIn .35s ease-out; }
     .trace-toggle {
@@ -175,7 +179,9 @@
     .step-indicator.arbitrator { background: var(--amberbg); border: 1px solid var(--amberbr); }
     .step-indicator.rewriter { background: var(--bluebg); border: 1px solid var(--bluebr); }
     .step-indicator.worker { background: var(--accentbg); border: 1px solid var(--accentbr); }
+    .step-indicator.executor { background: var(--greenbg); border: 1px solid var(--greenbr); }
     .step-indicator.orchestrator { background: var(--violetbg); border: 1px solid var(--violetbr); }
+    .step-indicator.validator { background: var(--warnbg); border: 1px solid var(--warnbr); }
 
     .step-content { flex: 1; min-width: 0; }
     .step-header { display: flex; align-items: center; gap: 8px; margin-bottom: 2px; }
@@ -183,57 +189,44 @@
     .step-agent.arbitrator { color: var(--amber); }
     .step-agent.rewriter { color: var(--blue); }
     .step-agent.worker { color: var(--accent); }
+    .step-agent.executor { color: var(--green); }
     .step-agent.orchestrator { color: var(--violet); }
+    .step-agent.validator { color: var(--warn); }
     .step-duration { font-family: var(--mono); font-size: 10px; color: var(--txtf); }
     .step-status { font-size: 10px; margin-left: auto; }
     .step-status.done { color: var(--accent); }
+    .step-status.running { color: var(--amber); }
+    .step-status.error { color: var(--terra); }
+    .step-status.warn { color: var(--warn); }
 
     .step-output { font-family: var(--mono); font-size: 11.5px; color: var(--txt2); line-height: 1.6; margin-top: 2px; word-break: break-word; }
     .step-output code { background: var(--bg3); padding: 1px 6px; border-radius: 4px; font-size: 11px; border: 1px solid var(--bdr2); color: var(--violet); }
     .step-output .sql-block { display: block; background: var(--bg3); padding: 8px 12px; border-radius: 8px; border: 1px solid var(--bdr2); margin-top: 6px; white-space: pre-wrap; font-size: 11px; color: var(--txt); }
+    .step-output .sql-result { display: block; background: var(--greenbg); padding: 8px 12px; border-radius: 8px; border: 1px solid var(--greenbr); margin-top: 6px; white-space: pre-wrap; font-size: 11px; color: var(--green); max-height: 200px; overflow: auto; }
+    .step-output .sql-error { display: block; background: var(--terrabg); padding: 8px 12px; border-radius: 8px; border: 1px solid rgba(159,18,57,.2); margin-top: 6px; white-space: pre-wrap; font-size: 11px; color: var(--terra); }
+    .step-output .sql-warn { display: block; background: var(--warnbg); padding: 8px 12px; border-radius: 8px; border: 1px solid var(--warnbr); margin-top: 6px; white-space: pre-wrap; font-size: 11px; color: var(--warn); }
     .step-tag { display: inline-block; padding: 2px 8px; border-radius: 4px; font-family: var(--mono); font-size: 10px; font-weight: 600; }
     .step-tag.task { background: var(--accentbg); color: var(--accent); border: 1px solid var(--accentbr); }
     .step-tag.knowledge { background: var(--bluebg); color: var(--blue); border: 1px solid var(--bluebr); }
     .step-tag.small_talk { background: var(--amberbg); color: var(--amber); border: 1px solid var(--amberbr); }
 
-    /* suggestions bar above input */
+    .step-spinner {
+      display: inline-block; width: 12px; height: 12px;
+      border: 2px solid var(--bdr); border-top-color: var(--violet);
+      border-radius: 50%; animation: spin .6s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* suggestions bar */
     #suggestions-bar {
-      display: none;
-      padding: 10px 32px 0;
-      background: var(--bg2);
-      flex-shrink: 0;
-      flex-wrap: wrap;
-      gap: 8px;
-      align-items: center;
+      display: none; padding: 14px 32px 12px; background: var(--bg2);
+      flex-shrink: 0; flex-wrap: wrap; gap: 10px; align-items: center;
+      border-top: 1px solid var(--bdr2);
     }
     #suggestions-bar.show { display: flex; }
-    #suggestions-bar .suggestion {
-      padding: 7px 16px;
-      background: var(--bg3);
-      border: 1px solid var(--bdr);
-      border-radius: 100px;
-      font-family: var(--mono);
-      font-size: 11px;
-      font-weight: 500;
-      color: var(--txt2);
-      cursor: pointer;
-      transition: all .25s;
-      white-space: nowrap;
-    }
-    #suggestions-bar .suggestion:hover {
-      border-color: var(--accentbr);
-      background: var(--accentbg);
-      color: var(--accent);
-    }
-    #suggestions-bar .sug-label {
-      font-family: var(--mono);
-      font-size: 10px;
-      font-weight: 600;
-      color: var(--txtf);
-      text-transform: uppercase;
-      letter-spacing: .04em;
-      margin-right: 2px;
-    }
+    #suggestions-bar .suggestion { padding: 9px 18px; background: var(--bg3); border: 1px solid var(--bdr); border-radius: 100px; font-family: var(--mono); font-size: 11px; font-weight: 500; color: var(--txt2); cursor: pointer; transition: all .25s; white-space: nowrap; line-height: 1.4; }
+    #suggestions-bar .suggestion:hover { border-color: var(--accentbr); background: var(--accentbg); color: var(--accent); transform: translateY(-1px); }
+    #suggestions-bar .sug-label { font-family: var(--mono); font-size: 10px; font-weight: 600; color: var(--txtf); text-transform: uppercase; letter-spacing: .04em; margin-right: 4px; }
 
     /* input bar */
     .input-bar { display: flex; gap: 10px; padding: 14px 32px 18px; background: var(--bg2); border-top: 1px solid var(--bdr); flex-shrink: 0; align-items: flex-end; }
@@ -248,15 +241,17 @@
     .input-bar button#stop-btn:hover { background: #881337; }
     .input-bar button#stop-btn .stop-icon { width: 10px; height: 10px; background: #fff; border-radius: 2px; flex-shrink: 0; }
 
-    /* trace toggle in input bar */
     .input-bar .btn-trace {
-      width: 40px; height: 46px; flex-shrink: 0;
-      display: flex; align-items: center; justify-content: center;
+      height: 46px; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center; gap: 6px;
       background: var(--bg3); border: 1px solid var(--bdr2); border-radius: 12px;
-      color: var(--txt3); cursor: pointer; transition: all .2s; padding: 0;
+      color: var(--txt3); cursor: pointer; transition: all .2s; padding: 0 14px;
+      font-family: var(--mono); font-size: 11px; font-weight: 600;
+      letter-spacing: .02em; white-space: nowrap;
     }
     .input-bar .btn-trace:hover { background: var(--violetbg); border-color: var(--violetbr); color: var(--violet); }
     .input-bar .btn-trace.active { background: var(--violet); border-color: var(--violet); color: #fff; }
+    .input-bar .btn-trace svg { flex-shrink: 0; }
 
     /* modal */
     .modal-bg { display: none; position: fixed; inset: 0; background: rgba(20,20,19,.4); backdrop-filter: blur(4px); z-index: 100; align-items: center; justify-content: center; }
@@ -284,12 +279,13 @@
       .login-card { padding: 36px 28px; }
       .msg,.agent-trace { max-width: 95%; }
       .input-bar { padding: 14px 18px; }
-      #suggestions-bar { padding: 10px 18px 0; }
+      #suggestions-bar { padding: 12px 18px 10px; }
       .chat { padding: 18px; }
       .header { padding: 12px 18px; }
       .data-bar { padding: 10px 18px; }
       .welcome h2 { font-size: 24px; }
       .header-actions { gap: 5px; }
+      .input-bar .btn-trace span.trace-label { display: none; }
     }
   </style>
 </head>
@@ -340,8 +336,9 @@
   </div>
   <div id="suggestions-bar"></div>
   <div class="input-bar">
-    <button class="btn-trace active" id="trace-toggle-btn" onclick="toggleTraceMode()" title="Agent Trace">
+    <button class="btn-trace active" id="trace-toggle-btn" onclick="toggleTraceMode()" title="Show/hide the multi-agent reasoning trace">
       <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M2 4h12M2 8h8M2 12h10"/><circle cx="13" cy="10" r="2" fill="currentColor" stroke="none"/></svg>
+      <span class="trace-label">Agent Trace</span>
     </button>
     <textarea id="msg-input" placeholder="Ask about your data..." rows="1" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();send()}" oninput="autoResize(this)"></textarea>
     <button id="send-btn" onclick="send()">Send</button>
@@ -358,6 +355,252 @@ let apiKey='',datasets={},messages=[],streaming=false,chartCounter=0,abortContro
 let lang=localStorage.getItem('ft-lang')||'en';
 let showTrace=true;
 
+/* ===== SQLite DATABASE ===== */
+let db = null;
+let sqlReady = false;
+
+async function initSQLite() {
+  try {
+    const SQL = await initSqlJs({
+      locateFile: file => `https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.10.3/${file}`
+    });
+    db = new SQL.Database();
+    sqlReady = true;
+    console.log('[SQLite] WASM engine ready');
+  } catch (e) {
+    console.error('[SQLite] Failed to init:', e);
+  }
+}
+
+function inferColumnType(values) {
+  let numCount = 0, intCount = 0;
+  for (const v of values) {
+    if (v === '' || v == null) continue;
+    const n = Number(v);
+    if (!isNaN(n) && v.trim() !== '') {
+      numCount++;
+      if (Number.isInteger(n)) intCount++;
+    }
+  }
+  if (numCount > values.length * 0.6) {
+    return intCount === numCount ? 'INTEGER' : 'REAL';
+  }
+  return 'TEXT';
+}
+
+function sanitizeCol(name) {
+  return '"' + name.replace(/"/g, '""') + '"';
+}
+
+function sanitizeTable(name) {
+  return '"' + name.replace(/\.csv$/i, '').replace(/[^a-zA-Z0-9_]/g, '_').replace(/"/g, '""') + '"';
+}
+
+function loadDatasetIntoSQLite(name, dataset) {
+  if (!db || !sqlReady) return false;
+  const tableName = name.replace(/\.csv$/i, '').replace(/[^a-zA-Z0-9_]/g, '_');
+  const { columns, rows } = dataset;
+  if (!columns.length || !rows.length) return false;
+
+  const types = {};
+  for (const col of columns) {
+    const samples = rows.slice(0, 50).map(r => r[col]);
+    types[col] = inferColumnType(samples);
+  }
+
+  try {
+    db.run(`DROP TABLE IF EXISTS ${sanitizeTable(tableName)}`);
+    const colDefs = columns.map(c => `${sanitizeCol(c)} ${types[c]}`).join(', ');
+    db.run(`CREATE TABLE ${sanitizeTable(tableName)} (${colDefs})`);
+
+    const placeholders = columns.map(() => '?').join(',');
+    const insertSQL = `INSERT INTO ${sanitizeTable(tableName)} VALUES (${placeholders})`;
+    db.run('BEGIN TRANSACTION');
+    for (const row of rows) {
+      const vals = columns.map(c => {
+        const v = row[c];
+        if (v === '' || v == null) return null;
+        if (types[c] === 'INTEGER') { const n = parseInt(v, 10); return isNaN(n) ? null : n; }
+        if (types[c] === 'REAL') { const n = parseFloat(v); return isNaN(n) ? null : n; }
+        return v;
+      });
+      db.run(insertSQL, vals);
+    }
+    db.run('COMMIT');
+    console.log(`[SQLite] Loaded ${tableName}: ${rows.length} rows, ${columns.length} cols`);
+    return true;
+  } catch (e) {
+    console.error(`[SQLite] Error loading ${tableName}:`, e);
+    try { db.run('ROLLBACK'); } catch {}
+    return false;
+  }
+}
+
+function executeSQL(sql) {
+  if (!db || !sqlReady) return { error: 'SQLite not initialized' };
+
+  const trimmed = sql.trim().replace(/^\/\*[\s\S]*?\*\//g, '').trim();
+  const firstWord = trimmed.split(/\s/)[0].toUpperCase();
+  if (!['SELECT', 'WITH', 'EXPLAIN', 'PRAGMA'].includes(firstWord)) {
+    return { error: `Only SELECT queries allowed (got ${firstWord})` };
+  }
+
+  try {
+    const results = db.exec(sql);
+    if (!results.length) return { columns: [], rows: [], rowCount: 0 };
+    const { columns, values } = results[0];
+    return {
+      columns,
+      rows: values.slice(0, 200),
+      rowCount: values.length,
+      truncated: values.length > 200
+    };
+  } catch (e) {
+    return { error: e.message };
+  }
+}
+
+function formatSQLResultForLLM(result) {
+  if (result.error) return `SQL Error: ${result.error}`;
+  if (!result.columns.length) return 'Query returned no results.';
+
+  let s = `Columns: ${result.columns.join(', ')}\n`;
+  s += `Rows returned: ${result.rowCount}${result.truncated ? ' (showing first 200)' : ''}\n\n`;
+
+  s += '| ' + result.columns.join(' | ') + ' |\n';
+  s += '| ' + result.columns.map(() => '---').join(' | ') + ' |\n';
+  for (const row of result.rows.slice(0, 50)) {
+    s += '| ' + row.map(v => v == null ? 'NULL' : String(v).slice(0, 60).replace(/\|/g, '/')).join(' | ') + ' |\n';
+  }
+  if (result.rowCount > 50) s += `\n... (${result.rowCount - 50} more rows)\n`;
+  return s;
+}
+
+function formatSQLResultForTrace(result) {
+  if (result.error) return `<span class="sql-error">Error: ${result.error}</span>`;
+  if (!result.columns.length) return '<span style="color:var(--txtf)">No results</span>';
+
+  const rowCount = result.rowCount;
+  const preview = result.rows.slice(0, 8);
+  let html = `<span class="sql-result">`;
+  html += `${result.columns.join(' | ')}\n`;
+  html += `${'─'.repeat(40)}\n`;
+  for (const row of preview) {
+    html += row.map(v => v == null ? 'NULL' : String(v).slice(0, 30)).join(' | ') + '\n';
+  }
+  if (rowCount > 8) html += `... (${rowCount} rows total)`;
+  html += `</span>`;
+  return html;
+}
+
+function rebuildSQLite() {
+  if (!db || !sqlReady) return;
+  for (const [name, ds] of Object.entries(datasets)) {
+    loadDatasetIntoSQLite(name, ds);
+  }
+}
+
+/* ===== FIX #5: Data quality analysis utilities ===== */
+
+// Detect currencies present in a column's values
+function detectCurrencies(values) {
+  const currencyPatterns = [
+    { code: 'USD', patterns: [/USD/i, /\$/] },
+    { code: 'RMB', patterns: [/RMB/i, /CNY/i, /yuan/i, /元/] },
+    { code: 'HKD', patterns: [/HKD/i, /港元/] },
+    { code: 'INR', patterns: [/rupee/i, /₹/, /INR/i] },
+    { code: 'JPY', patterns: [/yen/i, /¥/, /JPY/i, /円/] },
+    { code: 'EUR', patterns: [/EUR/i, /€/] },
+    { code: 'GBP', patterns: [/GBP/i, /£/] },
+    { code: 'TWD', patterns: [/Taiwan/i, /TWD/i, /NT\$/i] },
+    { code: 'AZN', patterns: [/Azerbaijan/i, /Manat/i, /AZN/i] },
+    { code: 'SGD', patterns: [/SGD/i, /S\$/] },
+    { code: 'AUD', patterns: [/AUD/i, /A\$/] },
+    { code: 'MYR', patterns: [/MYR/i, /RM/] },
+    { code: 'THB', patterns: [/THB/i, /Baht/i, /฿/] },
+    { code: 'VND', patterns: [/VND/i, /dong/i, /₫/] },
+    { code: 'KRW', patterns: [/KRW/i, /won/i, /₩/] },
+    { code: 'PHP', patterns: [/PHP/i, /peso/i, /₱/] },
+  ];
+
+  const found = new Set();
+  let hasMultiplier = false;
+
+  for (const v of values) {
+    if (!v) continue;
+    const s = String(v);
+    for (const { code, patterns } of currencyPatterns) {
+      if (patterns.some(p => p.test(s))) {
+        found.add(code);
+      }
+    }
+    // Detect scale qualifiers like "in thousands", "in millions"
+    if (/in\s+(thousands|millions|billions)/i.test(s) || /千|万|亿/.test(s)) {
+      hasMultiplier = true;
+    }
+  }
+
+  return { currencies: [...found], hasMultiplier };
+}
+
+// Analyze SQL results for data quality issues
+function analyzeDataQuality(sqlResult, query) {
+  const warnings = [];
+
+  if (!sqlResult || sqlResult.error || !sqlResult.columns.length || !sqlResult.rows.length) {
+    return warnings;
+  }
+
+  // Check each column for mixed currencies
+  for (let colIdx = 0; colIdx < sqlResult.columns.length; colIdx++) {
+    const colName = sqlResult.columns[colIdx].toLowerCase();
+    // Only check columns that look financial
+    if (!/(revenue|income|profit|amount|value|asset|turnover|salary|fund|capital|price|cost)/i.test(colName) &&
+        !/(revenue|income|profit|amount|value|asset|turnover)/i.test(query)) {
+      // Also check if values contain currency indicators
+      const sampleVals = sqlResult.rows.slice(0, 20).map(r => r[colIdx]);
+      const hasCurrencyText = sampleVals.some(v => v && /[A-Z]{3}|[$€£¥₹₫₩₱฿]|yuan|rupee|yen|dollar|pound/i.test(String(v)));
+      if (!hasCurrencyText) continue;
+    }
+
+    const values = sqlResult.rows.map(r => String(r[colIdx] || ''));
+    const { currencies, hasMultiplier } = detectCurrencies(values);
+
+    if (currencies.length > 1) {
+      warnings.push({
+        type: 'mixed_currency',
+        severity: 'high',
+        column: sqlResult.columns[colIdx],
+        currencies: currencies,
+        message: `Column "${sqlResult.columns[colIdx]}" contains ${currencies.length} different currencies (${currencies.join(', ')}). Numeric sorting across currencies is meaningless without conversion.`
+      });
+    }
+
+    if (hasMultiplier) {
+      warnings.push({
+        type: 'scale_mismatch',
+        severity: 'high',
+        column: sqlResult.columns[colIdx],
+        message: `Column "${sqlResult.columns[colIdx]}" contains scale qualifiers like "in thousands" or "in millions". Raw numeric comparison will be wrong.`
+      });
+    }
+  }
+
+  // Check if query looks like a ranking but data has quality issues
+  if (/(top|rank|sort|order|最|排名|前\d)/i.test(query) && warnings.length > 0) {
+    warnings.push({
+      type: 'ranking_unreliable',
+      severity: 'critical',
+      message: `This ranking query operates on data with mixed units/currencies. Results are unreliable without normalization.`
+    });
+  }
+
+  return warnings;
+}
+
+initSQLite();
+
+/* ===== i18n ===== */
 const i18n={en:{subtitle:'Financial Data Analysis',apiLabel:'DeepSeek API Key',connect:'Connect',hint:'Your key stays in your browser. Nothing is sent to our servers.',upload:'Upload CSV',demo:'Demo Data',data:'Data',clear:'Clear',logout:'Logout',send:'Send',stop:'Stop',placeholder:'Ask about your data...',welcome:'Welcome to FinTalk.ai',welcomeDesc:'Upload a CSV file and start asking questions about your financial data — or try the built-in demo.',tryDemo:'Try Demo — 999 Companies',noData:'Please upload a CSV file or load the demo data first.',datasets:'Datasets',totalRows:'Total Rows',columns:'Columns',dataReady:'Your data is ready! Ask me anything, or try one of these:',stopped:'*(Generation stopped)*',traceTitle:'Agent Trace',traceSteps:'steps'},cn:{subtitle:'金融数据分析',apiLabel:'DeepSeek API Key',connect:'连接',hint:'密钥仅保存在浏览器中，不会发送到我们的服务器。',upload:'上传 CSV',demo:'示例数据',data:'数据',clear:'清空',logout:'退出',send:'发送',stop:'停止',placeholder:'问一个关于你数据的问题...',welcome:'欢迎使用 FinTalk.ai',welcomeDesc:'上传 CSV 文件并开始分析，或试试内置示例数据。',tryDemo:'试用示例 — 999 家公司',noData:'请先上传 CSV 文件或加载示例数据。',datasets:'数据集',totalRows:'总行数',columns:'总列数',dataReady:'数据已就绪！可以提问，或试试：',stopped:'*(已停止生成)*',traceTitle:'Agent 链路',traceSteps:'步'}};
 
 function t(k){return i18n[lang]?.[k]||i18n.en[k]||k}
@@ -406,16 +649,31 @@ async function connect(){
   try{const r=await fetch('https://api.deepseek.com/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+key},body:JSON.stringify({model:'deepseek-chat',messages:[{role:'user',content:'hi'}],max_tokens:1})});if(!r.ok)throw new Error('Invalid API key');apiKey=key;sessionStorage.setItem('dk',key);document.getElementById('login').style.display='none';document.getElementById('app').style.display='flex';applyLang()}catch(e){err.textContent=e.message||'Connection failed';err.style.display='block'}
   btn.disabled=false;btn.textContent='Connect';
 }
-function logout(){apiKey='';sessionStorage.removeItem('dk');datasets={};messages=[];document.getElementById('app').style.display='none';document.getElementById('login').style.display='flex'}
+function logout(){apiKey='';sessionStorage.removeItem('dk');datasets={};messages=[];if(db&&sqlReady){try{db.run('SELECT 1')}catch{}}document.getElementById('app').style.display='none';document.getElementById('login').style.display='flex'}
 (function(){applyLang();const k=sessionStorage.getItem('dk');if(k){document.getElementById('key-input').value=k;connect()}})();
 
 /* CSV */
-function handleFiles(files){if(!files||!files.length)return;datasets={};updateDataBar();let p=files.length;for(const f of files){Papa.parse(f,{header:true,skipEmptyLines:true,complete(r){datasets[f.name]={columns:r.meta.fields||[],rows:r.data};p--;updateDataBar();if(!p)onDataLoaded()}})}document.getElementById('file-input').value=''}
-function removeDataset(n){delete datasets[n];updateDataBar();if(!Object.keys(datasets).length)resetToWelcome()}
-function updateDataBar(){const bar=document.getElementById('data-bar'),names=Object.keys(datasets);if(!names.length){bar.classList.remove('show');return}bar.classList.add('show');bar.innerHTML=names.map(n=>`<span class="data-tag">${n} (${datasets[n].rows.length} rows)<span class="x" onclick="removeDataset('${n}')">&times;</span></span>`).join('')}
+function handleFiles(files){if(!files||!files.length)return;datasets={};updateDataBar();let p=files.length;for(const f of files){Papa.parse(f,{header:true,skipEmptyLines:true,complete(r){datasets[f.name]={columns:r.meta.fields||[],rows:r.data};p--;updateDataBar();if(!p){rebuildSQLite();onDataLoaded()}}})}document.getElementById('file-input').value=''}
+function removeDataset(n){
+  delete datasets[n];
+  if(db&&sqlReady){
+    const tbl=n.replace(/\.csv$/i,'').replace(/[^a-zA-Z0-9_]/g,'_');
+    try{db.run(`DROP TABLE IF EXISTS "${tbl}"`)}catch(e){console.error(e)}
+  }
+  updateDataBar();
+  if(!Object.keys(datasets).length)resetToWelcome();
+}
+function updateDataBar(){
+  const bar=document.getElementById('data-bar'),names=Object.keys(datasets);
+  if(!names.length){bar.classList.remove('show');return}
+  bar.classList.add('show');
+  let html = names.map(n=>`<span class="data-tag">${n} (${datasets[n].rows.length} rows)<span class="x" onclick="removeDataset('${n}')">&times;</span></span>`).join('');
+  if(sqlReady) html += `<span class="db-status"><span class="db-dot"></span>SQLite Active</span>`;
+  bar.innerHTML = html;
+}
 
 /* Demo */
-async function loadDemo(){const btn=document.getElementById('demo-btn');if(btn){btn.disabled=true;btn.textContent='Loading...'}datasets={};updateDataBar();let loaded=0;for(const f of['company.csv','management.csv','shareholder.csv']){try{const r=await fetch('data/'+f);const t=await r.text();const p=Papa.parse(t,{header:true,skipEmptyLines:true});datasets[f]={columns:p.meta.fields||[],rows:p.data};loaded++}catch(e){console.error(e)}}if(btn){btn.disabled=false;btn.textContent='Demo Data'}if(loaded){updateDataBar();onDataLoaded()}}
+async function loadDemo(){const btn=document.getElementById('demo-btn');if(btn){btn.disabled=true;btn.textContent='Loading...'}datasets={};updateDataBar();let loaded=0;for(const f of['company.csv','management.csv','shareholder.csv']){try{const r=await fetch('data/'+f);const t=await r.text();const p=Papa.parse(t,{header:true,skipEmptyLines:true});datasets[f]={columns:p.meta.fields||[],rows:p.data};loaded++}catch(e){console.error(e)}}if(btn){btn.disabled=false;btn.textContent='Demo Data'}if(loaded){rebuildSQLite();updateDataBar();onDataLoaded()}}
 
 /* On data load */
 function onDataLoaded(){
@@ -426,13 +684,13 @@ function onDataLoaded(){
   let h='<div class="analysis-grid">';
   h+=`<div class="stat-card"><span class="val">${names.length}</span><span class="lbl">${t('datasets')}</span></div>`;
   h+=`<div class="stat-card"><span class="val">${tr.toLocaleString()}</span><span class="lbl">${t('totalRows')}</span></div>`;
-  h+=`<div class="stat-card"><span class="val">${tc}</span><span class="lbl">${t('columns')}</span></div></div>`;
+  h+=`<div class="stat-card"><span class="val">${tc}</span><span class="lbl">${t('columns')}</span></div>`;
+  h+=`<div class="stat-card"><span class="val" style="color:var(--green)">✓</span><span class="lbl">SQLite</span></div></div>`;
   h+='<p style="font-family:var(--mono);font-size:12px;color:var(--txt3);margin-top:8px">';
   names.forEach(n=>{h+=`${n} (${datasets[n].rows.length} rows) &nbsp; `});h+='</p><div style="margin-top:12px">';
   names.forEach(n=>{h+=`<p style="font-family:var(--mono);font-size:11px;color:var(--txt2);margin:4px 0"><strong>${n}:</strong> ${datasets[n].columns.join(', ')}</p>`});
   h+='</div>';
   const d=addMsg('ai','',true);d.innerHTML=h;generateCharts();
-  // Populate suggestions bar above input
   showSuggestionsBar();
 }
 
@@ -443,151 +701,534 @@ function renderChart(container,type,data,title){chartCounter++;const id='chart-'
 /* Preview */
 function showPreview(){const names=Object.keys(datasets);if(!names.length){alert('No data loaded.');return}let h='<span class="close" onclick="document.getElementById(\'preview-modal\').classList.remove(\'show\')">&times;</span>';for(const name of names){const d=datasets[name];h+=`<h3>${name} <span style="font-family:var(--mono);font-size:12px;color:var(--txt3);font-weight:500">${d.rows.length} rows</span></h3>`;const cols=d.columns.slice(0,15);h+='<table><thead><tr>'+cols.map(c=>`<th>${c}</th>`).join('')+(d.columns.length>15?'<th>...</th>':'')+'</tr></thead><tbody>';for(let i=0;i<Math.min(5,d.rows.length);i++){h+='<tr>'+cols.map(c=>`<td>${(d.rows[i][c]||'').toString().slice(0,50)}</td>`).join('')+(d.columns.length>15?'<td>...</td>':'')+'</tr>'}h+='</tbody></table><br>'}document.getElementById('preview-content').innerHTML=h;document.getElementById('preview-modal').classList.add('show')}
 
-/* ===== AGENT TRACE SYSTEM ===== */
-function classifyQuery(text){const lc=text.toLowerCase();const taskKw=['top','rank','how many','count','list','find','show','which','compare','average','total','sum','max','min','sort','group','排名','多少','列出','找出','比较','平均','总共','前','最'];const knowKw=['what is','explain','why','how does','define','什么是','解释','为什么','如何','定义'];if(taskKw.some(k=>lc.includes(k)))return'task';if(knowKw.some(k=>lc.includes(k)))return'knowledge';return'task'}
+/* ===== FIXED MULTI-AGENT SYSTEM ===== */
 
-function extractEntities(text){
-  const entities=[],names=Object.keys(datasets);
-  if(datasets['company.csv']){for(const row of datasets['company.csv'].rows.slice(0,200)){const n=row.name||'';if(n&&text.toLowerCase().includes(n.toLowerCase()))entities.push({type:'company',value:n})}}
-  for(const dn of names){for(const col of datasets[dn].columns){if(text.toLowerCase().includes(col.toLowerCase())&&col.length>3)entities.push({type:'column',value:col})}}
-  for(const n of names){if(text.toLowerCase().includes(n.replace('.csv','')))entities.push({type:'table',value:n})}
-  return entities.slice(0,5);
+// FIX #1: Agent call with configurable max_tokens (was hardcoded 800)
+async function agentCall(systemPrompt, userContent, signal, maxTokens = 600) {
+  const resp = await fetch('https://api.deepseek.com/chat/completions', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + apiKey },
+    body: JSON.stringify({
+      model: 'deepseek-chat',
+      messages: [
+        { role: 'system', content: systemPrompt },
+        { role: 'user', content: userContent }
+      ],
+      max_tokens: maxTokens,
+      temperature: 0.2  // lowered from 0.3 for more deterministic output
+    }),
+    signal
+  });
+  if (!resp.ok) throw new Error('Agent call failed: ' + resp.status);
+  const data = await resp.json();
+  return data.choices?.[0]?.message?.content || '';
 }
 
-function generateSQL(text){
-  const lc=text.toLowerCase();
-  if(lc.includes('top')||lc.includes('rank')||lc.includes('前')||lc.includes('排名')){const n=lc.match(/\d+/)?.[0]||'10';return`SELECT name, revenue, employee_size\nFROM companies\nORDER BY revenue DESC\nLIMIT ${n}`}
-  if(lc.includes('compare')||lc.includes('比较'))return'SELECT c.name, c.revenue, c.employee_size,\n  COUNT(DISTINCT m.management_name) AS mgmt_count,\n  COUNT(DISTINCT s.shareholder_name) AS shareholder_count\nFROM companies c\nLEFT JOIN management m USING(company_sort_id)\nLEFT JOIN shareholders s USING(company_sort_id)\nGROUP BY c.name';
-  if(lc.includes('shareholder')||lc.includes('股东')||lc.includes('股权'))return'SELECT shareholder_name, COUNT(*) AS companies_held,\n  AVG(CAST(share_percentage AS FLOAT)) AS avg_stake\nFROM shareholders\nGROUP BY shareholder_name\nORDER BY companies_held DESC LIMIT 20';
-  if(lc.includes('license')||lc.includes('牌照'))return"SELECT digital_bank_license, COUNT(*) AS count\nFROM companies\nWHERE digital_bank_license IS NOT NULL\nGROUP BY digital_bank_license";
-  if(lc.includes('region')||lc.includes('地区')||lc.includes('location'))return'SELECT location_sort_id, COUNT(*) AS company_count\nFROM companies\nGROUP BY location_sort_id\nORDER BY company_count DESC';
-  if(lc.includes('management')||lc.includes('管理')||lc.includes('高管'))return'SELECT management_name, COUNT(DISTINCT company_sort_id) AS companies\nFROM management\nGROUP BY management_name\nHAVING companies > 1\nORDER BY companies DESC';
-  return"SELECT name, status, company_tag, revenue\nFROM companies\nWHERE status = 'Live'\nORDER BY name LIMIT 20";
+function buildSchemaContext() {
+  let s = '';
+  for (const [name, d] of Object.entries(datasets)) {
+    const tableName = name.replace(/\.csv$/i, '').replace(/[^a-zA-Z0-9_]/g, '_');
+    s += `Table: "${tableName}" (${d.rows.length} rows)\nColumns: ${d.columns.join(', ')}\n`;
+    const sample = d.rows.slice(0, 3);
+    if (sample.length) {
+      s += 'Sample:\n';
+      for (const row of sample) {
+        s += '  ' + d.columns.map(c => `${c}=${(row[c]||'').toString().slice(0,40)}`).join(' | ') + '\n';
+      }
+    }
+    s += '\n';
+  }
+  return s;
 }
 
-function delay(ms){return new Promise(r=>setTimeout(r,ms))}
+// FIX: Build a compact schema summary (just table+column names, no samples)
+// Used by the Rewriter to prevent it from generating SQL
+function buildSchemaCompact() {
+  let s = '';
+  for (const [name, d] of Object.entries(datasets)) {
+    const tableName = name.replace(/\.csv$/i, '').replace(/[^a-zA-Z0-9_]/g, '_');
+    s += `${tableName}: ${d.columns.join(', ')}\n`;
+  }
+  return s;
+}
 
-async function renderAgentTrace(text){
-  if(!showTrace)return null;
-  const chat=document.getElementById('chat'),startTime=Date.now();
-  const traceDiv=document.createElement('div');traceDiv.className='agent-trace';
-  const toggleEl=document.createElement('div');toggleEl.className='trace-toggle open';
-  toggleEl.innerHTML=`<span class="arrow">▶</span> ${t('traceTitle')} <span class="step-count">0</span> <span class="trace-time"></span>`;
-  const bodyEl=document.createElement('div');bodyEl.className='trace-body open';
-  toggleEl.onclick=function(){this.classList.toggle('open');bodyEl.classList.toggle('open')};
-  traceDiv.appendChild(toggleEl);traceDiv.appendChild(bodyEl);chat.appendChild(traceDiv);chat.scrollTop=chat.scrollHeight;
+/* Trace UI helpers */
+function createTraceUI(chat) {
+  const traceDiv = document.createElement('div');
+  traceDiv.className = 'agent-trace';
+  if (!showTrace) traceDiv.style.display = 'none';
+  const toggleEl = document.createElement('div');
+  toggleEl.className = 'trace-toggle open';
+  toggleEl.innerHTML = `<span class="arrow">▶</span> ${t('traceTitle')} <span class="step-count">0</span> <span class="trace-time"></span>`;
+  const bodyEl = document.createElement('div');
+  bodyEl.className = 'trace-body open';
+  toggleEl.onclick = function () { this.classList.toggle('open'); bodyEl.classList.toggle('open'); };
+  traceDiv.appendChild(toggleEl);
+  traceDiv.appendChild(bodyEl);
+  chat.appendChild(traceDiv);
+  chat.scrollTop = chat.scrollHeight;
+  return { traceDiv, toggleEl, bodyEl, stepCount: 0 };
+}
 
-  let stepCount=0;
-  const icons={arbitrator:'⚖',rewriter:'✎',worker:'⚙',orchestrator:'◉'};
-  function addStep(type,name,output,dur){
-    stepCount++;toggleEl.querySelector('.step-count').textContent=stepCount;
-    const s=document.createElement('div');s.className='trace-step';
-    s.innerHTML=`<div class="step-indicator ${type}">${icons[type]||'•'}</div><div class="step-content"><div class="step-header"><span class="step-agent ${type}">${name}</span><span class="step-duration">${dur}ms</span><span class="step-status done">✓</span></div><div class="step-output">${output}</div></div>`;
-    bodyEl.appendChild(s);chat.scrollTop=chat.scrollHeight;
+const AGENT_ICONS = { arbitrator: '⚖', rewriter: '✎', worker: '⚙', executor: '▶', orchestrator: '◉', validator: '⚑' };
+
+function addRunningStep(trace, type, name) {
+  const s = document.createElement('div');
+  s.className = 'trace-step';
+  s.innerHTML = `
+    <div class="step-indicator ${type}">${AGENT_ICONS[type] || '•'}</div>
+    <div class="step-content">
+      <div class="step-header">
+        <span class="step-agent ${type}">${name}</span>
+        <span class="step-duration"></span>
+        <span class="step-status running"><span class="step-spinner"></span></span>
+      </div>
+      <div class="step-output" style="color:var(--txtf);font-style:italic">${lang === 'cn' ? '正在处理...' : 'Processing...'}</div>
+    </div>`;
+  trace.bodyEl.appendChild(s);
+  document.getElementById('chat').scrollTop = document.getElementById('chat').scrollHeight;
+  return s;
+}
+
+function finalizeStep(trace, stepEl, output, durationMs, status = 'done') {
+  trace.stepCount++;
+  trace.toggleEl.querySelector('.step-count').textContent = trace.stepCount;
+  stepEl.querySelector('.step-duration').textContent = durationMs + 'ms';
+  stepEl.querySelector('.step-status').className = 'step-status ' + status;
+  stepEl.querySelector('.step-status').textContent = status === 'done' ? '✓' : status === 'warn' ? '⚠' : '✗';
+  stepEl.querySelector('.step-output').innerHTML = output;
+  stepEl.querySelector('.step-output').style = '';
+  document.getElementById('chat').scrollTop = document.getElementById('chat').scrollHeight;
+}
+
+/* ===== FIXED 5-AGENT PIPELINE ===== */
+async function runAgentPipeline(userText, signal) {
+  const chat = document.getElementById('chat');
+  const trace = createTraceUI(chat);
+  const pipelineStart = Date.now();
+  const schema = buildSchemaContext();
+  const schemaCompact = buildSchemaCompact();
+  const tables = Object.keys(datasets).map(n => n.replace(/\.csv$/i, '').replace(/[^a-zA-Z0-9_]/g, '_')).join(', ');
+  const historyContext = messages.slice(-6).map(m => `${m.role}: ${m.content}`).join('\n');
+
+  let classification = 'task', rewrittenQuery = userText, workerSQL = '', workerEntities = '', sqlResult = null, validatorOutput = '', dataWarnings = [];
+
+  // ─── Agent 1: Arbitrator (unchanged — works fine) ───
+  const step1El = addRunningStep(trace, 'arbitrator', 'Arbitrator');
+  const t1 = Date.now();
+  try {
+    const arbitratorResult = await agentCall(
+      `You are a query classification agent for a financial data system.
+Available tables: ${tables}
+Columns: ${schemaCompact}
+
+Classify the user query into exactly ONE category. Respond in JSON only (no markdown):
+{"type":"task|knowledge|small_talk","confidence":0.XX,"reason":"brief reason"}
+
+- "task": queries requiring data lookup, SQL, aggregation, ranking, comparison, counting
+- "knowledge": questions about financial concepts, definitions, explanations
+- "small_talk": greetings, chit-chat, off-topic`,
+      userText,
+      signal,
+      200  // short response needed
+    );
+    let parsed;
+    try { parsed = JSON.parse(arbitratorResult.replace(/```json?|```/g, '').trim()); } catch { parsed = { type: 'task', confidence: 0.8, reason: arbitratorResult.slice(0, 100) }; }
+    classification = parsed.type || 'task';
+    const conf = parsed.confidence || 0.85;
+    const reason = parsed.reason || '';
+    finalizeStep(trace, step1El,
+      `${lang === 'cn' ? '意图' : 'Intent'}: <span class="step-tag ${classification}">${classification}</span> &nbsp; ${lang === 'cn' ? '置信度' : 'conf'}: ${(typeof conf === 'number' ? conf : 0.85).toFixed(2)}${reason ? `<br><span style="color:var(--txtf)">${reason}</span>` : ''}`,
+      Date.now() - t1
+    );
+  } catch (e) {
+    if (e.name === 'AbortError') throw e;
+    finalizeStep(trace, step1El, `Error: ${e.message}`, Date.now() - t1, 'error');
   }
 
-  const queryType=classifyQuery(text);
+  // ─── FIX #2: Skip agents for small_talk ───
+  if (classification === 'small_talk') {
+    trace.toggleEl.querySelector('.trace-time').textContent = `${Date.now() - pipelineStart}ms total`;
+    trace.toggleEl.classList.remove('open');
+    trace.bodyEl.classList.remove('open');
+    return { classification, rewrittenQuery: userText, workerSQL: '', workerEntities: '', sqlResult: null, validatorOutput: 'Direct conversational response.', dataWarnings: [] };
+  }
 
-  // 1. Arbitrator
-  await delay(120+Math.random()*80);
-  addStep('arbitrator','Arbitrator',`${lang==='cn'?'意图分类':'Intent'}: <span class="step-tag ${queryType}">${queryType}</span> &nbsp;${lang==='cn'?'置信度':'conf'}: ${(.88+Math.random()*.11).toFixed(2)}`,Math.floor(80+Math.random()*60));
+  // ─── Agent 2: Query Rewriter ───
+  // FIX #3: Completely rewritten prompt — NO schema, NO samples, strict NL output
+  const step2El = addRunningStep(trace, 'rewriter', 'Query Rewriter');
+  const t2 = Date.now();
+  try {
+    const rewriterResult = await agentCall(
+      `You are a query rewriting agent. Your ONLY job is to rewrite the user's natural-language question into a clearer, self-contained natural-language question.
 
-  // 2. Query Rewriter
-  await delay(100+Math.random()*60);
-  const tables=Object.keys(datasets).map(n=>n.replace('.csv','')).join(', ');
-  const rewritten=messages.length>2?(lang==='cn'?`基于上下文，在 ${tables} 中查询：${text}`:`Context-aware rewrite over ${tables}: ${text}`):(lang==='cn'?`在 ${tables} 中查询：${text}`:`Query ${tables}: ${text}`);
-  addStep('rewriter','Query Rewriter',rewritten,Math.floor(60+Math.random()*40));
+RULES:
+- Output ONLY a single rewritten question in natural language
+- DO NOT write SQL, code, or any technical syntax
+- DO NOT include SELECT, FROM, WHERE, ORDER BY, or any SQL keywords
+- Resolve pronouns using conversation history (e.g., "them" → the specific entity mentioned before)
+- If the query is already clear, return it unchanged
+- Keep it SHORT — one sentence maximum
 
-  // 3. Worker
-  if(queryType==='task'){
-    await delay(80+Math.random()*40);
-    const entities=extractEntities(text);
-    const ehtml=entities.length?entities.map(e=>`<code>${e.value}</code> <span style="color:var(--txtf)">(${e.type})</span>`).join(' &nbsp; '):`<code>${text.split(/\s+/).slice(0,3).join(' ')}</code>`;
-    addStep('worker',lang==='cn'?'Worker · 关键词提取':'Worker · Keyword Extraction',ehtml,Math.floor(40+Math.random()*30));
+Available data topics: ${tables}
+Available columns: ${schemaCompact}`,
+      `Conversation history:\n${historyContext}\n\nCurrent question: ${userText}`,
+      signal,
+      150  // FIX: Strict token cap prevents runaway SQL generation
+    );
+    rewrittenQuery = rewriterResult.trim().replace(/^["']|["']$/g, '').replace(/^(Rewritten|Query|Question):\s*/i, '');
+    // Safety check: if the rewriter output looks like SQL, discard it
+    if (/^\s*(SELECT|WITH|INSERT|UPDATE|DELETE)\s/i.test(rewrittenQuery)) {
+      console.warn('[Rewriter] Output looks like SQL, discarding');
+      rewrittenQuery = userText; // fall back to original
+      finalizeStep(trace, step2El,
+        `<span style="color:var(--amber)">⚠ Rewriter produced SQL instead of NL — falling back to original query</span>`,
+        Date.now() - t2, 'warn');
+    } else {
+      const changed = rewrittenQuery.toLowerCase() !== userText.toLowerCase();
+      finalizeStep(trace, step2El,
+        changed
+          ? `${lang === 'cn' ? '重写' : 'Rewritten'}: "${rewrittenQuery}"`
+          : `${lang === 'cn' ? '无需重写，查询已完整' : 'Query is self-contained, no rewrite needed'}`,
+        Date.now() - t2
+      );
+    }
+  } catch (e) {
+    if (e.name === 'AbortError') throw e;
+    rewrittenQuery = userText;
+    finalizeStep(trace, step2El, `Fallback to original query. Error: ${e.message}`, Date.now() - t2, 'error');
+  }
 
-    await delay(200+Math.random()*150);
-    addStep('worker','Worker · NL2SQL',`<span class="sql-block">${generateSQL(text)}</span>`,Math.floor(180+Math.random()*120));
+  // ─── Agent 3: Worker (NL2SQL) ───
+  if (classification === 'task') {
+    const step3El = addRunningStep(trace, 'worker', lang === 'cn' ? 'Worker · NL2SQL' : 'Worker · NL2SQL');
+    const t3 = Date.now();
+    try {
+      // FIX #4: Much improved NL2SQL prompt with currency awareness
+      const workerResult = await agentCall(
+        `You are a financial data SQL agent. Given a schema and a question, produce a SQLite SELECT query.
+
+Schema:
+${schema}
+
+CRITICAL RULES:
+1. Table names must be double-quoted exactly as shown (e.g. "company", "management", "shareholder")
+2. Column names with special chars must be double-quoted
+3. Use SQLite syntax (LIMIT not TOP, || for concat)
+4. Only produce SELECT queries
+5. For JOINs, use the company_sort_id foreign key
+
+CURRENCY/UNIT HANDLING (VERY IMPORTANT):
+- The "revenue" column contains values in MIXED currencies (RMB, HKD, rupees, yen, USD, etc.) with text suffixes
+- NEVER do numeric sorting/ranking across rows with different currencies — the result will be meaningless
+- If the question asks to rank/sort by revenue or any monetary column:
+  a) First check if the data has mixed currencies. If so, add a "currency" column to your output that extracts the currency unit from the text
+  b) Consider filtering to a SINGLE currency if the question implies a specific region
+  c) If you must show all, ORDER BY the region/location first, THEN by the numeric value within each currency group
+- Some values say "in thousands" or "in millions" — flag these separately; do NOT compare them to raw numbers
+- When extracting numeric value from text like "3,644,470,000 RMB(2022)", use:
+  CAST(REPLACE(REPLACE(value, ',', ''), ' ', '') AS REAL) but ONLY for sorting within same-currency groups
+
+OUTPUT FORMAT (no markdown fences, no explanation):
+ENTITIES: entity1, entity2, ...
+SQL:
+SELECT ...`,
+        rewrittenQuery,
+        signal,
+        500
+      );
+      const entitiesMatch = workerResult.match(/ENTITIES:\s*(.+)/i);
+      const sqlMatch = workerResult.match(/SQL:\s*([\s\S]+)/i);
+      workerEntities = entitiesMatch ? entitiesMatch[1].trim() : '';
+      workerSQL = sqlMatch ? sqlMatch[1].trim().replace(/```sql?|```/g, '').trim() : '';
+
+      let html = '';
+      if (workerEntities) html += `${lang === 'cn' ? '关键词' : 'Entities'}: ${workerEntities.split(',').map(e => `<code>${e.trim()}</code>`).join(' ')}`;
+      if (workerSQL) html += `<span class="sql-block">${workerSQL.replace(/</g, '&lt;')}</span>`;
+      if (!html) html = `<span style="color:var(--txtf)">${workerResult.slice(0, 200)}</span>`;
+      finalizeStep(trace, step3El, html, Date.now() - t3);
+    } catch (e) {
+      if (e.name === 'AbortError') throw e;
+      finalizeStep(trace, step3El, `Error: ${e.message}`, Date.now() - t3, 'error');
+    }
+
+    // ─── Agent 3.5: SQL Executor (LOCAL) ───
+    if (workerSQL) {
+      const step35El = addRunningStep(trace, 'executor', lang === 'cn' ? 'SQL 执行引擎' : 'SQL Executor');
+      const t35 = Date.now();
+
+      sqlResult = executeSQL(workerSQL);
+
+      if (sqlResult.error) {
+        finalizeStep(trace, step35El,
+          `<span class="sql-error">Error: ${sqlResult.error}</span><br><span style="color:var(--txtf)">${lang==='cn'?'正在尝试修复SQL...':'Attempting SQL fix...'}</span>`,
+          Date.now() - t35, 'error');
+
+        // ─── SQL Retry ───
+        const step35bEl = addRunningStep(trace, 'worker', lang === 'cn' ? 'Worker · SQL修复' : 'Worker · SQL Fix');
+        const t35b = Date.now();
+        try {
+          const fixResult = await agentCall(
+            `You are a SQL debugging agent. The previous SQL query failed.
+
+Schema:
+${schema}
+
+Original query: ${workerSQL}
+Error: ${sqlResult.error}
+
+Fix the SQL. Output ONLY the corrected SQL, no explanation, no markdown fences.
+Table names must be double-quoted. Use SQLite syntax.`,
+            rewrittenQuery,
+            signal,
+            400
+          );
+          const fixedSQL = fixResult.trim().replace(/```sql?|```/g, '').trim();
+          const fixedResult = executeSQL(fixedSQL);
+
+          if (fixedResult.error) {
+            finalizeStep(trace, step35bEl,
+              `<span class="sql-block">${fixedSQL.replace(/</g,'&lt;')}</span><span class="sql-error">Still failed: ${fixedResult.error}</span>`,
+              Date.now() - t35b, 'error');
+          } else {
+            workerSQL = fixedSQL;
+            sqlResult = fixedResult;
+            finalizeStep(trace, step35bEl,
+              `<span class="sql-block">${fixedSQL.replace(/</g,'&lt;')}</span>${formatSQLResultForTrace(fixedResult)}`,
+              Date.now() - t35b);
+          }
+        } catch (e) {
+          if (e.name === 'AbortError') throw e;
+          finalizeStep(trace, step35bEl, `Fix failed: ${e.message}`, Date.now() - t35b, 'error');
+        }
+      } else {
+        finalizeStep(trace, step35El,
+          `${lang === 'cn' ? '查询成功' : 'Query OK'} — ${sqlResult.rowCount} ${lang === 'cn' ? '行' : 'rows'}${formatSQLResultForTrace(sqlResult)}`,
+          Date.now() - t35);
+      }
+    }
+  } else if (classification === 'knowledge') {
+    const step3El = addRunningStep(trace, 'worker', lang === 'cn' ? 'Worker · 知识检索' : 'Worker · Knowledge');
+    const t3 = Date.now();
+    try {
+      const workerResult = await agentCall(
+        `You are a financial knowledge worker. The user is asking a conceptual/knowledge question.
+Available data context: ${tables}
+Schema: ${schemaCompact}
+Identify the key concepts and suggest what data from the tables (if any) could support the answer. Respond concisely.`,
+        rewrittenQuery, signal, 400
+      );
+      workerEntities = workerResult;
+      finalizeStep(trace, step3El, workerResult.slice(0, 300), Date.now() - t3);
+    } catch (e) {
+      if (e.name === 'AbortError') throw e;
+      finalizeStep(trace, step3El, `Error: ${e.message}`, Date.now() - t3, 'error');
+    }
+  }
+
+  // ─── FIX #6: Agent 4 is now a VALIDATOR instead of post-hoc orchestrator ───
+  // It checks data quality of SQL results and produces warnings for the final LLM
+  if (classification === 'task' && sqlResult && !sqlResult.error && sqlResult.rows.length) {
+    const step4El = addRunningStep(trace, 'validator', lang === 'cn' ? '数据质量检查' : 'Data Validator');
+    const t4 = Date.now();
+
+    // Client-side quality checks (instant, no API call needed)
+    dataWarnings = analyzeDataQuality(sqlResult, rewrittenQuery);
+
+    if (dataWarnings.length === 0) {
+      validatorOutput = 'Data quality OK — no mixed currencies or scale issues detected.';
+      finalizeStep(trace, step4El,
+        `<span style="color:var(--green)">✓ ${lang === 'cn' ? '数据质量检查通过' : 'Data quality checks passed'}</span>`,
+        Date.now() - t4);
+    } else {
+      const criticalWarnings = dataWarnings.filter(w => w.severity === 'critical' || w.severity === 'high');
+      validatorOutput = dataWarnings.map(w => `[${w.severity.toUpperCase()}] ${w.message}`).join('\n');
+
+      let warnHtml = '';
+      for (const w of dataWarnings) {
+        const icon = w.severity === 'critical' ? '🔴' : '🟡';
+        warnHtml += `<span class="sql-warn">${icon} ${w.message}</span>`;
+      }
+      finalizeStep(trace, step4El, warnHtml, Date.now() - t4, criticalWarnings.length > 0 ? 'warn' : 'done');
+    }
   } else {
-    await delay(100+Math.random()*50);
-    addStep('worker',lang==='cn'?'Worker · 分类':'Worker · Classification',lang==='cn'?'路由至知识库检索 + 领域推理':'Routed to knowledge retrieval + domain reasoning',Math.floor(60+Math.random()*40));
+    // For non-task or failed SQL, use a lightweight orchestrator
+    const step4El = addRunningStep(trace, 'orchestrator', 'Orchestrator');
+    const t4 = Date.now();
+    try {
+      const orchResult = await agentCall(
+        `You are the orchestrator agent. Produce a 1-2 sentence answer plan. No markdown.
+
+Classification: ${classification}
+Query: ${rewrittenQuery}
+Worker output: ${workerEntities.slice(0, 200)}
+SQL status: ${sqlResult?.error ? 'Failed: ' + sqlResult.error : sqlResult ? sqlResult.rowCount + ' rows' : 'No SQL'}
+Tables: ${tables}`,
+        rewrittenQuery, signal, 150
+      );
+      validatorOutput = orchResult.trim();
+      finalizeStep(trace, step4El, validatorOutput.slice(0, 300), Date.now() - t4);
+    } catch (e) {
+      if (e.name === 'AbortError') throw e;
+      validatorOutput = 'Direct answer from available context.';
+      finalizeStep(trace, step4El, `Fallback. Error: ${e.message}`, Date.now() - t4, 'error');
+    }
   }
 
-  // 4. Orchestrator
-  await delay(150+Math.random()*100);
-  const hasMulti=Object.keys(datasets).length>1;
-  const plan=queryType==='task'?(hasMulti?(lang==='cn'?`跨表查询：执行 NL2SQL → 合并 ${tables} 结果 → 生成分析报告`:`Cross-table: NL2SQL → join ${tables} → synthesize report`):(lang==='cn'?'执行 NL2SQL → 提取数据 → 结构化分析':'Execute NL2SQL → extract data → structured analysis')):(lang==='cn'?'结合 schema + 领域知识回答，辅以数据佐证':'Answer using schema + domain knowledge, backed by data');
-  addStep('orchestrator','Orchestrator',plan,Math.floor(100+Math.random()*80));
+  // Finalize trace
+  trace.toggleEl.querySelector('.trace-time').textContent = `${Date.now() - pipelineStart}ms total`;
+  trace.toggleEl.classList.remove('open');
+  trace.bodyEl.classList.remove('open');
 
-  // Finalize
-  await delay(50);
-  toggleEl.querySelector('.trace-time').textContent=`${Date.now()-startTime}ms`;
-  // Collapse after completing so response is prominent
-  toggleEl.classList.remove('open');bodyEl.classList.remove('open');
-  return traceDiv;
+  return { classification, rewrittenQuery, workerSQL, workerEntities, sqlResult, validatorOutput, dataWarnings };
 }
 
-/* Chat */
-function buildSystemPrompt(){
-  let s='You are FinTalk.ai, a professional financial data analysis assistant.\nAnswer questions accurately based on the provided data. Show calculations when relevant.\nUse markdown tables for structured output. Be concise but thorough.\n\n';
-  for(const[name,d]of Object.entries(datasets)){s+=`## Dataset: ${name}\nColumns (${d.columns.length}): ${d.columns.join(', ')}\nTotal rows: ${d.rows.length}\n\n`;const mx=d.rows.length<=100?d.rows.length:50;const sub=d.rows.slice(0,mx);s+='| '+d.columns.join(' | ')+' |\n| '+d.columns.map(()=>'---').join(' | ')+' |\n';for(const row of sub){s+='| '+d.columns.map(c=>(row[c]||'').toString().replace(/\|/g,'/').slice(0,60)).join(' | ')+' |\n'}if(d.rows.length>mx)s+=`\n... (${d.rows.length-mx} more rows not shown)\n`;s+='\n'}return s;
-}
 
-function addMsg(role,content,auto=false){
-  const chat=document.getElementById('chat'),w=document.getElementById('welcome');if(w)w.remove();
-  const div=document.createElement('div');div.className='msg '+(role==='user'?'user':'ai');if(auto)div.classList.add('auto-generated');
-  if(role==='ai')div.innerHTML=marked.parse(content);else div.textContent=content;
-  chat.appendChild(div);chat.scrollTop=chat.scrollHeight;return div;
+/* ===== CHAT ===== */
+function addMsg(role, content, auto = false) {
+  const chat = document.getElementById('chat'), w = document.getElementById('welcome'); if (w) w.remove();
+  const div = document.createElement('div'); div.className = 'msg ' + (role === 'user' ? 'user' : 'ai'); if (auto) div.classList.add('auto-generated');
+  if (role === 'ai') div.innerHTML = marked.parse(content); else div.textContent = content;
+  chat.appendChild(div); chat.scrollTop = chat.scrollHeight; return div;
 }
-function askSuggestion(el){document.getElementById('msg-input').value=el.textContent;send()}
+function askSuggestion(el) { document.getElementById('msg-input').value = el.textContent; send(); }
 
-function showSuggestionsBar(){
-  const bar=document.getElementById('suggestions-bar');
-  const ss=getSmartSuggestions();
-  if(!ss.length||!Object.keys(datasets).length){bar.classList.remove('show');bar.innerHTML='';return}
-  bar.innerHTML=`<span class="sug-label">${lang==='cn'?'试试':'Try'}:</span>`+ss.map(s=>`<span class="suggestion" onclick="askSuggestion(this)">${s}</span>`).join('');
+function showSuggestionsBar() {
+  const bar = document.getElementById('suggestions-bar');
+  const ss = getSmartSuggestions();
+  if (!ss.length || !Object.keys(datasets).length) { bar.classList.remove('show'); bar.innerHTML = ''; return; }
+  bar.innerHTML = `<span class="sug-label">${lang === 'cn' ? '试试' : 'Try'}:</span>` + ss.map(s => `<span class="suggestion" onclick="askSuggestion(this)">${s}</span>`).join('');
   bar.classList.add('show');
 }
-function hideSuggestionsBar(){const bar=document.getElementById('suggestions-bar');bar.classList.remove('show');bar.innerHTML=''}
+function hideSuggestionsBar() { const bar = document.getElementById('suggestions-bar'); bar.classList.remove('show'); bar.innerHTML = ''; }
 
-function stopGeneration(){if(abortController){abortController.abort();abortController=null}}
-function setStreaming(v){
-  streaming=v;const sb=document.getElementById('send-btn'),st=document.getElementById('stop-btn');
-  if(v){sb.disabled=true;sb.style.display='none';st.classList.add('show')}else{sb.disabled=false;sb.style.display='';st.classList.remove('show')}
+function stopGeneration() { if (abortController) { abortController.abort(); abortController = null; } }
+function setStreaming(v) {
+  streaming = v; const sb = document.getElementById('send-btn'), st = document.getElementById('stop-btn');
+  if (v) { sb.disabled = true; sb.style.display = 'none'; st.classList.add('show'); } else { sb.disabled = false; sb.style.display = ''; st.classList.remove('show'); }
 }
 
-async function send(){
-  const input=document.getElementById('msg-input'),text=input.value.trim();if(!text||streaming)return;
-  if(!Object.keys(datasets).length){input.value='';autoResize(input);addMsg('user',text);addMsg('ai',t('noData'));return}
-  input.value='';autoResize(input);addMsg('user',text);
+async function send() {
+  const input = document.getElementById('msg-input'), text = input.value.trim(); if (!text || streaming) return;
+  if (!Object.keys(datasets).length) { input.value = ''; autoResize(input); addMsg('user', text); addMsg('ai', t('noData')); return; }
+  input.value = ''; autoResize(input); addMsg('user', text);
   hideSuggestionsBar();
-  messages.push({role:'user',content:text});
-  const reqMsgs=[{role:'system',content:buildSystemPrompt()},...messages.slice(-20)];
+  messages.push({ role: 'user', content: text });
   setStreaming(true);
+  abortController = new AbortController();
+  const signal = abortController.signal;
 
-  // Agent Trace
-  await renderAgentTrace(text);
+  let agentResult = null;
 
-  // LLM
-  const chat=document.getElementById('chat');
-  const typing=document.createElement('div');typing.className='msg ai typing';typing.innerHTML='<span></span><span></span><span></span>';
-  chat.appendChild(typing);chat.scrollTop=chat.scrollHeight;
+  try {
+    agentResult = await runAgentPipeline(text, signal);
+  } catch (e) {
+    if (e.name === 'AbortError') {
+      addMsg('ai', t('stopped'));
+      abortController = null; setStreaming(false);
+      document.getElementById('msg-input').focus();
+      if (Object.keys(datasets).length) showSuggestionsBar();
+      return;
+    }
+  }
 
-  let aiText='',aiDiv=null;
-  try{
-    abortController=new AbortController();
-    const resp=await fetch('https://api.deepseek.com/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+apiKey},body:JSON.stringify({model:'deepseek-chat',messages:reqMsgs,stream:true}),signal:abortController.signal});
-    typing.remove();aiDiv=addMsg('ai','');
-    const reader=resp.body.getReader(),dec=new TextDecoder();let buf='';
-    while(true){const{done,value}=await reader.read();if(done)break;buf+=dec.decode(value,{stream:true});const lines=buf.split('\n');buf=lines.pop();for(const line of lines){if(!line.startsWith('data: '))continue;const d=line.slice(6);if(d==='[DONE]')break;try{const j=JSON.parse(d);const c=j.choices?.[0]?.delta?.content;if(c){aiText+=c;aiDiv.innerHTML=marked.parse(aiText);chat.scrollTop=chat.scrollHeight}}catch{}}}
-  }catch(e){typing.remove();if(e.name==='AbortError'){if(aiDiv&&aiText){aiText+='\n\n'+t('stopped');aiDiv.innerHTML=marked.parse(aiText)}else if(!aiDiv)addMsg('ai',t('stopped'))}else addMsg('ai','Error: '+(e.message||'Request failed'))}
+  const chat = document.getElementById('chat');
+  const typing = document.createElement('div'); typing.className = 'msg ai'; typing.style.opacity = '0.5';
+  typing.innerHTML = '<span style="font-family:var(--mono);font-size:11px;color:var(--txtf)">Generating answer...</span>';
+  chat.appendChild(typing); chat.scrollTop = chat.scrollHeight;
 
-  if(aiText)messages.push({role:'assistant',content:aiText});
-  abortController=null;setStreaming(false);document.getElementById('msg-input').focus();
+  // FIX #7: Build context with data quality warnings injected into the system prompt
+  let dataContext = '';
+  const sr = agentResult?.sqlResult;
+
+  if (sr && !sr.error && sr.columns.length) {
+    dataContext = `## SQL Query Executed\n\`\`\`sql\n${agentResult.workerSQL}\n\`\`\`\n\n`;
+    dataContext += `## Query Results\n${formatSQLResultForLLM(sr)}\n\n`;
+    dataContext += `## Database Schema (for reference)\n${buildSchemaContext()}\n`;
+    dataContext += `\nIMPORTANT: The SQL query above was executed against the actual database and returned real results. Base your answer on these exact results. Do NOT guess or make up numbers.\n`;
+
+    // Inject data quality warnings
+    if (agentResult.dataWarnings && agentResult.dataWarnings.length > 0) {
+      dataContext += `\n## ⚠️ DATA QUALITY WARNINGS (from Validator Agent)\n`;
+      dataContext += `The following issues were detected in the query results. You MUST address these in your answer:\n\n`;
+      for (const w of agentResult.dataWarnings) {
+        dataContext += `- [${w.severity.toUpperCase()}] ${w.message}\n`;
+      }
+      dataContext += `\nBecause of these warnings:\n`;
+      dataContext += `- If there are mixed currencies: CLEARLY STATE that the ranking is unreliable and explain why. Group results by currency if presenting a table.\n`;
+      dataContext += `- If there are scale mismatches ("in thousands" vs raw): EXPLAIN the issue and correct the interpretation.\n`;
+      dataContext += `- DO NOT present a confident ranking across incompatible units. Instead, show per-currency groups or recommend normalization.\n`;
+      dataContext += `- Start your answer with a brief warning about the data quality issue before presenting results.\n`;
+    }
+  } else {
+    dataContext = `## Database Schema\n${buildSchemaContext()}\n`;
+    if (sr?.error) {
+      dataContext += `\nNote: SQL execution was attempted but failed with error: ${sr.error}\n`;
+      dataContext += `Please answer based on the schema and sample data shown above, and note that precise numbers may not be available.\n`;
+    }
+  }
+
+  let finalSystem = `You are FinTalk.ai, a professional financial data analysis assistant.
+
+Agent pipeline context:
+- Query classification: ${agentResult?.classification || 'task'}
+- Rewritten query: ${agentResult?.rewrittenQuery || text}
+- Validator notes: ${agentResult?.validatorOutput || 'N/A'}
+
+${dataContext}
+
+Instructions:
+- Answer accurately based on the provided data
+- Use markdown tables for structured output
+- Show specific numbers from the SQL results
+- Be concise but thorough
+- If data quality warnings are present, address them PROMINENTLY at the start of your answer
+- ${lang === 'cn' ? 'Respond in Chinese (Simplified)' : 'Respond in English'}`;
+
+  const reqMsgs = [
+    { role: 'system', content: finalSystem },
+    ...messages.slice(-20)
+  ];
+
+  let aiText = '', aiDiv = null;
+  try {
+    const resp = await fetch('https://api.deepseek.com/chat/completions', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + apiKey },
+      body: JSON.stringify({ model: 'deepseek-chat', messages: reqMsgs, stream: true }),
+      signal
+    });
+    typing.remove();
+    aiDiv = addMsg('ai', '');
+    const reader = resp.body.getReader(), dec = new TextDecoder(); let buf = '';
+    while (true) {
+      const { done, value } = await reader.read(); if (done) break;
+      buf += dec.decode(value, { stream: true });
+      const lines = buf.split('\n'); buf = lines.pop();
+      for (const line of lines) {
+        if (!line.startsWith('data: ')) continue;
+        const d = line.slice(6); if (d === '[DONE]') break;
+        try { const j = JSON.parse(d); const c = j.choices?.[0]?.delta?.content; if (c) { aiText += c; aiDiv.innerHTML = marked.parse(aiText); chat.scrollTop = chat.scrollHeight; } } catch { }
+      }
+    }
+  } catch (e) {
+    typing.remove();
+    if (e.name === 'AbortError') {
+      if (aiDiv && aiText) { aiText += '\n\n' + t('stopped'); aiDiv.innerHTML = marked.parse(aiText); }
+      else if (!aiDiv) addMsg('ai', t('stopped'));
+    } else addMsg('ai', 'Error: ' + (e.message || 'Request failed'));
+  }
+
+  if (aiText) messages.push({ role: 'assistant', content: aiText });
+  abortController = null; setStreaming(false); document.getElementById('msg-input').focus();
+  if (Object.keys(datasets).length) showSuggestionsBar();
 }
 
-function clearAll(){stopGeneration();datasets={};messages=[];updateDataBar();hideSuggestionsBar();resetToWelcome()}
-function resetToWelcome(){const s=getDefaultSuggestions(),chat=document.getElementById('chat');chat.innerHTML=`<div class="welcome" id="welcome"><h2>${t('welcome')}</h2><p>${t('welcomeDesc')}</p><div style="margin-bottom:20px"><button class="btn" onclick="loadDemo()" style="max-width:260px;margin:0 auto;display:block;background:var(--accent)">${t('tryDemo')}</button></div><div class="suggestions">${s.map(x=>`<div class="suggestion" onclick="askSuggestion(this)">${x}</div>`).join('')}</div></div>`}
-function autoResize(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight,120)+'px'}
+function clearAll() { stopGeneration(); datasets = {}; messages = []; updateDataBar(); hideSuggestionsBar(); resetToWelcome();
+  if(db&&sqlReady){try{const tables=db.exec("SELECT name FROM sqlite_master WHERE type='table'");if(tables.length)for(const row of tables[0].values)db.run(`DROP TABLE IF EXISTS "${row[0]}"`)}catch(e){console.error(e)}}
+}
+function resetToWelcome() { const s = getDefaultSuggestions(), chat = document.getElementById('chat'); chat.innerHTML = `<div class="welcome" id="welcome"><h2>${t('welcome')}</h2><p>${t('welcomeDesc')}</p><div style="margin-bottom:20px"><button class="btn" onclick="loadDemo()" style="max-width:260px;margin:0 auto;display:block;background:var(--accent)">${t('tryDemo')}</button></div><div class="suggestions">${s.map(x => `<div class="suggestion" onclick="askSuggestion(this)">${x}</div>`).join('')}</div></div>`; }
+function autoResize(el) { el.style.height = 'auto'; el.style.height = Math.min(el.scrollHeight, 120) + 'px'; }
 </script>
 </body>
 </html>
