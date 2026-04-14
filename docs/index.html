@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FinTalk AI</title>
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5/papaparse.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0f172a; --card: #1e293b; --border: #334155;
+      --primary: #6366f1; --primary-h: #818cf8;
+      --text: #f1f5f9; --text2: #94a3b8; --text3: #64748b;
+      --green: #22c55e; --red: #ef4444; --amber: #f59e0b;
+      --radius: 12px; --shadow: 0 4px 24px rgba(0,0,0,.3);
+    }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+    /* ===== LOGIN ===== */
+    #login { display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 20px;
+      background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #0f172a 100%); }
+    .login-card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 48px 40px; width: 100%; max-width: 420px; box-shadow: var(--shadow); }
+    .login-card h1 { font-size: 28px; font-weight: 700; margin-bottom: 4px; }
+    .login-card h1 span { color: var(--primary-h); }
+    .login-card p { color: var(--text2); font-size: 14px; margin-bottom: 32px; }
+    .input-group { margin-bottom: 20px; }
+    .input-group label { display: block; font-size: 13px; color: var(--text2); margin-bottom: 6px; }
+    .input-group input { width: 100%; padding: 12px 16px; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-size: 15px; outline: none; transition: border .2s; }
+    .input-group input:focus { border-color: var(--primary); }
+    .btn { width: 100%; padding: 12px; background: var(--primary); color: #fff; border: none; border-radius: 8px; font-size: 15px; font-weight: 600; cursor: pointer; transition: background .2s; }
+    .btn:hover { background: var(--primary-h); }
+    .btn:disabled { opacity: .5; cursor: not-allowed; }
+    .error { color: var(--red); font-size: 13px; margin-top: 12px; display: none; }
+    .hint { color: var(--text3); font-size: 12px; margin-top: 16px; text-align: center; }
+
+    /* ===== APP ===== */
+    #app { display: none; height: 100vh; flex-direction: column; }
+    .header { display: flex; align-items: center; justify-content: space-between; padding: 12px 24px; background: var(--card); border-bottom: 1px solid var(--border); flex-shrink: 0; }
+    .header h1 { font-size: 18px; font-weight: 700; }
+    .header h1 span { color: var(--primary-h); }
+    .header-actions { display: flex; gap: 8px; align-items: center; }
+    .btn-sm { padding: 6px 14px; background: var(--border); border: none; border-radius: 6px; color: var(--text2); font-size: 13px; cursor: pointer; transition: background .2s; }
+    .btn-sm:hover { background: var(--text3); color: var(--text); }
+    .btn-upload { background: var(--primary); color: #fff; }
+    .btn-upload:hover { background: var(--primary-h); }
+
+    /* data bar */
+    .data-bar { display: none; padding: 10px 24px; background: #1a1f35; border-bottom: 1px solid var(--border); flex-shrink: 0; flex-wrap: wrap; gap: 8px; align-items: center; }
+    .data-bar.show { display: flex; }
+    .data-tag { display: inline-flex; align-items: center; gap: 6px; background: var(--card); border: 1px solid var(--border); border-radius: 6px; padding: 4px 12px; font-size: 12px; color: var(--text2); }
+    .data-tag .x { cursor: pointer; color: var(--text3); margin-left: 4px; }
+    .data-tag .x:hover { color: var(--red); }
+
+    /* chat */
+    .chat { flex: 1; overflow-y: auto; padding: 24px; display: flex; flex-direction: column; gap: 16px; }
+    .welcome { text-align: center; margin: auto; max-width: 500px; }
+    .welcome h2 { font-size: 22px; margin-bottom: 8px; }
+    .welcome p { color: var(--text2); font-size: 14px; margin-bottom: 24px; }
+    .suggestions { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+    .suggestion { padding: 8px 16px; background: var(--card); border: 1px solid var(--border); border-radius: 20px; font-size: 13px; color: var(--text2); cursor: pointer; transition: all .2s; }
+    .suggestion:hover { border-color: var(--primary); color: var(--text); }
+
+    /* messages */
+    .msg { max-width: 85%; line-height: 1.6; font-size: 14px; }
+    .msg.user { align-self: flex-end; background: var(--primary); padding: 10px 16px; border-radius: 16px 16px 4px 16px; }
+    .msg.ai { align-self: flex-start; background: var(--card); padding: 14px 18px; border-radius: 16px 16px 16px 4px; border: 1px solid var(--border); }
+    .msg.ai table { border-collapse: collapse; margin: 8px 0; font-size: 13px; width: 100%; }
+    .msg.ai th, .msg.ai td { border: 1px solid var(--border); padding: 6px 10px; text-align: left; }
+    .msg.ai th { background: var(--bg); }
+    .msg.ai code { background: var(--bg); padding: 2px 6px; border-radius: 4px; font-size: 13px; }
+    .msg.ai pre { background: var(--bg); padding: 12px; border-radius: 8px; overflow-x: auto; margin: 8px 0; }
+    .msg.ai pre code { background: none; padding: 0; }
+    .typing { display: flex; gap: 4px; padding: 14px 18px; }
+    .typing span { width: 8px; height: 8px; background: var(--text3); border-radius: 50%; animation: bounce .6s infinite alternate; }
+    .typing span:nth-child(2) { animation-delay: .2s; }
+    .typing span:nth-child(3) { animation-delay: .4s; }
+    @keyframes bounce { to { opacity: .3; transform: translateY(-4px); } }
+
+    /* input */
+    .input-bar { display: flex; gap: 10px; padding: 16px 24px; background: var(--card); border-top: 1px solid var(--border); flex-shrink: 0; }
+    .input-bar textarea { flex: 1; padding: 12px 16px; background: var(--bg); border: 1px solid var(--border); border-radius: 10px; color: var(--text); font-size: 14px; font-family: inherit; resize: none; outline: none; min-height: 44px; max-height: 120px; }
+    .input-bar textarea:focus { border-color: var(--primary); }
+    .input-bar button { padding: 0 20px; background: var(--primary); border: none; border-radius: 10px; color: #fff; font-size: 14px; font-weight: 600; cursor: pointer; transition: background .2s; }
+    .input-bar button:hover { background: var(--primary-h); }
+    .input-bar button:disabled { opacity: .4; cursor: not-allowed; }
+
+    /* data preview modal */
+    .modal-bg { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.6); z-index: 100; align-items: center; justify-content: center; }
+    .modal-bg.show { display: flex; }
+    .modal { background: var(--card); border-radius: 12px; padding: 24px; max-width: 90vw; max-height: 80vh; overflow: auto; box-shadow: var(--shadow); }
+    .modal h3 { margin-bottom: 12px; }
+    .modal table { border-collapse: collapse; font-size: 12px; }
+    .modal th, .modal td { border: 1px solid var(--border); padding: 4px 8px; text-align: left; white-space: nowrap; }
+    .modal th { background: var(--bg); position: sticky; top: 0; }
+    .modal .close { float: right; cursor: pointer; font-size: 18px; color: var(--text3); }
+    .modal .close:hover { color: var(--text); }
+
+    #file-input { display: none; }
+
+    @media (max-width: 640px) {
+      .login-card { padding: 32px 24px; }
+      .msg { max-width: 95%; }
+      .input-bar { padding: 12px 16px; }
+      .chat { padding: 16px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="login">
+  <div class="login-card">
+    <h1>Fin<span>Talk</span> AI</h1>
+    <p>Financial Data Analysis Assistant</p>
+    <div class="input-group">
+      <label>DeepSeek API Key</label>
+      <input type="password" id="key-input" placeholder="sk-..." autocomplete="off">
+    </div>
+    <button class="btn" id="connect-btn" onclick="connect()">Connect</button>
+    <div class="error" id="login-error"></div>
+    <p class="hint">Your key stays in your browser. Nothing is sent to our servers.</p>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app">
+  <div class="header">
+    <h1>Fin<span>Talk</span> AI</h1>
+    <div class="header-actions">
+      <button class="btn-sm btn-upload" onclick="document.getElementById('file-input').click()">Upload CSV</button>
+      <button class="btn-sm" onclick="showPreview()">Data</button>
+      <button class="btn-sm" onclick="clearChat()">Clear</button>
+      <button class="btn-sm" onclick="logout()">Logout</button>
+    </div>
+  </div>
+  <input type="file" id="file-input" accept=".csv" multiple onchange="handleFiles(this.files)">
+  <div class="data-bar" id="data-bar"></div>
+  <div class="chat" id="chat">
+    <div class="welcome" id="welcome">
+      <h2>Welcome to FinTalk AI</h2>
+      <p>Upload a CSV file and start asking questions about your data. Or just chat directly.</p>
+      <div class="suggestions">
+        <div class="suggestion" onclick="askSuggestion(this)">What columns are in my data?</div>
+        <div class="suggestion" onclick="askSuggestion(this)">Summarize the dataset</div>
+        <div class="suggestion" onclick="askSuggestion(this)">Show basic statistics</div>
+        <div class="suggestion" onclick="askSuggestion(this)">Find the top 5 by value</div>
+      </div>
+    </div>
+  </div>
+  <div class="input-bar">
+    <textarea id="msg-input" placeholder="Ask about your data..." rows="1" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();send()}" oninput="autoResize(this)"></textarea>
+    <button id="send-btn" onclick="send()">Send</button>
+  </div>
+</div>
+
+<!-- DATA PREVIEW MODAL -->
+<div class="modal-bg" id="preview-modal" onclick="if(event.target===this)this.classList.remove('show')">
+  <div class="modal" id="preview-content"></div>
+</div>
+
+<script>
+// ===== STATE =====
+let apiKey = '';
+let datasets = {}; // name -> { columns, rows, raw }
+let messages = []; // { role, content }
+let streaming = false;
+
+// ===== LOGIN =====
+async function connect() {
+  const key = document.getElementById('key-input').value.trim();
+  if (!key) return;
+  const btn = document.getElementById('connect-btn');
+  const err = document.getElementById('login-error');
+  btn.disabled = true; btn.textContent = 'Connecting...';
+  err.style.display = 'none';
+  try {
+    const r = await fetch('https://api.deepseek.com/chat/completions', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + key },
+      body: JSON.stringify({ model: 'deepseek-chat', messages: [{ role: 'user', content: 'hi' }], max_tokens: 1 })
+    });
+    if (!r.ok) throw new Error('Invalid API key');
+    apiKey = key;
+    sessionStorage.setItem('dk', key);
+    document.getElementById('login').style.display = 'none';
+    document.getElementById('app').style.display = 'flex';
+  } catch (e) {
+    err.textContent = e.message || 'Connection failed';
+    err.style.display = 'block';
+  }
+  btn.disabled = false; btn.textContent = 'Connect';
+}
+
+function logout() {
+  apiKey = '';
+  sessionStorage.removeItem('dk');
+  datasets = {};
+  messages = [];
+  document.getElementById('app').style.display = 'none';
+  document.getElementById('login').style.display = 'flex';
+  document.getElementById('chat').innerHTML = document.getElementById('chat').querySelector('.welcome') ?
+    document.getElementById('chat').innerHTML : '<div class="welcome" id="welcome"><h2>Welcome to FinTalk AI</h2></div>';
+}
+
+// auto-login from session
+(function() {
+  const k = sessionStorage.getItem('dk');
+  if (k) { document.getElementById('key-input').value = k; connect(); }
+})();
+
+// ===== CSV UPLOAD =====
+function handleFiles(files) {
+  for (const file of files) {
+    Papa.parse(file, {
+      header: true,
+      skipEmptyLines: true,
+      complete: function(results) {
+        const name = file.name;
+        datasets[name] = { columns: results.meta.fields || [], rows: results.data, raw: results };
+        updateDataBar();
+        addSystemMsg('Loaded **' + name + '** — ' + results.data.length + ' rows, ' + (results.meta.fields||[]).length + ' columns.');
+      }
+    });
+  }
+  document.getElementById('file-input').value = '';
+}
+
+function removeDataset(name) {
+  delete datasets[name];
+  updateDataBar();
+}
+
+function updateDataBar() {
+  const bar = document.getElementById('data-bar');
+  const names = Object.keys(datasets);
+  if (names.length === 0) { bar.classList.remove('show'); return; }
+  bar.classList.add('show');
+  bar.innerHTML = names.map(n =>
+    `<span class="data-tag">${n} (${datasets[n].rows.length} rows)<span class="x" onclick="removeDataset('${n}')">&times;</span></span>`
+  ).join('');
+}
+
+// ===== DATA PREVIEW =====
+function showPreview() {
+  const names = Object.keys(datasets);
+  if (names.length === 0) { alert('No data loaded. Upload a CSV first.'); return; }
+  let html = '<span class="close" onclick="document.getElementById(\'preview-modal\').classList.remove(\'show\')">&times;</span>';
+  for (const name of names) {
+    const d = datasets[name];
+    html += `<h3>${name} (${d.rows.length} rows)</h3>`;
+    const cols = d.columns.slice(0, 15);
+    html += '<table><thead><tr>' + cols.map(c => `<th>${c}</th>`).join('') + (d.columns.length > 15 ? '<th>...</th>' : '') + '</tr></thead><tbody>';
+    for (let i = 0; i < Math.min(5, d.rows.length); i++) {
+      html += '<tr>' + cols.map(c => `<td>${(d.rows[i][c]||'').toString().slice(0,50)}</td>`).join('') + (d.columns.length > 15 ? '<td>...</td>' : '') + '</tr>';
+    }
+    html += '</tbody></table><br>';
+  }
+  document.getElementById('preview-content').innerHTML = html;
+  document.getElementById('preview-modal').classList.add('show');
+}
+
+// ===== CHAT =====
+function buildSystemPrompt() {
+  let sys = 'You are FinTalk AI, a professional financial data analysis assistant.\n';
+  sys += 'Answer questions accurately based on the provided data. Show calculations when relevant.\n';
+  sys += 'Use markdown tables for structured output. Be concise but thorough.\n\n';
+
+  for (const [name, d] of Object.entries(datasets)) {
+    sys += `## Dataset: ${name}\n`;
+    sys += `Columns (${d.columns.length}): ${d.columns.join(', ')}\n`;
+    sys += `Total rows: ${d.rows.length}\n\n`;
+
+    // Include data — limit to keep within context
+    const maxRows = d.rows.length <= 100 ? d.rows.length : 50;
+    const subset = d.rows.slice(0, maxRows);
+    // Markdown table
+    sys += '| ' + d.columns.join(' | ') + ' |\n';
+    sys += '| ' + d.columns.map(() => '---').join(' | ') + ' |\n';
+    for (const row of subset) {
+      sys += '| ' + d.columns.map(c => (row[c]||'').toString().replace(/\|/g, '/').slice(0,60)).join(' | ') + ' |\n';
+    }
+    if (d.rows.length > maxRows) {
+      sys += `\n... (${d.rows.length - maxRows} more rows not shown)\n`;
+    }
+    sys += '\n';
+  }
+  return sys;
+}
+
+function addMsg(role, content) {
+  const chat = document.getElementById('chat');
+  const welcome = document.getElementById('welcome');
+  if (welcome) welcome.remove();
+
+  const div = document.createElement('div');
+  div.className = 'msg ' + (role === 'user' ? 'user' : 'ai');
+  if (role === 'ai') {
+    div.innerHTML = marked.parse(content);
+  } else {
+    div.textContent = content;
+  }
+  chat.appendChild(div);
+  chat.scrollTop = chat.scrollHeight;
+  return div;
+}
+
+function addSystemMsg(md) {
+  addMsg('ai', md);
+}
+
+function askSuggestion(el) {
+  document.getElementById('msg-input').value = el.textContent;
+  send();
+}
+
+async function send() {
+  const input = document.getElementById('msg-input');
+  const text = input.value.trim();
+  if (!text || streaming) return;
+
+  input.value = '';
+  autoResize(input);
+  addMsg('user', text);
+
+  messages.push({ role: 'user', content: text });
+
+  // Build request messages
+  const reqMsgs = [{ role: 'system', content: buildSystemPrompt() }, ...messages.slice(-20)];
+
+  // Show typing indicator
+  const chat = document.getElementById('chat');
+  const typing = document.createElement('div');
+  typing.className = 'msg ai typing';
+  typing.innerHTML = '<span></span><span></span><span></span>';
+  chat.appendChild(typing);
+  chat.scrollTop = chat.scrollHeight;
+
+  streaming = true;
+  document.getElementById('send-btn').disabled = true;
+
+  let aiText = '';
+  try {
+    const resp = await fetch('https://api.deepseek.com/chat/completions', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + apiKey },
+      body: JSON.stringify({ model: 'deepseek-chat', messages: reqMsgs, stream: true })
+    });
+
+    typing.remove();
+    const aiDiv = addMsg('ai', '');
+
+    const reader = resp.body.getReader();
+    const decoder = new TextDecoder();
+    let buf = '';
+
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      buf += decoder.decode(value, { stream: true });
+      const lines = buf.split('\n');
+      buf = lines.pop();
+      for (const line of lines) {
+        if (!line.startsWith('data: ')) continue;
+        const d = line.slice(6);
+        if (d === '[DONE]') break;
+        try {
+          const j = JSON.parse(d);
+          const c = j.choices?.[0]?.delta?.content;
+          if (c) { aiText += c; aiDiv.innerHTML = marked.parse(aiText); chat.scrollTop = chat.scrollHeight; }
+        } catch {}
+      }
+    }
+  } catch (e) {
+    typing.remove();
+    addMsg('ai', 'Error: ' + (e.message || 'Request failed'));
+  }
+
+  if (aiText) messages.push({ role: 'assistant', content: aiText });
+  streaming = false;
+  document.getElementById('send-btn').disabled = false;
+  document.getElementById('msg-input').focus();
+}
+
+function clearChat() {
+  messages = [];
+  const chat = document.getElementById('chat');
+  chat.innerHTML = `<div class="welcome" id="welcome"><h2>Welcome to FinTalk AI</h2><p>Upload a CSV file and start asking questions.</p>
+    <div class="suggestions"><div class="suggestion" onclick="askSuggestion(this)">Summarize the dataset</div>
+    <div class="suggestion" onclick="askSuggestion(this)">Show basic statistics</div></div></div>`;
+}
+
+function autoResize(el) {
+  el.style.height = 'auto';
+  el.style.height = Math.min(el.scrollHeight, 120) + 'px';
+}
+</script>
+</body>
+</html>

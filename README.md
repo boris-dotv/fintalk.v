@@ -1,230 +1,221 @@
-# FinTalk.v
+# FinTalk.ai
 
-**A Grounded Orchestration Framework for Multi-Agent Collaboration on Financial Tasks Leveraging the OSWorld Environment**
+**From Model Training to Agent-Ready Financial Intelligence**
 
 <p align="center">
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-Apache_2.0-blue.svg" alt="License"></a>
-  <a href="#"><img src="https://img.shields.io/badge/Python-3.9+-3776AB.svg?logo=python&logoColor=white" alt="Python Version"></a>
-  <a href="#"><img src="https://img.shields.io/badge/Powered%20by-Qwen%20|%20vLLM%20|%20MCP-orange" alt="Powered By"></a>
+  <a href="#"><img src="https://img.shields.io/badge/Python-3.10+-3776AB.svg?logo=python&logoColor=white" alt="Python"></a>
+  <a href="#"><img src="https://img.shields.io/badge/MCP-Server-6366f1.svg" alt="MCP Server"></a>
+  <a href="#"><img src="https://img.shields.io/badge/Powered%20by-Qwen%20|%20vLLM%20|%20DeepSeek-orange" alt="Powered By"></a>
 </p>
 
 ---
 
 ## Overview
 
-FinTalk.ai is a cutting-edge multi-agent framework designed to bridge the gap between Large Language Model capabilities and the rigorous demands of financial analysis. Built upon the **OSWorld Environment** for secure, reproducible execution, it employs an **Orchestrator-Worker architecture** to interpret natural language queries, interact with structured databases, perform deterministic computations, and synthesize factually grounded intelligence.
+FinTalk.ai is a three-layer financial intelligence system that goes from **training specialized models**, through a **multi-agent orchestration framework**, to an **MCP Server** that any AI agent can call. It bridges the gap between LLM capabilities and the rigorous demands of financial analysis — every data point is traceable to a verifiable source.
 
 <p align="center">
   <img src="assets/structure_v2.png" alt="FinTalk.ai System Architecture" width="800"/>
 </p>
 
-## What's New
-
-### MCP Integration (Model Context Protocol)
-
-FinTalk.ai now integrates **MCP architecture** for enhanced capabilities:
-
-- **🧠 Parallel Model Execution** - Execute multiple LLM tasks simultaneously for reduced latency
-- **✏️ Query Rewriting** - Context-aware query enhancement based on conversation history
-- **⚖️ Arbitration Mechanism** - Intelligent query classification (task/knowledge/small_talk/invalid)
-- **🛡️ Rejection Detection** - Filter irrelevant queries automatically
-- **🔗 Correlation Analysis** - Multi-turn conversation context tracking
-- **🔧 Function Calling** - OpenAI-style function registry for financial operations
-- **📡 Streaming NLG** - Real-time natural language generation
-- **💬 Conversation Management** - Dialog history and slot management
-
-### GitHub API Integration
-
-- **🔍 GitHub Search** - Search repositories via public API
-- **📝 Repository Management** - Create/update files, manage branches and issues directly through MCP tools
-- **📊 Complete Audit Logging** - All MCP communications logged in `mcp_integration/logs/`
-
 ---
 
-## Core Features
-
-### 1. Grounded Cognition
-
-Every piece of information is traceable to a verifiable source—a specific database row or a deterministic calculation result. Systematic elimination of factual hallucination.
-
-### 2. Resource-Efficient Architecture
-
-Asymmetric multi-agent design:
-- **Orchestrator Agent** (`Qwen3-8B`) - High-level reasoning and planning
-- **Worker Agent** (`Qwen2.5-7B-Instruct-1M`) - Specialized skills via dynamic LoRA serving
-- **Punica Scheduling** - On-demand specialist deployment
-
-### 3. Verifiable & Reproducible
-
-Built upon **OSWorld Environment** for secure, sandboxed, and standardized agent execution. Ensures transparent, robust, and reproducible experimental results.
-
----
-
-## System Architecture
-
-### Dual-Agent System in OSWorld
-
-#### The Orchestrator Agent
-- **Model:** `Qwen3-8B`
-- **Role:** Central nervous system for high-level reasoning, strategic planning, and answer synthesis
-- **Deployment:** Served via **vLLM** for optimized inference
-
-#### The Worker Agent
-- **Model:** `Qwen2.5-7B-Instruct-1M`
-- **Role:** Specialized tools via LoRA adapters
-- **Skills:**
-  1. **Keyword Extraction** - Semantic parsing and entity recognition
-  2. **Classification** - Intent classification for strategic routing
-  3. **NL2SQL** - High-precision SQL query generation
-
-### MCP Core Modules
+## Architecture: Three Layers
 
 ```
-enhanced_core/
-├── parallel_executor.py     # Parallel task execution
-├── query_rewriter.py        # Context-based query rewriting
-├── arbitrator.py            # Query type classification
-├── rejection_detector.py    # Query filtering
-├── correlation_checker.py   # Multi-turn context tracking
-├── function_registry.py     # Financial function definitions
-├── conversation_manager.py  # Dialog history management
-└── streaming_nlg.py         # Streaming output & NLG
-```
-
-### MCP External Tools
-
-```
-mcp_integration/
-├── mcp_client.py            # Real API integrations (no mock data)
-│   ├── GitHub Search        # Public API, no auth required
-│   ├── GitHub Repo Manager  # Full CRUD operations
-│   ├── Google Search        # (Requires API key)
-│   ├── Alpha Vantage        # Stock prices (Requires API key)
-│   └── NewsAPI              # Financial news (Requires API key)
-└── logs/                    # Complete audit trail
+Layer 1: Intelligence        Layer 2: Framework           Layer 3: Interface
+┌─────────────────┐    ┌──────────────────────┐    ┌──────────────────────┐
+│  SFT + GRPO     │    │  Orchestrator Agent   │    │    MCP Server        │
+│  LoRA Adapters   │───▶│  Worker Agent         │───▶│  10 Tools            │
+│  NL2SQL / Classif│    │  MCP Core Modules     │    │  2 Resources         │
+│                  │    │  OSWorld Sandbox       │    │  1 Prompt Template   │
+└─────────────────┘    └──────────────────────┘    └──────────────────────┘
+   Train the brain       Orchestrate the work        Expose to any AI agent
 ```
 
 ---
 
-## Database Schema
+### Layer 1: Intelligence — Financial Model Training
 
-### 1. `companies` Table
-Master table containing comprehensive company profiles.
+Fine-tuned models that understand financial queries, generate SQL, and classify intent.
 
-| Field | Type | Description |
-|-------|------|-------------|
-| `company_sort_id` | INTEGER | **Primary Key**, unique identifier |
-| `name` | TEXT | Official company name |
-| `website` | TEXT | Official website URL |
-| `employee_size` | INTEGER | Total employee count |
-| `techSummary` | TEXT | Technology stack description |
-| ... | ... | *(39 columns total)* |
+<p align="center">
+  <img src="assets/training.png" alt="Training Pipeline" width="700"/>
+</p>
 
-**Records:** 607 companies
+| Stage | Method | Details |
+|-------|--------|---------|
+| **Supervised Fine-Tuning** | SFT with LoRA | NL2SQL, Classification, Keyword Extraction adapters on Qwen2.5-7B-Instruct-1M |
+| **Reinforcement Learning** | GRPO via verl | Rule-based rewards — only correct SQL execution with correct results gets rewarded |
+| **Embedding** | Qwen3-Embedding-8B | Vector-based semantic deduplication for training data |
+| **Privacy** | Synthetic data pipeline | No real user data in training |
 
-### 2. `management` Table
-Executive and management team details.
+---
 
-| Field | Type | Description |
-|-------|------|-------------|
-| `company_sort_id` | INTEGER | **Foreign Key** to companies |
-| `management_name` | TEXT | Executive name |
-| `management_title` | TEXT | Job title |
-| `director_type` | TEXT | Directorship classification |
+### Layer 2: Framework — Multi-Agent Orchestration
 
-**Records:** 2,970 executives
+An asymmetric dual-agent system running inside the OSWorld sandbox for reproducible execution.
 
-### 3. `shareholders` Table
-Ownership structure and investor information.
+**Orchestrator Agent** (`Qwen3-8B` via vLLM)
+- High-level reasoning, planning, and answer synthesis
+- Routes queries to the right Worker skill
 
-| Field | Type | Description |
-|-------|------|-------------|
-| `company_sort_id` | INTEGER | **Foreign Key** to companies |
-| `shareholder_name` | TEXT | Investor name |
-| `share_percentage` | FLOAT | Ownership percentage |
-| `shareholder_tag` | TEXT | Investor type classification |
+**Worker Agent** (`Qwen2.5-7B-Instruct-1M` with dynamic LoRA)
+- **NL2SQL** — generates precise SQL from natural language
+- **Classification** — intent routing (task / knowledge / small talk)
+- **Keyword Extraction** — entity and semantic parsing
 
-**Records:** 2,208 shareholders
+**MCP Core Modules:**
+
+| Module | Function |
+|--------|----------|
+| `parallel_executor` | Execute multiple LLM tasks simultaneously |
+| `query_rewriter` | Context-aware query rewriting from conversation history |
+| `arbitrator` | Classify query type: task / knowledge / small_talk / invalid |
+| `rejection_detector` | Filter irrelevant queries |
+| `correlation_checker` | Multi-turn context tracking |
+| `function_registry` | Financial function calling registry |
+| `streaming_nlg` | Real-time natural language generation |
+| `conversation_manager` | Dialog history and slot management |
+
+---
+
+### Layer 3: Interface — MCP Server
+
+**The key innovation.** FinTalk exposes its entire financial analysis capability as an [MCP (Model Context Protocol)](https://modelcontextprotocol.io) server. Any AI agent — Claude Code, Cursor, or custom MCP clients — can directly call FinTalk's tools.
+
+```mermaid
+graph LR
+    A["AI Agent<br/>(Claude Code / Cursor)"] -->|MCP Protocol| B["FinTalk MCP Server"]
+    B --> C["Financial Tools<br/>10 tools"]
+    B --> D["Resources<br/>Schema + Formulas"]
+    B --> E["Prompts<br/>Analysis Templates"]
+    C --> F["In-Memory SQLite<br/>999 companies<br/>2883 executives<br/>2206 shareholders"]
+    C --> G["DeepSeek API<br/>(optional AI analysis)"]
+    
+    style B fill:#4f46e5,stroke:#3730a3,color:#fff
+    style A fill:#059669,stroke:#047857,color:#fff
+    style F fill:#d97706,stroke:#b45309,color:#fff
+```
+
+#### MCP Tools (10)
+
+| Tool | Parameters | Description |
+|------|-----------|-------------|
+| `list_tables` | — | List all database tables with row counts |
+| `describe_table` | `table_name` | Get columns, types, and sample rows |
+| `query_data` | `sql` | Execute read-only SQL SELECT queries |
+| `load_csv` | `file_path`, `table_name?` | Load external CSV into database |
+| `list_companies` | — | List all companies with basic info |
+| `get_company_info` | `company_name` | Full company profile (fuzzy matching) |
+| `get_top_shareholders` | `company_name`, `top_n?` | Top N shareholders with ownership % |
+| `calculate_ratio` | `company_name`, `ratio_name` | Financial ratios (director ratios, concentration, etc.) |
+| `compare_companies` | `company1`, `company2`, `metric` | Side-by-side company comparison |
+| `ai_analyze` | `question`, `context?` | DeepSeek-powered natural language analysis |
+
+#### MCP Resources
+
+| URI | Description |
+|-----|-------------|
+| `fintalk://schema` | Complete database schema overview |
+| `fintalk://formulas` | All available financial formulas |
+
+#### MCP Prompt
+
+| Name | Description |
+|------|-------------|
+| `analyze_company` | Multi-step company analysis workflow template |
+
+#### Demo
+
+<!-- Add screenshots of Claude Code calling FinTalk tools here -->
+<!-- ![Demo](assets/mcp_demo.png) -->
+
+*Example: Claude Code calls `get_top_shareholders` → `calculate_ratio` → `compare_companies` to produce a governance analysis report in one conversation.*
 
 ---
 
 ## Quick Start
 
-### 1. Installation
+### Option 1: MCP Server (Recommended)
+
+Connect FinTalk to Claude Code (or any MCP client) in seconds:
+
+**1. Add to Claude Code settings** (`~/.claude/settings.json`):
+
+```json
+{
+  "mcpServers": {
+    "fintalk": {
+      "command": "uv",
+      "args": ["run", "--script", "/path/to/fintalk.v/mcp_server.py"],
+      "env": {
+        "DEEPSEEK_API_KEY": "your-key-here"
+      }
+    }
+  }
+}
+```
+
+**2. Restart Claude Code** — FinTalk tools appear automatically.
+
+**3. Start asking:**
+
+```
+> Analyze ZA Bank's governance structure
+> Compare shareholder concentration between ZA Bank and WeLab Bank
+> Run SQL: SELECT name, employee_size FROM companies WHERE status = 'Live'
+```
+
+> `DEEPSEEK_API_KEY` is optional. Without it, 9 tools are available. With it, `ai_analyze` is also enabled.
+
+### Option 2: Python Demo
 
 ```bash
-# Clone the repository
 git clone https://github.com/boris-dotv/fintalk.ai.git
 cd fintalk.ai
-
-# Create virtual environment
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-
-# Install dependencies
 pip install -r requirements.txt
-pip install python-dotenv requests
-```
-
-### 2. Configuration
-
-Copy `.env.example` to `.env` and configure your API keys:
-
-```bash
-cp .env.example .env
-```
-
-Edit `.env` with your credentials:
-
-```bash
-# Required for GitHub integration
-GITHUB_TOKEN=your_github_token_here
-
-# Optional (for extended features)
-GOOGLE_API_KEY=your_google_api_key
-GOOGLE_CSE_ID=your_google_cse_id
-ALPHA_VANTAGE_KEY=your_alpha_vantage_key
-NEWS_API_KEY=your_news_api_key
-
-# LLM API
-LLM_API_KEY=your_llm_api_key
-LLM_API_URL=https://qianfan.baidubce.com/v2/chat/completions
-```
-
-### 3. Run the Demo
-
-**Option 1: Interactive Demo (Recommended)**
-```bash
 python run.py
-```
-
-**Option 2: Direct MCP Demo**
-```bash
-python demos/demo_with_mcp.py
-```
-
-**Option 3: GitHub Integration Test**
-```bash
-python tests/test_github_mcp.py
 ```
 
 ---
 
-## Training Pipeline
+## Database
 
-![FinTalk.ai Training Strategy](assets/training.png)
+**999 companies** across fintech, virtual banking, and digital finance — with management teams and ownership structures.
 
-### Training Stages
+### `companies` (999 rows, 39 columns)
 
-1. **Supervised Fine-Tuning (SFT)**
-   - NL2SQL LoRA trained on large-scale synthetic dataset
-   - Privacy-preserving data generation pipeline
-   - Vector-based semantic deduplication with Qwen3-Embedding-8B
+| Field | Type | Description |
+|-------|------|-------------|
+| `company_sort_id` | INTEGER | Primary Key |
+| `name` | TEXT | Company name |
+| `website` | TEXT | Official URL |
+| `employee_size` | TEXT | Employee count |
+| `status` | TEXT | Operational status |
+| `founder_name` | TEXT | Founder |
+| `ceoname` | TEXT | CEO |
+| `techSummary` | TEXT | Technology description |
+| ... | ... | *(39 columns total)* |
 
-2. **Reinforcement Learning Refinement**
-   - **verl** framework with **Group Relative Policy Optimization (GRPO)**
-   - Rule-based verifiable reward signals
-   - Reward granted only for successful SQL execution with correct results
+### `management` (2,883 rows)
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `company_sort_id` | INTEGER | Foreign Key |
+| `management_name` | TEXT | Executive name |
+| `management_title` | TEXT | Job title |
+| `director_type` | TEXT | Executive / Non-Executive / Independent |
+
+### `shareholders` (2,206 rows)
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `company_sort_id` | INTEGER | Foreign Key |
+| `shareholder_name` | TEXT | Investor name |
+| `share_percentage` | TEXT | Ownership percentage |
+| `shareholder_tag` | TEXT | Finance / Insurance / Retail / Technology |
 
 ---
 
@@ -232,82 +223,64 @@ python tests/test_github_mcp.py
 
 ```
 fintalk.ai/
-├── run.py                    # Unified entry point
-├── enhanced_fintalk.py       # Main application
-├── formula.py                # Financial formula library
+├── mcp_server.py              # MCP Server (single file, zero-config)
+├── run.py                      # Python demo entry point
+├── enhanced_fintalk.py         # Main application
+├── formula.py                  # Financial formula library
 │
-├── enhanced_core/            # MCP core modules (8 modules)
-├── mcp_integration/          # MCP external tools
-├── demos/                    # Demo collection
-├── tests/                    # Test suite
-├── OSWorld/                  # OSWorld integration
-├── data/                     # Database files
+├── enhanced_core/              # MCP core modules (8 modules)
+│   ├── parallel_executor.py
+│   ├── query_rewriter.py
+│   ├── arbitrator.py
+│   ├── rejection_detector.py
+│   ├── correlation_checker.py
+│   ├── function_registry.py
+│   ├── streaming_nlg.py
+│   └── conversation_manager.py
 │
-├── .env                      # API keys (not in repo)
-├── .env.example             # Configuration template
-├── requirements.txt          # Python dependencies
-├── STRUCTURE.md             # Detailed project docs
-└── API_REFERENCE.md         # API documentation
+├── mcp_integration/            # External API integrations
+│   ├── mcp_client.py           # GitHub, Alpha Vantage, NewsAPI
+│   └── logs/                   # Audit trail
+│
+├── data/                       # Financial datasets (CSV)
+├── demos/                      # Demo scripts
+├── tests/                      # Test suite
+├── OSWorld/                    # Sandboxed execution environment
+│
+├── requirements.txt            # Full dependencies
+├── requirements-mcp.txt        # MCP server only (3 packages)
+└── assets/                     # Architecture diagrams
 ```
 
 ---
 
-## Available Functions
+## Available Financial Ratios
 
-### Local Database Functions
-
-- `get_company_info` - Retrieve company profile information
-- `get_executive_director_ratio` - Calculate executive director ratio
-- `get_top_shareholders` - Get top N shareholders
-- `calculate_shareholder_concentration` - Compute ownership concentration
-- `compare_companies` - Compare two companies across metrics
-
-### MCP External Tools
-
-- `search_github` - Search GitHub repositories
-- `github_repo_manager` - Full GitHub CRUD operations (get/create/update files, issues, branches)
-- `web_search` - Google Custom Search (requires API key)
-- `get_stock_price` - Real-time stock quotes (requires API key)
-- `get_financial_news` - Financial news aggregation (requires API key)
-
----
-
-## Example Usage
-
-### Query Examples
-
-**Local Database:**
-```
-User: "What is ZA Bank's employee size?"
-User: "Calculate executive_director_ratio for WeLab Bank"
-User: "Compare ZA Bank and WeLab Bank on shareholder concentration"
-```
-
-**GitHub Integration:**
-```
-User: "Search GitHub for model context protocol implementations"
-User: "Get the content of enhanced_fintalk.py from my repo"
-User: "Create a new file demo.py with hello world code"
-```
+| Ratio | Formula |
+|-------|---------|
+| `executive_director_ratio` | Executive Directors / Total Directors |
+| `non_executive_director_ratio` | Non-Executive Directors / Total Directors |
+| `independent_director_ratio` | Independent Directors / Total Directors |
+| `management_to_employee_ratio` | Total Managers / Employee Size |
+| `shareholder_concentration` | Sum of Top N Share Percentages |
+| `institutional_ownership_percentage` | Total Institutional Shares / 100 |
+| `largest_shareholder_stake` | Max Share Percentage / 100 |
 
 ---
 
 ## Contributing
 
-Contributions are welcome! Please feel free to submit a Pull Request.
-
----
+Contributions are welcome. Please submit a Pull Request.
 
 ## License
 
-This project is licensed under the Apache 2.0 License - see the [LICENSE](LICENSE) file for details.
-
----
+Apache 2.0 — see [LICENSE](LICENSE).
 
 ## Acknowledgments
 
-- **Qwen Team** for the excellent language models
-- **OSWorld** for the standardized agent environment
-- **vLLM & Punica** for efficient model serving
-- **verl** for the RL framework
-- **Model Context Protocol** community for the integration pattern
+- **Qwen Team** — language models and embeddings
+- **OSWorld** — standardized agent execution environment
+- **vLLM & Punica** — efficient model serving with dynamic LoRA
+- **verl** — reinforcement learning framework
+- **Model Context Protocol** — the agent interoperability standard
+- **DeepSeek** — API for natural language analysis
