@@ -1122,6 +1122,14 @@ async function send() {
   const text = input.value.trim();
   if (!text || streaming) return;
 
+  // Route to deep research if in research mode
+  if (researchMode) {
+    input.value = '';
+    autoResize(input);
+    sendResearch(text);
+    return;
+  }
+
   // Must have data loaded to ask questions
   if (Object.keys(datasets).length === 0) {
     input.value = '';
@@ -1189,21 +1197,48 @@ async function send() {
 }
 
 // ===== DEEP RESEARCH =====
-async function deepResearch() {
+let researchMode = false;
+
+function deepResearch() {
   if (streaming) return;
   if (Object.keys(datasets).length === 0) {
     addMsg('ai', t('noData'));
     return;
   }
-  const topic = prompt(t('researchPlaceholder'));
-  if (!topic || !topic.trim()) return;
+  researchMode = !researchMode;
+  const btn = document.getElementById('research-btn');
+  const input = document.getElementById('msg-input');
+  const sendBtn = document.getElementById('send-btn');
+  if (researchMode) {
+    btn.style.background = 'var(--violet)';
+    btn.style.color = '#fff';
+    btn.style.borderColor = 'var(--violet)';
+    input.placeholder = t('researchPlaceholder');
+    sendBtn.style.background = 'var(--violet)';
+    input.focus();
+  } else {
+    btn.style.background = 'var(--violetbg)';
+    btn.style.color = 'var(--violet)';
+    btn.style.borderColor = 'var(--violetbr)';
+    input.placeholder = t('placeholder');
+    sendBtn.style.background = '';
+  }
+}
+
+async function sendResearch(topic) {
+  researchMode = false;
+  const btn = document.getElementById('research-btn');
+  btn.style.background = 'var(--violetbg)';
+  btn.style.color = 'var(--violet)';
+  btn.style.borderColor = 'var(--violetbr)';
+  document.getElementById('msg-input').placeholder = t('placeholder');
+  document.getElementById('send-btn').style.background = '';
 
   const welcome = document.getElementById('welcome');
   if (welcome) welcome.remove();
 
-  addMsg('user', topic.trim());
+  addMsg('user', topic);
 
-  // Step indicator
   const chat = document.getElementById('chat');
   const progress = document.createElement('div');
   progress.className = 'msg ai';
@@ -1215,7 +1250,7 @@ async function deepResearch() {
   const researchPrompt = lang === 'cn'
     ? `你是 FinTalk AI 深度研究助手。请对以下主题进行全面深入的分析：
 
-"${topic.trim()}"
+"${topic}"
 
 请按以下步骤进行：
 1. **数据分析**：基于已加载的数据集，提取相关信息
@@ -1226,7 +1261,7 @@ async function deepResearch() {
 请用中文输出一份结构化的研究报告，包含标题、各章节和具体数据支撑。`
     : `You are FinTalk AI Deep Research assistant. Conduct a comprehensive analysis on:
 
-"${topic.trim()}"
+"${topic}"
 
 Follow these steps:
 1. **Data Analysis**: Extract relevant information from the loaded datasets
