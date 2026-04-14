@@ -1,6 +1,6 @@
 # FinTalk.ai
 
-**From Model Training to Agent-Ready Financial Intelligence**
+**Turn Natural Language into Financial Intelligence — 999 Companies, One Command**
 
 <p align="center">
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-Apache_2.0-blue.svg" alt="License"></a>
@@ -13,11 +13,36 @@
 
 ## Overview
 
-FinTalk.ai is a three-layer financial intelligence system that goes from **training specialized models**, through a **multi-agent orchestration framework**, to an **MCP Server** that any AI agent can call. It bridges the gap between LLM capabilities and the rigorous demands of financial analysis — every data point is traceable to a verifiable source.
+FinTalk.ai is an **agent-ready financial data analysis system**. It lets any AI agent — Claude Code, Cursor, or custom MCP clients — analyze **999 fintech companies**, **2,883 executives**, and **2,206 shareholders** through natural language.
+
+Ask a question, get a verified answer. No manual SQL, no data wrangling, no configuration.
+
+```
+> "Compare shareholder concentration between ZA Bank and WeLab Bank"
+> "Which virtual banks have more than 500 employees?"
+> "Analyze the governance structure of Ant Bank"
+```
+
+Behind the scenes, FinTalk trains its own NL2SQL models (SFT + GRPO reinforcement learning), orchestrates a dual-agent system for query understanding, and serves everything through a **single-file zero-config MCP Server**. Every data point is traceable to a verifiable source.
 
 <p align="center">
   <img src="assets/structure_v2.png" alt="FinTalk.ai System Architecture" width="800"/>
 </p>
+
+---
+
+## Why FinTalk?
+
+Most financial data tools make you choose: either a static dataset, or a generic LLM wrapper that hallucinates numbers. FinTalk gives you both **accuracy and accessibility**.
+
+| | Traditional BI Tools | Generic LLM + RAG | **FinTalk.ai** |
+|---|---|---|---|
+| Natural language queries | No | Yes, but unreliable SQL | **Yes, with execution-verified NL2SQL** |
+| Structured financial ratios | Manual setup | No | **7 built-in ratios, extensible** |
+| Multi-company comparison | Manual | Hallucination-prone | **Fuzzy matching + real data** |
+| Agent integration | API wrappers needed | Custom glue code | **MCP native — zero integration code** |
+| Data accuracy guarantee | High | Low | **High — GRPO-trained models, only correct SQL execution gets rewarded** |
+| Setup complexity | Heavy | Medium | **One command: `uv run --script mcp_server.py`** |
 
 ---
 
@@ -51,55 +76,63 @@ Layer 1: Intelligence        Layer 2: Framework           Layer 3: Interface
 │  NL2SQL / Classif│    │  MCP Core Modules    │    │  2 Resources         │
 │                  │    │  OSWorld Sandbox     │    │  1 Prompt Template   │
 └──────────────────┘    └──────────────────────┘    └──────────────────────┘
-   Train the brain       Orchestrate the work        Expose to any AI agent
+  Why analysis is         Why analysis is            How agents access
+  accurate                fast & robust              the analysis
 ```
 
 ---
 
-### Layer 1: Intelligence — Financial Model Training
+### Layer 1: Intelligence — Why Analysis is Accurate
 
-Fine-tuned models that understand financial queries, generate SQL, and classify intent.
+The core challenge of financial data analysis is accuracy: wrong SQL → wrong numbers → wrong decisions. FinTalk solves this by training specialized models whose correctness is **verified by execution**.
 
-| Stage | Method | Details |
-|-------|--------|---------|
-| **Supervised Fine-Tuning** | SFT with LoRA | NL2SQL, Classification, Keyword Extraction adapters on Qwen2.5-7B-Instruct-1M |
-| **Reinforcement Learning** | GRPO via verl | Rule-based rewards — only correct SQL execution with correct results gets rewarded |
-| **Embedding** | Qwen3-Embedding-8B | Vector-based semantic deduplication for training data |
-| **Privacy** | Synthetic data pipeline | No real user data in training |
+| Stage | Method | Why It Matters for Analysis |
+|-------|--------|-----------------------------|
+| **Supervised Fine-Tuning** | SFT with LoRA on Qwen2.5-7B | Three specialized adapters (NL2SQL, Classification, Keyword Extraction) — each optimized for one analytical subtask instead of one generic model doing everything |
+| **Reinforcement Learning** | GRPO via verl | **Only SQL that executes on the real database and returns the correct result gets rewarded** — the model learns what actually works, not what looks plausible |
+| **Training Data Quality** | Synthetic pipeline (15,000+ samples) | SQL syntax validation → LLM-as-Judge scoring → Embedding-based semantic deduplication. No garbage in, no garbage out |
+| **Privacy** | Schema-only generation | Training data generated from database schema alone — no real user data exposure |
 
 ---
 
-### Layer 2: Framework — Multi-Agent Orchestration
+### Layer 2: Framework — Why Analysis is Fast and Robust
 
-An asymmetric dual-agent system running inside the OSWorld sandbox for reproducible execution.
+A single financial question often requires multiple steps: rewrite the query, classify intent, check relevance, generate SQL, and produce a natural language answer. FinTalk runs these **in parallel** through an asymmetric dual-agent system.
 
 **Orchestrator Agent** (`Qwen3-8B` via vLLM)
-- High-level reasoning, planning, and answer synthesis
-- Routes queries to the right Worker skill
+- Understands user intent, plans the analysis, synthesizes the final answer
 
 **Worker Agent** (`Qwen2.5-7B-Instruct-1M` with dynamic LoRA)
-- **NL2SQL** — generates precise SQL from natural language
-- **Classification** — intent routing (task / knowledge / small talk)
-- **Keyword Extraction** — entity and semantic parsing
+- **Switches LoRA adapters on-the-fly** via vLLM+Punica — the same model handles NL2SQL, Classification, and Keyword Extraction without loading three separate models
+- Result: lower latency, lower memory, higher throughput
 
-**MCP Core Modules:**
+**Parallel NLU Pipeline** — 4 modules run simultaneously on every user turn:
 
 | Module | Function |
 |--------|----------|
-| `parallel_executor` | Execute multiple LLM tasks simultaneously |
-| `query_rewriter` | Context-aware query rewriting from conversation history |
-| `arbitrator` | Classify query type: task / knowledge / small_talk / invalid |
-| `rejection_detector` | Filter irrelevant queries |
-| `correlation_checker` | Multi-turn context tracking |
-| `function_registry` | Financial function calling registry |
-| `streaming_nlg` | Real-time natural language generation |
-| `conversation_manager` | Dialog history and slot management |
+| `query_rewriter` | "And WeLab?" → "What is WeLab Bank's employee size?" (context-aware completion) |
+| `arbitrator` | Route to: data analysis / knowledge Q&A / small talk / reject |
+| `rejection_detector` | Filter out-of-scope queries before they waste compute |
+| `correlation_checker` | Track multi-turn context ("compare it with the previous company") |
+
+**Additional modules:** `parallel_executor`, `function_registry`, `streaming_nlg`, `conversation_manager`
+
+**Sandboxed Execution** — All analysis runs inside Docker containers (OSWorld) with 512MB memory limit and read-only data mounts. No query can affect the source data.
 
 ---
 
-### Layer 3: Interface — MCP Server
+### Layer 3: Interface — How Agents Access the Analysis
 
-**The key innovation.** FinTalk exposes its entire financial analysis capability as an [MCP (Model Context Protocol)](https://modelcontextprotocol.io) server. Any AI agent — Claude Code, Cursor, or custom MCP clients — can directly call FinTalk's tools.
+**One file. Zero config. Any AI agent.**
+
+FinTalk exposes its entire financial analysis capability as an [MCP (Model Context Protocol)](https://modelcontextprotocol.io) server — a single self-contained Python file with inline dependency declarations. No database server, no Docker, no API keys required (DeepSeek key is optional).
+
+```bash
+# This is the entire setup:
+uv run --script mcp_server.py
+```
+
+Data loads into **in-memory SQLite** at startup. The server is live in seconds.
 
 ```mermaid
 graph LR
