@@ -129,10 +129,19 @@ graph LR
 
 #### Demo
 
-<!-- Add screenshots of Claude Code calling FinTalk tools here -->
-<!-- ![Demo](assets/mcp_demo.png) -->
+**MCP Server connected in Claude Code:**
 
-*Example: Claude Code calls `get_top_shareholders` → `calculate_ratio` → `compare_companies` to produce a governance analysis report in one conversation.*
+<p align="center">
+  <img src="assets/mcp_connected.png" alt="MCP Server Connected" width="800"/>
+</p>
+
+**Querying financial data and comparing companies through natural language:**
+
+<p align="center">
+  <img src="assets/mcp_run.png" alt="MCP Tools in Action" width="800"/>
+</p>
+
+*Claude Code calls `list_tables` → `get_company_info` → `compare_companies` to produce a governance analysis report in one conversation.*
 
 ---
 
@@ -142,7 +151,13 @@ graph LR
 
 Connect FinTalk to Claude Code (or any MCP client) in seconds:
 
-**1. Add to Claude Code settings** (`~/.claude/settings.json`):
+**One-line setup** (from terminal):
+
+```bash
+claude mcp add fintalk -e DEEPSEEK_API_KEY=your-key-here -- uv run --script /path/to/fintalk.v/mcp_server.py
+```
+
+Or **manually add** to Claude Code settings (`~/.claude/settings.json`):
 
 ```json
 {
@@ -158,7 +173,7 @@ Connect FinTalk to Claude Code (or any MCP client) in seconds:
 }
 ```
 
-**2. Restart Claude Code** — FinTalk tools appear automatically.
+**Restart Claude Code** — FinTalk tools appear automatically.
 
 **3. Start asking:**
 
