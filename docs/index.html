@@ -6,6 +6,7 @@
   <title>FinTalk AI</title>
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5/papaparse.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;1,400&family=Instrument+Serif:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -489,6 +490,49 @@
 
     #file-input { display: none; }
 
+    /* charts */
+    .chart-container {
+      background: var(--bg3);
+      border: 1px solid var(--bdr2);
+      border-radius: 12px;
+      padding: 20px;
+      margin: 12px 0;
+      max-width: 500px;
+    }
+    .chart-container canvas { width: 100% !important; max-height: 280px; }
+
+    /* auto-analysis cards */
+    .analysis-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 10px;
+      margin: 12px 0;
+    }
+    .stat-card {
+      background: var(--bg3);
+      border: 1px solid var(--bdr2);
+      border-radius: 10px;
+      padding: 14px 16px;
+      text-align: center;
+    }
+    .stat-card .val {
+      font-family: var(--serif);
+      font-size: 26px;
+      font-weight: 400;
+      color: var(--accent);
+      display: block;
+    }
+    .stat-card .lbl {
+      font-family: var(--mono);
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--txt3);
+      text-transform: uppercase;
+      letter-spacing: .04em;
+      margin-top: 4px;
+      display: block;
+    }
+
     @media (max-width: 640px) {
       .login-card { padding: 36px 28px; }
       .msg { max-width: 92%; }
@@ -523,6 +567,7 @@
     <h1>Fin<span>Talk</span></h1>
     <div class="header-actions">
       <button class="btn-sm btn-upload" onclick="document.getElementById('file-input').click()">Upload CSV</button>
+      <button class="btn-sm" onclick="loadDemo()" id="demo-btn" style="background:var(--bluebg);border-color:var(--bluebr);color:var(--blue)">Demo Data</button>
       <button class="btn-sm" onclick="showPreview()">Data</button>
       <button class="btn-sm" onclick="clearChat()">Clear</button>
       <button class="btn-sm" onclick="logout()">Logout</button>
@@ -533,7 +578,10 @@
   <div class="chat" id="chat">
     <div class="welcome" id="welcome">
       <h2>Welcome to FinTalk</h2>
-      <p>Upload a CSV file and start asking questions about your financial data — or just chat directly.</p>
+      <p>Upload a CSV file and start asking questions about your financial data — or try the built-in demo.</p>
+      <div style="margin-bottom:20px">
+        <button class="btn" onclick="loadDemo()" style="max-width:260px;margin:0 auto;display:block;background:var(--accent)">Try Demo — 999 Companies</button>
+      </div>
       <div class="suggestions">
         <div class="suggestion" onclick="askSuggestion(this)">What columns are in my data?</div>
         <div class="suggestion" onclick="askSuggestion(this)">Summarize the dataset</div>
@@ -559,6 +607,7 @@ let apiKey = '';
 let datasets = {};
 let messages = [];
 let streaming = false;
+let chartCounter = 0;
 
 // ===== LOGIN =====
 async function connect() {
@@ -593,8 +642,6 @@ function logout() {
   messages = [];
   document.getElementById('app').style.display = 'none';
   document.getElementById('login').style.display = 'flex';
-  document.getElementById('chat').innerHTML = document.getElementById('chat').querySelector('.welcome') ?
-    document.getElementById('chat').innerHTML : '<div class="welcome" id="welcome"><h2>Welcome to FinTalk</h2></div>';
 }
 
 (function() {
@@ -609,10 +656,9 @@ function handleFiles(files) {
       header: true,
       skipEmptyLines: true,
       complete: function(results) {
-        const name = file.name;
-        datasets[name] = { columns: results.meta.fields || [], rows: results.data, raw: results };
+        datasets[file.name] = { columns: results.meta.fields || [], rows: results.data };
         updateDataBar();
-        addSystemMsg('Loaded **' + name + '** — ' + results.data.length + ' rows, ' + (results.meta.fields||[]).length + ' columns.');
+        onDataLoaded();
       }
     });
   }
@@ -632,6 +678,196 @@ function updateDataBar() {
   bar.innerHTML = names.map(n =>
     `<span class="data-tag">${n} (${datasets[n].rows.length} rows)<span class="x" onclick="removeDataset('${n}')">&times;</span></span>`
   ).join('');
+}
+
+// ===== DEMO DATA =====
+async function loadDemo() {
+  const btn = document.getElementById('demo-btn');
+  if (btn) { btn.disabled = true; btn.textContent = 'Loading...'; }
+
+  const files = ['company.csv', 'management.csv', 'shareholder.csv'];
+  let loaded = 0;
+
+  for (const f of files) {
+    try {
+      const resp = await fetch('data/' + f);
+      const text = await resp.text();
+      const result = Papa.parse(text, { header: true, skipEmptyLines: true });
+      datasets[f] = { columns: result.meta.fields || [], rows: result.data };
+      loaded++;
+    } catch (e) {
+      console.error('Failed to load ' + f, e);
+    }
+  }
+
+  if (btn) { btn.disabled = false; btn.textContent = 'Demo Data'; }
+  if (loaded > 0) {
+    updateDataBar();
+    onDataLoaded();
+  }
+}
+
+// ===== AUTO-ANALYSIS ON DATA LOAD =====
+function onDataLoaded() {
+  const welcome = document.getElementById('welcome');
+  if (welcome) welcome.remove();
+
+  // Build summary stats
+  const names = Object.keys(datasets);
+  let totalRows = 0, totalCols = 0;
+  names.forEach(n => { totalRows += datasets[n].rows.length; totalCols += datasets[n].columns.length; });
+
+  // Stat cards
+  let html = '<div class="analysis-grid">';
+  html += `<div class="stat-card"><span class="val">${names.length}</span><span class="lbl">Datasets</span></div>`;
+  html += `<div class="stat-card"><span class="val">${totalRows.toLocaleString()}</span><span class="lbl">Total Rows</span></div>`;
+  html += `<div class="stat-card"><span class="val">${totalCols}</span><span class="lbl">Columns</span></div>`;
+
+  // If company data, count unique statuses
+  const compData = datasets['company.csv'];
+  if (compData) {
+    const live = compData.rows.filter(r => r.status === 'Live').length;
+    html += `<div class="stat-card"><span class="val">${live}</span><span class="lbl">Live Companies</span></div>`;
+  }
+  html += '</div>';
+
+  // Tables loaded
+  html += '<p style="font-family:var(--mono);font-size:12px;color:var(--txt3);margin-top:8px">';
+  names.forEach(n => { html += `${n} (${datasets[n].rows.length} rows) &nbsp; `; });
+  html += '</p>';
+
+  const summaryDiv = addMsg('ai', '');
+  summaryDiv.innerHTML = html;
+
+  // Generate charts
+  generateCharts();
+
+  // Auto-analysis via AI
+  autoAnalyze();
+}
+
+function generateCharts() {
+  const compData = datasets['company.csv'];
+  const shData = datasets['shareholder.csv'];
+  if (!compData && !shData) return;
+
+  const chat = document.getElementById('chat');
+
+  if (compData) {
+    // Chart 1: Top 10 companies by tag distribution
+    const tagCount = {};
+    compData.rows.forEach(r => {
+      const tag = r.company_tag || 'Other';
+      tagCount[tag] = (tagCount[tag] || 0) + 1;
+    });
+    const sortedTags = Object.entries(tagCount).sort((a, b) => b[1] - a[1]).slice(0, 8);
+    const colors = ['#4D7C0F','#3B82F6','#D97706','#6D28D9','#9F1239','#0891B2','#C2410C','#4338CA'];
+    renderChart(chat, 'doughnut', {
+      labels: sortedTags.map(t => t[0]),
+      datasets: [{ data: sortedTags.map(t => t[1]), backgroundColor: colors }]
+    }, 'Company Distribution by Sector');
+  }
+
+  if (shData) {
+    // Chart 2: Top 10 shareholders by tag
+    const shTagCount = {};
+    shData.rows.forEach(r => {
+      const tag = r.shareholder_tag || 'Other';
+      shTagCount[tag] = (shTagCount[tag] || 0) + 1;
+    });
+    const sortedShTags = Object.entries(shTagCount).sort((a, b) => b[1] - a[1]).slice(0, 6);
+    const barColors = ['#4D7C0F','#3B82F6','#D97706','#6D28D9','#9F1239','#0891B2'];
+    renderChart(chat, 'bar', {
+      labels: sortedShTags.map(t => t[0]),
+      datasets: [{ label: 'Count', data: sortedShTags.map(t => t[1]), backgroundColor: barColors }]
+    }, 'Shareholder Types');
+  }
+}
+
+function renderChart(container, type, data, title) {
+  chartCounter++;
+  const id = 'chart-' + chartCounter;
+  const wrapper = document.createElement('div');
+  wrapper.className = 'msg ai';
+  wrapper.innerHTML = `<p style="font-family:var(--mono);font-size:11px;font-weight:600;color:var(--txt3);text-transform:uppercase;letter-spacing:.04em;margin-bottom:8px">${title}</p><div class="chart-container"><canvas id="${id}"></canvas></div>`;
+  container.appendChild(wrapper);
+  container.scrollTop = container.scrollHeight;
+
+  requestAnimationFrame(() => {
+    const ctx = document.getElementById(id);
+    if (!ctx) return;
+    new Chart(ctx, {
+      type: type,
+      data: data,
+      options: {
+        responsive: true,
+        maintainAspectRatio: true,
+        plugins: {
+          legend: { position: type === 'doughnut' ? 'right' : 'top', labels: { font: { family: "'DM Sans'", size: 11 }, color: '#5E5D5A' } }
+        },
+        scales: type === 'bar' ? {
+          y: { beginAtZero: true, ticks: { font: { family: "'IBM Plex Mono'", size: 10 }, color: '#8A8884' }, grid: { color: 'rgba(20,20,19,.06)' } },
+          x: { ticks: { font: { family: "'IBM Plex Mono'", size: 10 }, color: '#8A8884' }, grid: { display: false } }
+        } : undefined
+      }
+    });
+  });
+}
+
+async function autoAnalyze() {
+  if (!apiKey || streaming) return;
+
+  const prompt = 'I just loaded financial data. Give me 3-5 key insights in bullet points. Be specific with numbers. Keep it under 150 words.';
+  messages.push({ role: 'user', content: prompt });
+  const reqMsgs = [{ role: 'system', content: buildSystemPrompt() }, ...messages.slice(-20)];
+
+  const chat = document.getElementById('chat');
+  const typing = document.createElement('div');
+  typing.className = 'msg ai typing';
+  typing.innerHTML = '<span></span><span></span><span></span>';
+  chat.appendChild(typing);
+  chat.scrollTop = chat.scrollHeight;
+
+  streaming = true;
+  document.getElementById('send-btn').disabled = true;
+
+  let aiText = '';
+  try {
+    const resp = await fetch('https://api.deepseek.com/chat/completions', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + apiKey },
+      body: JSON.stringify({ model: 'deepseek-chat', messages: reqMsgs, stream: true })
+    });
+    typing.remove();
+    const aiDiv = addMsg('ai', '');
+    const reader = resp.body.getReader();
+    const decoder = new TextDecoder();
+    let buf = '';
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      buf += decoder.decode(value, { stream: true });
+      const lines = buf.split('\n');
+      buf = lines.pop();
+      for (const line of lines) {
+        if (!line.startsWith('data: ')) continue;
+        const d = line.slice(6);
+        if (d === '[DONE]') break;
+        try {
+          const j = JSON.parse(d);
+          const c = j.choices?.[0]?.delta?.content;
+          if (c) { aiText += c; aiDiv.innerHTML = marked.parse(aiText); chat.scrollTop = chat.scrollHeight; }
+        } catch {}
+      }
+    }
+  } catch (e) {
+    typing.remove();
+    addMsg('ai', 'Error: ' + (e.message || 'Auto-analysis failed'));
+  }
+
+  if (aiText) messages.push({ role: 'assistant', content: aiText });
+  streaming = false;
+  document.getElementById('send-btn').disabled = false;
 }
 
 // ===== DATA PREVIEW =====
@@ -696,8 +932,6 @@ function addMsg(role, content) {
   return div;
 }
 
-function addSystemMsg(md) { addMsg('ai', md); }
-
 function askSuggestion(el) {
   document.getElementById('msg-input').value = el.textContent;
   send();
@@ -732,14 +966,11 @@ async function send() {
       headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + apiKey },
       body: JSON.stringify({ model: 'deepseek-chat', messages: reqMsgs, stream: true })
     });
-
     typing.remove();
     const aiDiv = addMsg('ai', '');
-
     const reader = resp.body.getReader();
     const decoder = new TextDecoder();
     let buf = '';
-
     while (true) {
       const { done, value } = await reader.read();
       if (done) break;
@@ -771,7 +1002,8 @@ async function send() {
 function clearChat() {
   messages = [];
   const chat = document.getElementById('chat');
-  chat.innerHTML = `<div class="welcome" id="welcome"><h2>Welcome to FinTalk</h2><p>Upload a CSV file and start asking questions.</p>
+  chat.innerHTML = `<div class="welcome" id="welcome"><h2>Welcome to FinTalk</h2><p>Upload a CSV or try the demo data.</p>
+    <div style="margin-bottom:20px"><button class="btn" onclick="loadDemo()" style="max-width:260px;margin:0 auto;display:block;background:var(--accent)">Try Demo — 999 Companies</button></div>
     <div class="suggestions"><div class="suggestion" onclick="askSuggestion(this)">Summarize the dataset</div>
     <div class="suggestion" onclick="askSuggestion(this)">Show basic statistics</div></div></div>`;
 }
