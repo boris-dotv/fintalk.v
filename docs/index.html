@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>FinTalk AI</title>
+  <title>FinTalk.ai</title>
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5/papaparse.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
@@ -412,7 +412,7 @@
       box-shadow: 0 0 0 3px rgba(77,124,15,.08);
     }
     .input-bar textarea::placeholder { color: var(--txtf); }
-    .input-bar button {
+    .input-bar button#send-btn {
       padding: 0 24px;
       background: var(--txt);
       border: none;
@@ -426,8 +426,35 @@
       cursor: pointer;
       transition: background .25s;
     }
-    .input-bar button:hover { background: var(--txt2); }
-    .input-bar button:disabled { opacity: .3; cursor: not-allowed; }
+    .input-bar button#send-btn:hover { background: var(--txt2); }
+    .input-bar button#send-btn:disabled { opacity: .3; cursor: not-allowed; }
+
+    /* Stop button */
+    .input-bar button#stop-btn {
+      display: none;
+      padding: 0 20px;
+      background: var(--terra);
+      border: none;
+      border-radius: 12px;
+      color: #fff;
+      font-family: var(--mono);
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: background .25s;
+      align-items: center;
+      gap: 6px;
+    }
+    .input-bar button#stop-btn.show { display: flex; }
+    .input-bar button#stop-btn:hover { background: #881337; }
+    .input-bar button#stop-btn .stop-icon {
+      width: 10px; height: 10px;
+      background: #fff;
+      border-radius: 2px;
+      flex-shrink: 0;
+    }
 
     /* data preview modal */
     .modal-bg {
@@ -549,7 +576,7 @@
 <!-- LOGIN -->
 <div id="login">
   <div class="login-card">
-    <h1>Fin<span>Talk</span></h1>
+    <h1>Fin<span>Talk</span><span style="color:var(--txt3);font-weight:300">.ai</span></h1>
     <p>Financial Data Analysis</p>
     <div class="input-group">
       <label>DeepSeek API Key</label>
@@ -564,7 +591,7 @@
 <!-- APP -->
 <div id="app">
   <div class="header">
-    <h1>Fin<span>Talk</span></h1>
+    <h1>Fin<span>Talk</span><span style="color:var(--txt3);font-weight:300">.ai</span></h1>
     <div class="header-actions">
       <button class="btn-sm btn-upload" onclick="document.getElementById('file-input').click()">Upload CSV</button>
       <button class="btn-sm" onclick="loadDemo()" id="demo-btn" style="background:var(--bluebg);border-color:var(--bluebr);color:var(--blue)">Demo Data</button>
@@ -578,22 +605,23 @@
   <div class="data-bar" id="data-bar"></div>
   <div class="chat" id="chat">
     <div class="welcome" id="welcome">
-      <h2>Welcome to FinTalk</h2>
+      <h2>Welcome to FinTalk.ai</h2>
       <p>Upload a CSV file and start asking questions about your financial data — or try the built-in demo.</p>
       <div style="margin-bottom:20px">
         <button class="btn" onclick="loadDemo()" style="max-width:260px;margin:0 auto;display:block;background:var(--accent)">Try Demo — 999 Companies</button>
       </div>
-      <div class="suggestions">
-        <div class="suggestion" onclick="askSuggestion(this)">What columns are in my data?</div>
-        <div class="suggestion" onclick="askSuggestion(this)">Summarize the dataset</div>
-        <div class="suggestion" onclick="askSuggestion(this)">Show basic statistics</div>
-        <div class="suggestion" onclick="askSuggestion(this)">Find the top 5 by value</div>
+      <div class="suggestions" id="welcome-suggestions">
+        <div class="suggestion" onclick="askSuggestion(this)">Which regions have the most fintech companies?</div>
+        <div class="suggestion" onclick="askSuggestion(this)">Compare digital bank license holders vs non-holders</div>
+        <div class="suggestion" onclick="askSuggestion(this)">Top 10 companies by revenue</div>
+        <div class="suggestion" onclick="askSuggestion(this)">Shareholder concentration analysis</div>
       </div>
     </div>
   </div>
   <div class="input-bar">
     <textarea id="msg-input" placeholder="Ask about your data..." rows="1" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();send()}" oninput="autoResize(this)"></textarea>
     <button id="send-btn" onclick="send()">Send</button>
+    <button id="stop-btn" onclick="stopGeneration()"><span class="stop-icon"></span>Stop</button>
   </div>
 </div>
 
@@ -610,11 +638,12 @@ let messages = [];
 let streaming = false;
 let chartCounter = 0;
 let lang = localStorage.getItem('ft-lang') || 'en';
+let abortController = null; // For stop generation
 
 // ===== I18N =====
 const i18n = {
   en: {
-    title: 'FinTalk',
+    title: 'FinTalk.ai',
     subtitle: 'Financial Data Analysis',
     apiLabel: 'DeepSeek API Key',
     connect: 'Connect',
@@ -626,8 +655,9 @@ const i18n = {
     clear: 'Clear',
     logout: 'Logout',
     send: 'Send',
+    stop: 'Stop',
     placeholder: 'Ask about your data...',
-    welcome: 'Welcome to FinTalk',
+    welcome: 'Welcome to FinTalk.ai',
     welcomeDesc: 'Upload a CSV file and start asking questions about your financial data — or try the built-in demo.',
     tryDemo: 'Try Demo — 999 Companies',
     noData: 'Please upload a CSV file or load the demo data first.',
@@ -635,12 +665,12 @@ const i18n = {
     totalRows: 'Total Rows',
     columns: 'Columns',
     dataReady: 'Your data is ready! Ask me anything, or try one of these:',
-    s1: 'Summarize the dataset', s2: 'Show key insights', s3: 'Find the top 5 by value', s4: 'Generate a report',
     loading: 'Loading...',
     invalidKey: 'Invalid API key',
+    stopped: '*(Generation stopped)*',
   },
   cn: {
-    title: 'FinTalk',
+    title: 'FinTalk.ai',
     subtitle: '金融数据分析',
     apiLabel: 'DeepSeek API Key',
     connect: '连接',
@@ -652,8 +682,9 @@ const i18n = {
     clear: '清空',
     logout: '退出',
     send: '发送',
+    stop: '停止',
     placeholder: '问一个关于你数据的问题...',
-    welcome: '欢迎使用 FinTalk',
+    welcome: '欢迎使用 FinTalk.ai',
     welcomeDesc: '上传 CSV 文件并开始分析，或试试内置示例数据。',
     tryDemo: '试用示例 — 999 家公司',
     noData: '请先上传 CSV 文件或加载示例数据。',
@@ -661,9 +692,9 @@ const i18n = {
     totalRows: '总行数',
     columns: '总列数',
     dataReady: '数据已就绪！可以提问，或试试：',
-    s1: '总结数据集', s2: '显示关键洞察', s3: '找出前5名', s4: '生成分析报告',
     loading: '加载中...',
     invalidKey: 'API Key 无效',
+    stopped: '*(已停止生成)*',
   }
 };
 
@@ -686,7 +717,7 @@ function applyLang() {
   const btns = document.querySelectorAll('.header-actions .btn-sm');
   const btnLabels = ['upload','demo','data','','clear','logout'];
   btns.forEach((b, i) => {
-    if (btnLabels[i] === '') return; // lang btn stays as CN/EN
+    if (btnLabels[i] === '') return;
     if (btnLabels[i]) b.textContent = t(btnLabels[i]);
   });
   // Input
@@ -699,6 +730,130 @@ function applyLang() {
   if (wp) wp.textContent = t('welcomeDesc');
   const wbtn = document.querySelector('.welcome .btn');
   if (wbtn) wbtn.textContent = t('tryDemo');
+}
+
+// ===== SMART SUGGESTIONS =====
+// Generate context-aware suggestions based on actual loaded data columns
+function getSmartSuggestions() {
+  const names = Object.keys(datasets);
+  if (names.length === 0) return getDefaultSuggestions();
+
+  const allCols = new Set();
+  const allColsLower = new Set();
+  names.forEach(n => datasets[n].columns.forEach(c => { allCols.add(c); allColsLower.add(c.toLowerCase()); }));
+
+  const suggestions = [];
+
+  // Revenue / financial metrics
+  if (allColsLower.has('revenue') || allColsLower.has('finance_id')) {
+    suggestions.push(
+      lang === 'cn' ? '按收入排名前10的公司，并标注所在地区' : 'Top 10 companies by revenue with their regions'
+    );
+  }
+
+  // Location / geography analysis
+  if ([...allColsLower].some(c => c.includes('location') || c.includes('region') || c.includes('country'))) {
+    suggestions.push(
+      lang === 'cn' ? '各地区金融科技公司数量对比，哪个地区最集中？' : 'Which regions have the highest concentration of fintech companies?'
+    );
+  }
+
+  // Company tags / sector analysis
+  if (allColsLower.has('company_tag') || [...allColsLower].some(c => c.includes('tag') || c.includes('sector') || c.includes('type'))) {
+    suggestions.push(
+      lang === 'cn' ? '按公司类型/标签分布，分析各细分赛道的竞争格局' : 'Break down companies by tag/sector — which segments are most competitive?'
+    );
+  }
+
+  // Digital bank license
+  if (allColsLower.has('digital_bank_license') || [...allColsLower].some(c => c.includes('license'))) {
+    suggestions.push(
+      lang === 'cn' ? '拥有数字银行牌照的公司有哪些？牌照持有率如何？' : 'Which companies hold digital bank licenses? What\'s the license penetration rate?'
+    );
+  }
+
+  // Shareholder analysis
+  if (names.some(n => n.toLowerCase().includes('shareholder')) || allColsLower.has('share_percentage') || allColsLower.has('shareholder_name')) {
+    suggestions.push(
+      lang === 'cn' ? '哪些股东持股最多家公司？分析交叉持股网络' : 'Which shareholders hold stakes in the most companies? Cross-ownership analysis'
+    );
+    suggestions.push(
+      lang === 'cn' ? '股权集中度分析：前3大股东控制多少股份？' : 'Ownership concentration: how much do the top 3 shareholders control per company?'
+    );
+  }
+
+  // Management analysis
+  if (names.some(n => n.toLowerCase().includes('management')) || allColsLower.has('management_title') || allColsLower.has('management_name')) {
+    suggestions.push(
+      lang === 'cn' ? '管理团队规模与公司收入之间有什么关系？' : 'Is there a correlation between management team size and company revenue?'
+    );
+    suggestions.push(
+      lang === 'cn' ? '哪些高管同时在多家公司任职？' : 'Which executives hold positions across multiple companies?'
+    );
+  }
+
+  // Employee size
+  if (allColsLower.has('employee_size') || [...allColsLower].some(c => c.includes('employee'))) {
+    suggestions.push(
+      lang === 'cn' ? '按员工规模分布统计，大型与小型公司比例如何？' : 'Distribution by employee size — ratio of large vs small companies?'
+    );
+  }
+
+  // User count
+  if (allColsLower.has('number_of_user') || [...allColsLower].some(c => c.includes('user'))) {
+    suggestions.push(
+      lang === 'cn' ? '用户量最大的前5家公司是？人均用户与收入的关系' : 'Top 5 by user count — what\'s the relationship between users and revenue?'
+    );
+  }
+
+  // Founded time
+  if (allColsLower.has('founded_time') || [...allColsLower].some(c => c.includes('founded') || c.includes('established'))) {
+    suggestions.push(
+      lang === 'cn' ? '金融科技公司成立年份分布，哪些年份是创业高峰？' : 'Founding year distribution — which years saw the biggest startup booms?'
+    );
+  }
+
+  // Web3 / CBDC
+  if (allColsLower.has('web3summary') || allColsLower.has('cbdc_proposal') || allColsLower.has('cbdc_implementation')) {
+    suggestions.push(
+      lang === 'cn' ? '哪些公司涉及Web3或CBDC？创新前沿分析' : 'Which companies are involved in Web3 or CBDC? Innovation frontier analysis'
+    );
+  }
+
+  // Regulatory sandbox
+  if (allColsLower.has('regulatory_sandbox') || allColsLower.has('cross-border_regulatory_sandbox')) {
+    suggestions.push(
+      lang === 'cn' ? '参与监管沙盒的公司有哪些？沙盒参与与业务规模的关系' : 'Which companies participate in regulatory sandboxes? Impact on business scale'
+    );
+  }
+
+  // Always add a cross-dataset analysis if multiple datasets
+  if (names.length > 1) {
+    suggestions.push(
+      lang === 'cn' ? '综合三张表，找出股东背景最强且管理团队最大的公司' : 'Cross all tables: companies with strongest shareholder backing and largest management teams'
+    );
+  }
+
+  // Pick 4 diverse suggestions (shuffle and take first 4)
+  const shuffled = suggestions.sort(() => Math.random() - 0.5);
+  return shuffled.slice(0, 4);
+}
+
+function getDefaultSuggestions() {
+  if (lang === 'cn') {
+    return [
+      '各地区金融科技公司数量对比',
+      '拥有数字银行牌照的公司有哪些？',
+      '按收入排名前10的公司',
+      '股权集中度分析'
+    ];
+  }
+  return [
+    'Which regions have the most fintech companies?',
+    'Compare digital bank license holders vs non-holders',
+    'Top 10 companies by revenue',
+    'Shareholder concentration analysis'
+  ];
 }
 
 // ===== LOGIN =====
@@ -744,12 +899,9 @@ function logout() {
 })();
 
 // ===== CSV UPLOAD =====
-// FIX: Wait for ALL files to finish parsing before triggering analysis once.
-// FIX: Clear old datasets when uploading new files so demo data doesn't persist.
 function handleFiles(files) {
   if (!files || files.length === 0) return;
 
-  // Clear existing datasets — uploading means "use THIS data now"
   datasets = {};
   updateDataBar();
 
@@ -763,7 +915,6 @@ function handleFiles(files) {
         datasets[file.name] = { columns: results.meta.fields || [], rows: results.data };
         pending--;
         updateDataBar();
-        // Only trigger analysis once ALL files have been parsed
         if (pending === 0) {
           onDataLoaded();
         }
@@ -776,7 +927,6 @@ function handleFiles(files) {
 function removeDataset(name) {
   delete datasets[name];
   updateDataBar();
-  // If no datasets left, show welcome screen
   if (Object.keys(datasets).length === 0) {
     resetToWelcome();
   }
@@ -797,7 +947,6 @@ async function loadDemo() {
   const btn = document.getElementById('demo-btn');
   if (btn) { btn.disabled = true; btn.textContent = 'Loading...'; }
 
-  // Clear any existing data first
   datasets = {};
   updateDataBar();
 
@@ -824,15 +973,11 @@ async function loadDemo() {
 }
 
 // ===== ANALYSIS ON DATA LOAD =====
-// FIX: This now runs exactly ONCE per load event, and charts are generic (not hardcoded to demo filenames).
 function onDataLoaded() {
-  // Clear chat for fresh analysis
   const chat = document.getElementById('chat');
   const welcome = document.getElementById('welcome');
   if (welcome) welcome.remove();
 
-  // Remove any previous auto-generated messages (stat cards, charts) from chat
-  // Keep only user/AI conversation messages that aren't auto-generated
   chat.querySelectorAll('.msg.auto-generated').forEach(el => el.remove());
 
   const names = Object.keys(datasets);
@@ -861,24 +1006,21 @@ function onDataLoaded() {
   }
   html += '</div>';
 
-  // Add a prompt message encouraging the user to interact
+  // Smart suggestions based on actual data columns
+  const smartSuggestions = getSmartSuggestions();
   html += `<p style="margin-top:16px;font-size:14px;color:var(--txt)">${t('dataReady')}</p>`;
   html += '<div class="suggestions" style="margin-top:12px;justify-content:flex-start">';
-  html += `<div class="suggestion" onclick="askSuggestion(this)">${t('s1')}</div>`;
-  html += `<div class="suggestion" onclick="askSuggestion(this)">${t('s2')}</div>`;
-  html += `<div class="suggestion" onclick="askSuggestion(this)">${t('s3')}</div>`;
-  html += `<div class="suggestion" onclick="askSuggestion(this)">${t('s4')}</div>`;
+  smartSuggestions.forEach(s => {
+    html += `<div class="suggestion" onclick="askSuggestion(this)">${s}</div>`;
+  });
   html += '</div>';
 
   const summaryDiv = addMsg('ai', '', true);
   summaryDiv.innerHTML = html;
 
-  // Generate charts as a visual overview (no AI call)
   generateCharts();
 }
 
-// FIX: Charts are now generic — they find the best categorical column in each dataset
-// instead of hardcoding `company.csv` and `shareholder.csv`.
 function generateCharts() {
   const chat = document.getElementById('chat');
   const names = Object.keys(datasets);
@@ -887,15 +1029,13 @@ function generateCharts() {
   let chartsMade = 0;
 
   for (const name of names) {
-    if (chartsMade >= 2) break; // Max 2 charts to avoid clutter
+    if (chartsMade >= 2) break;
     const d = datasets[name];
     if (d.rows.length < 2) continue;
 
-    // Find a good categorical column (low cardinality, not an ID or name)
     const catCol = findBestCategoricalColumn(d);
     if (!catCol) continue;
 
-    // Count values
     const counts = {};
     d.rows.forEach(r => {
       const val = (r[catCol] || 'Other').toString().trim();
@@ -914,7 +1054,6 @@ function generateCharts() {
   }
 }
 
-// Heuristic: find a column that looks categorical (2–20 unique values, not an ID field)
 function findBestCategoricalColumn(dataset) {
   const { columns, rows } = dataset;
   let best = null;
@@ -922,7 +1061,6 @@ function findBestCategoricalColumn(dataset) {
 
   for (const col of columns) {
     const lc = col.toLowerCase();
-    // Skip obvious ID/name/URL/text columns
     if (lc.includes('id') || lc.includes('url') || lc.includes('website') || lc.includes('summary') || lc.includes('description')) continue;
 
     const unique = new Set();
@@ -933,9 +1071,7 @@ function findBestCategoricalColumn(dataset) {
     }
     const cardinality = unique.size;
 
-    // Good categorical: 2–20 unique values, mostly filled
     if (cardinality >= 2 && cardinality <= 20 && filled > rows.length * 0.5) {
-      // Prefer columns with "tag", "type", "status", "category" in name
       let score = cardinality <= 10 ? 10 : 5;
       if (lc.includes('tag') || lc.includes('type') || lc.includes('status') || lc.includes('category') || lc.includes('sector')) {
         score += 20;
@@ -993,15 +1129,16 @@ async function autoAnalyze() {
   chat.appendChild(typing);
   chat.scrollTop = chat.scrollHeight;
 
-  streaming = true;
-  document.getElementById('send-btn').disabled = true;
+  setStreaming(true);
 
   let aiText = '';
   try {
+    abortController = new AbortController();
     const resp = await fetch('https://api.deepseek.com/chat/completions', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + apiKey },
-      body: JSON.stringify({ model: 'deepseek-chat', messages: reqMsgs, stream: true })
+      body: JSON.stringify({ model: 'deepseek-chat', messages: reqMsgs, stream: true }),
+      signal: abortController.signal
     });
     typing.remove();
     const aiDiv = addMsg('ai', '');
@@ -1027,12 +1164,16 @@ async function autoAnalyze() {
     }
   } catch (e) {
     typing.remove();
-    addMsg('ai', 'Error: ' + (e.message || 'Auto-analysis failed'));
+    if (e.name === 'AbortError') {
+      // User stopped — don't show error
+    } else {
+      addMsg('ai', 'Error: ' + (e.message || 'Auto-analysis failed'));
+    }
   }
 
   if (aiText) messages.push({ role: 'assistant', content: aiText });
-  streaming = false;
-  document.getElementById('send-btn').disabled = false;
+  abortController = null;
+  setStreaming(false);
 }
 
 // ===== DATA PREVIEW =====
@@ -1056,7 +1197,7 @@ function showPreview() {
 
 // ===== CHAT =====
 function buildSystemPrompt() {
-  let sys = 'You are FinTalk AI, a professional financial data analysis assistant.\n';
+  let sys = 'You are FinTalk.ai, a professional financial data analysis assistant.\n';
   sys += 'Answer questions accurately based on the provided data. Show calculations when relevant.\n';
   sys += 'Use markdown tables for structured output. Be concise but thorough.\n\n';
 
@@ -1080,7 +1221,6 @@ function buildSystemPrompt() {
   return sys;
 }
 
-// FIX: addMsg now accepts an `autoGenerated` flag to mark auto-analysis messages
 function addMsg(role, content, autoGenerated = false) {
   const chat = document.getElementById('chat');
   const welcome = document.getElementById('welcome');
@@ -1104,12 +1244,34 @@ function askSuggestion(el) {
   send();
 }
 
+// ===== STOP GENERATION =====
+function stopGeneration() {
+  if (abortController) {
+    abortController.abort();
+    abortController = null;
+  }
+}
+
+function setStreaming(isStreaming) {
+  streaming = isStreaming;
+  const sendBtn = document.getElementById('send-btn');
+  const stopBtn = document.getElementById('stop-btn');
+  if (isStreaming) {
+    sendBtn.disabled = true;
+    sendBtn.style.display = 'none';
+    stopBtn.classList.add('show');
+  } else {
+    sendBtn.disabled = false;
+    sendBtn.style.display = '';
+    stopBtn.classList.remove('show');
+  }
+}
+
 async function send() {
   const input = document.getElementById('msg-input');
   const text = input.value.trim();
   if (!text || streaming) return;
 
-  // Must have data loaded to ask questions
   if (Object.keys(datasets).length === 0) {
     input.value = '';
     autoResize(input);
@@ -1132,18 +1294,21 @@ async function send() {
   chat.appendChild(typing);
   chat.scrollTop = chat.scrollHeight;
 
-  streaming = true;
-  document.getElementById('send-btn').disabled = true;
+  setStreaming(true);
 
   let aiText = '';
+  let aiDiv = null;
+  let wasStopped = false;
   try {
+    abortController = new AbortController();
     const resp = await fetch('https://api.deepseek.com/chat/completions', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + apiKey },
-      body: JSON.stringify({ model: 'deepseek-chat', messages: reqMsgs, stream: true })
+      body: JSON.stringify({ model: 'deepseek-chat', messages: reqMsgs, stream: true }),
+      signal: abortController.signal
     });
     typing.remove();
-    const aiDiv = addMsg('ai', '');
+    aiDiv = addMsg('ai', '');
     const reader = resp.body.getReader();
     const decoder = new TextDecoder();
     let buf = '';
@@ -1166,17 +1331,30 @@ async function send() {
     }
   } catch (e) {
     typing.remove();
-    addMsg('ai', 'Error: ' + (e.message || 'Request failed'));
+    if (e.name === 'AbortError') {
+      wasStopped = true;
+      // If we already have partial content, append a "stopped" note
+      if (aiDiv && aiText) {
+        aiText += '\n\n' + t('stopped');
+        aiDiv.innerHTML = marked.parse(aiText);
+      } else if (!aiDiv) {
+        addMsg('ai', t('stopped'));
+      }
+    } else {
+      addMsg('ai', 'Error: ' + (e.message || 'Request failed'));
+    }
   }
 
   if (aiText) messages.push({ role: 'assistant', content: aiText });
-  streaming = false;
-  document.getElementById('send-btn').disabled = false;
+  abortController = null;
+  setStreaming(false);
   document.getElementById('msg-input').focus();
 }
 
 // ===== CLEAR & RESET =====
 function clearAll() {
+  // Also stop any ongoing generation
+  stopGeneration();
   datasets = {};
   messages = [];
   updateDataBar();
@@ -1184,15 +1362,14 @@ function clearAll() {
 }
 
 function resetToWelcome() {
+  const suggestions = getDefaultSuggestions();
   const chat = document.getElementById('chat');
   chat.innerHTML = `<div class="welcome" id="welcome"><h2>${t('welcome')}</h2>
     <p>${t('welcomeDesc')}</p>
     <div style="margin-bottom:20px"><button class="btn" onclick="loadDemo()" style="max-width:260px;margin:0 auto;display:block;background:var(--accent)">${t('tryDemo')}</button></div>
     <div class="suggestions">
-    <div class="suggestion" onclick="askSuggestion(this)">${t('s1')}</div>
-    <div class="suggestion" onclick="askSuggestion(this)">${t('s2')}</div>
-    <div class="suggestion" onclick="askSuggestion(this)">${t('s3')}</div>
-    <div class="suggestion" onclick="askSuggestion(this)">${t('s4')}</div></div></div>`;
+    ${suggestions.map(s => `<div class="suggestion" onclick="askSuggestion(this)">${s}</div>`).join('')}
+    </div></div>`;
 }
 
 function autoResize(el) {
