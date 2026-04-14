@@ -21,6 +21,26 @@ FinTalk.ai is a three-layer financial intelligence system that goes from **train
 
 ---
 
+## Demo
+
+**Web App — Multi-Agent Trace Visualization:**
+
+<img src="assets/web_page_demo.png" alt="FinTalk Web App Demo" width="100%"/>
+
+**MCP Server connected in Claude Code:**
+
+<p align="center">
+  <img src="assets/mcp_connected.png" alt="MCP Server Connected" width="800"/>
+</p>
+
+**Querying financial data and comparing companies through natural language:**
+
+<p align="center">
+  <img src="assets/mcp_run.png" alt="MCP Tools in Action" width="800"/>
+</p>
+
+---
+
 ## Architecture: Three Layers
 
 ```
@@ -39,10 +59,6 @@ Layer 1: Intelligence        Layer 2: Framework           Layer 3: Interface
 ### Layer 1: Intelligence — Financial Model Training
 
 Fine-tuned models that understand financial queries, generate SQL, and classify intent.
-
-<p align="center">
-  <img src="assets/training.png" alt="Training Pipeline" width="700"/>
-</p>
 
 | Stage | Method | Details |
 |-------|--------|---------|
@@ -78,12 +94,6 @@ An asymmetric dual-agent system running inside the OSWorld sandbox for reproduci
 | `function_registry` | Financial function calling registry |
 | `streaming_nlg` | Real-time natural language generation |
 | `conversation_manager` | Dialog history and slot management |
-
-**Web App — Multi-Agent Trace Visualization:**
-
-<img src="assets/web_page_demo.png" alt="FinTalk Web App Demo" width="100%"/>
-
-*The web interface shows real-time agent collaboration: Arbitrator classifies intent, Rewriter refines queries, Worker generates SQL, and Orchestrator synthesizes the final answer — all visible in the expandable trace panel.*
 
 ---
 
@@ -132,22 +142,6 @@ graph LR
 | Name | Description |
 |------|-------------|
 | `analyze_company` | Multi-step company analysis workflow template |
-
-#### Demo
-
-**MCP Server connected in Claude Code:**
-
-<p align="center">
-  <img src="assets/mcp_connected.png" alt="MCP Server Connected" width="800"/>
-</p>
-
-**Querying financial data and comparing companies through natural language:**
-
-<p align="center">
-  <img src="assets/mcp_run.png" alt="MCP Tools in Action" width="800"/>
-</p>
-
-*Claude Code calls `list_tables` → `get_company_info` → `compare_companies` to produce a governance analysis report in one conversation.*
 
 ---
 
