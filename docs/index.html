@@ -568,7 +568,6 @@
     <div class="header-actions">
       <button class="btn-sm btn-upload" onclick="document.getElementById('file-input').click()">Upload CSV</button>
       <button class="btn-sm" onclick="loadDemo()" id="demo-btn" style="background:var(--bluebg);border-color:var(--bluebr);color:var(--blue)">Demo Data</button>
-      <button class="btn-sm" onclick="deepResearch()" id="research-btn" style="background:var(--violetbg);border-color:var(--violetbr);color:var(--violet)">Deep Research</button>
       <button class="btn-sm" onclick="showPreview()">Data</button>
       <button class="btn-sm" onclick="toggleLang()" id="lang-btn">CN/EN</button>
       <button class="btn-sm" onclick="clearAll()">Clear</button>
@@ -623,7 +622,6 @@ const i18n = {
     hint: 'Your key stays in your browser. Nothing is sent to our servers.',
     upload: 'Upload CSV',
     demo: 'Demo Data',
-    research: 'Deep Research',
     data: 'Data',
     clear: 'Clear',
     logout: 'Logout',
@@ -638,11 +636,6 @@ const i18n = {
     columns: 'Columns',
     dataReady: 'Your data is ready! Ask me anything, or try one of these:',
     s1: 'Summarize the dataset', s2: 'Show key insights', s3: 'Find the top 5 by value', s4: 'Generate a report',
-    researchTitle: 'Deep Research',
-    researchPlaceholder: 'Enter a research topic (e.g. "Analyze governance structure of all live virtual banks")...',
-    researchStart: 'Start Research',
-    researchCancel: 'Cancel',
-    researchProgress: 'Deep analysis in progress...',
     loading: 'Loading...',
     invalidKey: 'Invalid API key',
   },
@@ -655,7 +648,6 @@ const i18n = {
     hint: '密钥仅保存在浏览器中，不会发送到我们的服务器。',
     upload: '上传 CSV',
     demo: '示例数据',
-    research: '深度研究',
     data: '数据',
     clear: '清空',
     logout: '退出',
@@ -670,11 +662,6 @@ const i18n = {
     columns: '总列数',
     dataReady: '数据已就绪！可以提问，或试试：',
     s1: '总结数据集', s2: '显示关键洞察', s3: '找出前5名', s4: '生成分析报告',
-    researchTitle: '深度研究',
-    researchPlaceholder: '输入研究主题（例如："分析所有活跃虚拟银行的治理结构"）...',
-    researchStart: '开始研究',
-    researchCancel: '取消',
-    researchProgress: '正在进行深度分析...',
     loading: '加载中...',
     invalidKey: 'API Key 无效',
   }
@@ -697,7 +684,7 @@ function applyLang() {
   document.querySelector('.hint').textContent = t('hint');
   // Header buttons
   const btns = document.querySelectorAll('.header-actions .btn-sm');
-  const btnLabels = ['upload','demo','research','data','','clear','logout'];
+  const btnLabels = ['upload','demo','data','','clear','logout'];
   btns.forEach((b, i) => {
     if (btnLabels[i] === '') return; // lang btn stays as CN/EN
     if (btnLabels[i]) b.textContent = t(btnLabels[i]);
@@ -1122,14 +1109,6 @@ async function send() {
   const text = input.value.trim();
   if (!text || streaming) return;
 
-  // Route to deep research if in research mode
-  if (researchMode) {
-    input.value = '';
-    autoResize(input);
-    sendResearch(text);
-    return;
-  }
-
   // Must have data loaded to ask questions
   if (Object.keys(datasets).length === 0) {
     input.value = '';
@@ -1194,131 +1173,6 @@ async function send() {
   streaming = false;
   document.getElementById('send-btn').disabled = false;
   document.getElementById('msg-input').focus();
-}
-
-// ===== DEEP RESEARCH =====
-let researchMode = false;
-
-function deepResearch() {
-  if (streaming) return;
-  if (Object.keys(datasets).length === 0) {
-    addMsg('ai', t('noData'));
-    return;
-  }
-  researchMode = !researchMode;
-  const btn = document.getElementById('research-btn');
-  const input = document.getElementById('msg-input');
-  const sendBtn = document.getElementById('send-btn');
-  if (researchMode) {
-    btn.style.background = 'var(--violet)';
-    btn.style.color = '#fff';
-    btn.style.borderColor = 'var(--violet)';
-    input.placeholder = t('researchPlaceholder');
-    sendBtn.style.background = 'var(--violet)';
-    input.focus();
-  } else {
-    btn.style.background = 'var(--violetbg)';
-    btn.style.color = 'var(--violet)';
-    btn.style.borderColor = 'var(--violetbr)';
-    input.placeholder = t('placeholder');
-    sendBtn.style.background = '';
-  }
-}
-
-async function sendResearch(topic) {
-  researchMode = false;
-  const btn = document.getElementById('research-btn');
-  btn.style.background = 'var(--violetbg)';
-  btn.style.color = 'var(--violet)';
-  btn.style.borderColor = 'var(--violetbr)';
-  document.getElementById('msg-input').placeholder = t('placeholder');
-  document.getElementById('send-btn').style.background = '';
-
-  const welcome = document.getElementById('welcome');
-  if (welcome) welcome.remove();
-
-  addMsg('user', topic);
-
-  const chat = document.getElementById('chat');
-  const progress = document.createElement('div');
-  progress.className = 'msg ai';
-  progress.style.cssText = 'border-left:3px solid var(--violet);';
-  progress.innerHTML = `<p style="font-family:var(--mono);font-size:11px;font-weight:600;color:var(--violet);text-transform:uppercase;letter-spacing:.04em">${t('researchProgress')}</p>`;
-  chat.appendChild(progress);
-  chat.scrollTop = chat.scrollHeight;
-
-  const researchPrompt = lang === 'cn'
-    ? `你是 FinTalk AI 深度研究助手。请对以下主题进行全面深入的分析：
-
-"${topic}"
-
-请按以下步骤进行：
-1. **数据分析**：基于已加载的数据集，提取相关信息
-2. **外部对比**：结合你的行业知识，与公开信息进行对比分析
-3. **综合分析**：给出深度洞察和发现
-4. **结论与建议**：总结关键发现，提出可行建议
-
-请用中文输出一份结构化的研究报告，包含标题、各章节和具体数据支撑。`
-    : `You are FinTalk AI Deep Research assistant. Conduct a comprehensive analysis on:
-
-"${topic}"
-
-Follow these steps:
-1. **Data Analysis**: Extract relevant information from the loaded datasets
-2. **Cross-reference**: Compare findings with industry benchmarks and known patterns
-3. **Synthesis**: Combine analyses for deep insights
-4. **Conclusions**: Summarize key findings with actionable recommendations
-
-Output a structured research report with clear sections and specific data points.`;
-
-  messages.push({ role: 'user', content: researchPrompt });
-  const reqMsgs = [{ role: 'system', content: buildSystemPrompt() }, ...messages.slice(-20)];
-
-  streaming = true;
-  document.getElementById('send-btn').disabled = true;
-
-  let aiText = '';
-  try {
-    const resp = await fetch('https://api.deepseek.com/chat/completions', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + apiKey },
-      body: JSON.stringify({
-        model: 'deepseek-chat',
-        messages: reqMsgs,
-        stream: true
-      })
-    });
-    progress.remove();
-    const aiDiv = addMsg('ai', '');
-    aiDiv.style.borderLeft = '3px solid var(--violet)';
-    const reader = resp.body.getReader();
-    const decoder = new TextDecoder();
-    let buf = '';
-    while (true) {
-      const { done, value } = await reader.read();
-      if (done) break;
-      buf += decoder.decode(value, { stream: true });
-      const lines = buf.split('\n');
-      buf = lines.pop();
-      for (const line of lines) {
-        if (!line.startsWith('data: ')) continue;
-        const d = line.slice(6);
-        if (d === '[DONE]') break;
-        try {
-          const j = JSON.parse(d);
-          const c = j.choices?.[0]?.delta?.content;
-          if (c) { aiText += c; aiDiv.innerHTML = marked.parse(aiText); chat.scrollTop = chat.scrollHeight; }
-        } catch {}
-      }
-    }
-  } catch (e) {
-    progress.remove();
-    addMsg('ai', 'Error: ' + (e.message || 'Research failed'));
-  }
-
-  if (aiText) messages.push({ role: 'assistant', content: aiText });
-  streaming = false;
-  document.getElementById('send-btn').disabled = false;
 }
 
 // ===== CLEAR & RESET =====
