@@ -25,12 +25,12 @@ FinTalk.ai is a three-layer financial intelligence system that goes from **train
 
 ```
 Layer 1: Intelligence        Layer 2: Framework           Layer 3: Interface
-┌─────────────────┐    ┌──────────────────────┐    ┌──────────────────────┐
-│  SFT + GRPO     │    │  Orchestrator Agent   │    │    MCP Server        │
-│  LoRA Adapters   │───▶│  Worker Agent         │───▶│  10 Tools            │
-│  NL2SQL / Classif│    │  MCP Core Modules     │    │  2 Resources         │
-│                  │    │  OSWorld Sandbox       │    │  1 Prompt Template   │
-└─────────────────┘    └──────────────────────┘    └──────────────────────┘
+┌──────────────────┐    ┌──────────────────────┐    ┌──────────────────────┐
+│  SFT + GRPO      │    │  Orchestrator Agent  │    │    MCP Server        │
+│  LoRA Adapters   │───▶│  Worker Agent        │───▶│  10 Tools            │
+│  NL2SQL / Classif│    │  MCP Core Modules    │    │  2 Resources         │
+│                  │    │  OSWorld Sandbox     │    │  1 Prompt Template   │
+└──────────────────┘    └──────────────────────┘    └──────────────────────┘
    Train the brain       Orchestrate the work        Expose to any AI agent
 ```
 
