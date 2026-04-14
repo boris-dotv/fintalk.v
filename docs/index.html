@@ -569,7 +569,7 @@
       <button class="btn-sm btn-upload" onclick="document.getElementById('file-input').click()">Upload CSV</button>
       <button class="btn-sm" onclick="loadDemo()" id="demo-btn" style="background:var(--bluebg);border-color:var(--bluebr);color:var(--blue)">Demo Data</button>
       <button class="btn-sm" onclick="showPreview()">Data</button>
-      <button class="btn-sm" onclick="clearChat()">Clear</button>
+      <button class="btn-sm" onclick="clearAll()">Clear</button>
       <button class="btn-sm" onclick="logout()">Logout</button>
     </div>
   </div>
@@ -650,15 +650,29 @@ function logout() {
 })();
 
 // ===== CSV UPLOAD =====
+// FIX: Wait for ALL files to finish parsing before triggering analysis once.
+// FIX: Clear old datasets when uploading new files so demo data doesn't persist.
 function handleFiles(files) {
+  if (!files || files.length === 0) return;
+
+  // Clear existing datasets — uploading means "use THIS data now"
+  datasets = {};
+  updateDataBar();
+
+  let pending = files.length;
+
   for (const file of files) {
     Papa.parse(file, {
       header: true,
       skipEmptyLines: true,
       complete: function(results) {
         datasets[file.name] = { columns: results.meta.fields || [], rows: results.data };
+        pending--;
         updateDataBar();
-        onDataLoaded();
+        // Only trigger analysis once ALL files have been parsed
+        if (pending === 0) {
+          onDataLoaded();
+        }
       }
     });
   }
@@ -668,6 +682,10 @@ function handleFiles(files) {
 function removeDataset(name) {
   delete datasets[name];
   updateDataBar();
+  // If no datasets left, show welcome screen
+  if (Object.keys(datasets).length === 0) {
+    resetToWelcome();
+  }
 }
 
 function updateDataBar() {
@@ -684,6 +702,10 @@ function updateDataBar() {
 async function loadDemo() {
   const btn = document.getElementById('demo-btn');
   if (btn) { btn.disabled = true; btn.textContent = 'Loading...'; }
+
+  // Clear any existing data first
+  datasets = {};
+  updateDataBar();
 
   const files = ['company.csv', 'management.csv', 'shareholder.csv'];
   let loaded = 0;
@@ -707,13 +729,21 @@ async function loadDemo() {
   }
 }
 
-// ===== AUTO-ANALYSIS ON DATA LOAD =====
+// ===== ANALYSIS ON DATA LOAD =====
+// FIX: This now runs exactly ONCE per load event, and charts are generic (not hardcoded to demo filenames).
 function onDataLoaded() {
+  // Clear chat for fresh analysis
+  const chat = document.getElementById('chat');
   const welcome = document.getElementById('welcome');
   if (welcome) welcome.remove();
 
-  // Build summary stats
+  // Remove any previous auto-generated messages (stat cards, charts) from chat
+  // Keep only user/AI conversation messages that aren't auto-generated
+  chat.querySelectorAll('.msg.auto-generated').forEach(el => el.remove());
+
   const names = Object.keys(datasets);
+  if (names.length === 0) return;
+
   let totalRows = 0, totalCols = 0;
   names.forEach(n => { totalRows += datasets[n].rows.length; totalCols += datasets[n].columns.length; });
 
@@ -722,13 +752,6 @@ function onDataLoaded() {
   html += `<div class="stat-card"><span class="val">${names.length}</span><span class="lbl">Datasets</span></div>`;
   html += `<div class="stat-card"><span class="val">${totalRows.toLocaleString()}</span><span class="lbl">Total Rows</span></div>`;
   html += `<div class="stat-card"><span class="val">${totalCols}</span><span class="lbl">Columns</span></div>`;
-
-  // If company data, count unique statuses
-  const compData = datasets['company.csv'];
-  if (compData) {
-    const live = compData.rows.filter(r => r.status === 'Live').length;
-    html += `<div class="stat-card"><span class="val">${live}</span><span class="lbl">Live Companies</span></div>`;
-  }
   html += '</div>';
 
   // Tables loaded
@@ -736,59 +759,101 @@ function onDataLoaded() {
   names.forEach(n => { html += `${n} (${datasets[n].rows.length} rows) &nbsp; `; });
   html += '</p>';
 
-  const summaryDiv = addMsg('ai', '');
+  // Column overview per dataset
+  html += '<div style="margin-top:12px">';
+  for (const name of names) {
+    const cols = datasets[name].columns;
+    html += `<p style="font-family:var(--mono);font-size:11px;color:var(--txt2);margin:4px 0"><strong>${name}:</strong> ${cols.join(', ')}</p>`;
+  }
+  html += '</div>';
+
+  const summaryDiv = addMsg('ai', '', true);
   summaryDiv.innerHTML = html;
 
-  // Generate charts
+  // FIX: Generate charts generically — detect categorical columns in ANY dataset
   generateCharts();
 
   // Auto-analysis via AI
   autoAnalyze();
 }
 
+// FIX: Charts are now generic — they find the best categorical column in each dataset
+// instead of hardcoding `company.csv` and `shareholder.csv`.
 function generateCharts() {
-  const compData = datasets['company.csv'];
-  const shData = datasets['shareholder.csv'];
-  if (!compData && !shData) return;
-
   const chat = document.getElementById('chat');
+  const names = Object.keys(datasets);
+  const colors = ['#4D7C0F','#3B82F6','#D97706','#6D28D9','#9F1239','#0891B2','#C2410C','#4338CA'];
 
-  if (compData) {
-    // Chart 1: Top 10 companies by tag distribution
-    const tagCount = {};
-    compData.rows.forEach(r => {
-      const tag = r.company_tag || 'Other';
-      tagCount[tag] = (tagCount[tag] || 0) + 1;
-    });
-    const sortedTags = Object.entries(tagCount).sort((a, b) => b[1] - a[1]).slice(0, 8);
-    const colors = ['#4D7C0F','#3B82F6','#D97706','#6D28D9','#9F1239','#0891B2','#C2410C','#4338CA'];
-    renderChart(chat, 'doughnut', {
-      labels: sortedTags.map(t => t[0]),
-      datasets: [{ data: sortedTags.map(t => t[1]), backgroundColor: colors }]
-    }, 'Company Distribution by Sector');
-  }
+  let chartsMade = 0;
 
-  if (shData) {
-    // Chart 2: Top 10 shareholders by tag
-    const shTagCount = {};
-    shData.rows.forEach(r => {
-      const tag = r.shareholder_tag || 'Other';
-      shTagCount[tag] = (shTagCount[tag] || 0) + 1;
+  for (const name of names) {
+    if (chartsMade >= 2) break; // Max 2 charts to avoid clutter
+    const d = datasets[name];
+    if (d.rows.length < 2) continue;
+
+    // Find a good categorical column (low cardinality, not an ID or name)
+    const catCol = findBestCategoricalColumn(d);
+    if (!catCol) continue;
+
+    // Count values
+    const counts = {};
+    d.rows.forEach(r => {
+      const val = (r[catCol] || 'Other').toString().trim();
+      if (val) counts[val] = (counts[val] || 0) + 1;
     });
-    const sortedShTags = Object.entries(shTagCount).sort((a, b) => b[1] - a[1]).slice(0, 6);
-    const barColors = ['#4D7C0F','#3B82F6','#D97706','#6D28D9','#9F1239','#0891B2'];
-    renderChart(chat, 'bar', {
-      labels: sortedShTags.map(t => t[0]),
-      datasets: [{ label: 'Count', data: sortedShTags.map(t => t[1]), backgroundColor: barColors }]
-    }, 'Shareholder Types');
+    const sorted = Object.entries(counts).sort((a, b) => b[1] - a[1]).slice(0, 8);
+    if (sorted.length < 2) continue;
+
+    const chartType = sorted.length <= 6 ? 'doughnut' : 'bar';
+    const title = `${name} — ${catCol} distribution`;
+    renderChart(chat, chartType, {
+      labels: sorted.map(t => t[0]),
+      datasets: [{ label: 'Count', data: sorted.map(t => t[1]), backgroundColor: colors.slice(0, sorted.length) }]
+    }, title);
+    chartsMade++;
   }
+}
+
+// Heuristic: find a column that looks categorical (2–20 unique values, not an ID field)
+function findBestCategoricalColumn(dataset) {
+  const { columns, rows } = dataset;
+  let best = null;
+  let bestScore = -1;
+
+  for (const col of columns) {
+    const lc = col.toLowerCase();
+    // Skip obvious ID/name/URL/text columns
+    if (lc.includes('id') || lc.includes('url') || lc.includes('website') || lc.includes('summary') || lc.includes('description')) continue;
+
+    const unique = new Set();
+    let filled = 0;
+    for (let i = 0; i < Math.min(rows.length, 200); i++) {
+      const v = (rows[i][col] || '').toString().trim();
+      if (v) { unique.add(v); filled++; }
+    }
+    const cardinality = unique.size;
+
+    // Good categorical: 2–20 unique values, mostly filled
+    if (cardinality >= 2 && cardinality <= 20 && filled > rows.length * 0.5) {
+      // Prefer columns with "tag", "type", "status", "category" in name
+      let score = cardinality <= 10 ? 10 : 5;
+      if (lc.includes('tag') || lc.includes('type') || lc.includes('status') || lc.includes('category') || lc.includes('sector')) {
+        score += 20;
+      }
+      if (score > bestScore) {
+        bestScore = score;
+        best = col;
+      }
+    }
+  }
+  return best;
 }
 
 function renderChart(container, type, data, title) {
   chartCounter++;
   const id = 'chart-' + chartCounter;
   const wrapper = document.createElement('div');
-  wrapper.className = 'msg ai';
+  wrapper.className = 'msg ai auto-generated';
   wrapper.innerHTML = `<p style="font-family:var(--mono);font-size:11px;font-weight:600;color:var(--txt3);text-transform:uppercase;letter-spacing:.04em;margin-bottom:8px">${title}</p><div class="chart-container"><canvas id="${id}"></canvas></div>`;
   container.appendChild(wrapper);
   container.scrollTop = container.scrollHeight;
@@ -915,13 +980,15 @@ function buildSystemPrompt() {
   return sys;
 }
 
-function addMsg(role, content) {
+// FIX: addMsg now accepts an `autoGenerated` flag to mark auto-analysis messages
+function addMsg(role, content, autoGenerated = false) {
   const chat = document.getElementById('chat');
   const welcome = document.getElementById('welcome');
   if (welcome) welcome.remove();
 
   const div = document.createElement('div');
   div.className = 'msg ' + (role === 'user' ? 'user' : 'ai');
+  if (autoGenerated) div.classList.add('auto-generated');
   if (role === 'ai') {
     div.innerHTML = marked.parse(content);
   } else {
@@ -941,6 +1008,12 @@ async function send() {
   const input = document.getElementById('msg-input');
   const text = input.value.trim();
   if (!text || streaming) return;
+
+  // Must have data loaded to ask questions
+  if (Object.keys(datasets).length === 0) {
+    addMsg('ai', 'Please upload a CSV file or load the demo data first.');
+    return;
+  }
 
   input.value = '';
   autoResize(input);
@@ -999,13 +1072,24 @@ async function send() {
   document.getElementById('msg-input').focus();
 }
 
-function clearChat() {
+// FIX: "Clear" now resets EVERYTHING — datasets, messages, data bar, and chat
+function clearAll() {
+  datasets = {};
   messages = [];
+  updateDataBar();
+  resetToWelcome();
+}
+
+function resetToWelcome() {
   const chat = document.getElementById('chat');
-  chat.innerHTML = `<div class="welcome" id="welcome"><h2>Welcome to FinTalk</h2><p>Upload a CSV or try the demo data.</p>
+  chat.innerHTML = `<div class="welcome" id="welcome"><h2>Welcome to FinTalk</h2>
+    <p>Upload a CSV file and start asking questions about your financial data — or try the built-in demo.</p>
     <div style="margin-bottom:20px"><button class="btn" onclick="loadDemo()" style="max-width:260px;margin:0 auto;display:block;background:var(--accent)">Try Demo — 999 Companies</button></div>
-    <div class="suggestions"><div class="suggestion" onclick="askSuggestion(this)">Summarize the dataset</div>
-    <div class="suggestion" onclick="askSuggestion(this)">Show basic statistics</div></div></div>`;
+    <div class="suggestions">
+    <div class="suggestion" onclick="askSuggestion(this)">What columns are in my data?</div>
+    <div class="suggestion" onclick="askSuggestion(this)">Summarize the dataset</div>
+    <div class="suggestion" onclick="askSuggestion(this)">Show basic statistics</div>
+    <div class="suggestion" onclick="askSuggestion(this)">Find the top 5 by value</div></div></div>`;
 }
 
 function autoResize(el) {
