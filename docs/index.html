@@ -111,9 +111,6 @@
     .btn-sm:hover { background: var(--bg4); border-color: var(--bdr); color: var(--txt); }
     .btn-upload { background: var(--accentbg); border-color: var(--accentbr); color: var(--accent); }
     .btn-upload:hover { background: rgba(77,124,15,.12); color: #3d6310; }
-    .btn-trace { background: var(--violetbg); border-color: var(--violetbr); color: var(--violet); }
-    .btn-trace:hover { background: rgba(109,40,217,.1); }
-    .btn-trace.active { background: var(--violet); color: #fff; border-color: var(--violet); }
 
     .data-bar { display: none; padding: 10px 32px; background: var(--bg3); border-bottom: 1px solid var(--bdr2); flex-shrink: 0; flex-wrap: wrap; gap: 8px; align-items: center; }
     .data-bar.show { display: flex; }
@@ -199,18 +196,67 @@
     .step-tag.knowledge { background: var(--bluebg); color: var(--blue); border: 1px solid var(--bluebr); }
     .step-tag.small_talk { background: var(--amberbg); color: var(--amber); border: 1px solid var(--amberbr); }
 
+    /* suggestions bar above input */
+    #suggestions-bar {
+      display: none;
+      padding: 10px 32px 0;
+      background: var(--bg2);
+      flex-shrink: 0;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
+    #suggestions-bar.show { display: flex; }
+    #suggestions-bar .suggestion {
+      padding: 7px 16px;
+      background: var(--bg3);
+      border: 1px solid var(--bdr);
+      border-radius: 100px;
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--txt2);
+      cursor: pointer;
+      transition: all .25s;
+      white-space: nowrap;
+    }
+    #suggestions-bar .suggestion:hover {
+      border-color: var(--accentbr);
+      background: var(--accentbg);
+      color: var(--accent);
+    }
+    #suggestions-bar .sug-label {
+      font-family: var(--mono);
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--txtf);
+      text-transform: uppercase;
+      letter-spacing: .04em;
+      margin-right: 2px;
+    }
+
     /* input bar */
-    .input-bar { display: flex; gap: 12px; padding: 18px 32px; background: var(--bg2); border-top: 1px solid var(--bdr); flex-shrink: 0; }
-    .input-bar textarea { flex: 1; padding: 14px 20px; background: var(--bg3); border: 1px solid var(--bdr); border-radius: 12px; color: var(--txt); font-family: var(--sans); font-size: 14px; resize: none; outline: none; min-height: 48px; max-height: 120px; transition: border .25s, box-shadow .25s; }
+    .input-bar { display: flex; gap: 10px; padding: 14px 32px 18px; background: var(--bg2); border-top: 1px solid var(--bdr); flex-shrink: 0; align-items: flex-end; }
+    .input-bar textarea { flex: 1; padding: 12px 18px; background: var(--bg3); border: 1px solid var(--bdr); border-radius: 12px; color: var(--txt); font-family: var(--sans); font-size: 14px; resize: none; outline: none; min-height: 46px; max-height: 120px; transition: border .25s, box-shadow .25s; }
     .input-bar textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(77,124,15,.08); }
     .input-bar textarea::placeholder { color: var(--txtf); }
-    .input-bar button#send-btn { padding: 0 24px; background: var(--txt); border: none; border-radius: 12px; color: var(--bg2); font-family: var(--mono); font-size: 12px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; cursor: pointer; transition: background .25s; }
+    .input-bar button#send-btn { padding: 0 22px; height: 46px; background: var(--txt); border: none; border-radius: 12px; color: var(--bg2); font-family: var(--mono); font-size: 12px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; cursor: pointer; transition: background .25s; }
     .input-bar button#send-btn:hover { background: var(--txt2); }
     .input-bar button#send-btn:disabled { opacity: .3; cursor: not-allowed; }
-    .input-bar button#stop-btn { display: none; padding: 0 20px; background: var(--terra); border: none; border-radius: 12px; color: #fff; font-family: var(--mono); font-size: 12px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; cursor: pointer; transition: background .25s; align-items: center; gap: 6px; }
+    .input-bar button#stop-btn { display: none; padding: 0 20px; height: 46px; background: var(--terra); border: none; border-radius: 12px; color: #fff; font-family: var(--mono); font-size: 12px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; cursor: pointer; transition: background .25s; align-items: center; gap: 6px; }
     .input-bar button#stop-btn.show { display: flex; }
     .input-bar button#stop-btn:hover { background: #881337; }
     .input-bar button#stop-btn .stop-icon { width: 10px; height: 10px; background: #fff; border-radius: 2px; flex-shrink: 0; }
+
+    /* trace toggle in input bar */
+    .input-bar .btn-trace {
+      width: 40px; height: 46px; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      background: var(--bg3); border: 1px solid var(--bdr2); border-radius: 12px;
+      color: var(--txt3); cursor: pointer; transition: all .2s; padding: 0;
+    }
+    .input-bar .btn-trace:hover { background: var(--violetbg); border-color: var(--violetbr); color: var(--violet); }
+    .input-bar .btn-trace.active { background: var(--violet); border-color: var(--violet); color: #fff; }
 
     /* modal */
     .modal-bg { display: none; position: fixed; inset: 0; background: rgba(20,20,19,.4); backdrop-filter: blur(4px); z-index: 100; align-items: center; justify-content: center; }
@@ -238,6 +284,7 @@
       .login-card { padding: 36px 28px; }
       .msg,.agent-trace { max-width: 95%; }
       .input-bar { padding: 14px 18px; }
+      #suggestions-bar { padding: 10px 18px 0; }
       .chat { padding: 18px; }
       .header { padding: 12px 18px; }
       .data-bar { padding: 10px 18px; }
@@ -269,7 +316,6 @@
       <button class="btn-sm btn-upload" onclick="document.getElementById('file-input').click()">Upload CSV</button>
       <button class="btn-sm" onclick="loadDemo()" id="demo-btn" style="background:var(--bluebg);border-color:var(--bluebr);color:var(--blue)">Demo Data</button>
       <button class="btn-sm" onclick="showPreview()">Data</button>
-      <button class="btn-sm btn-trace active" id="trace-toggle-btn" onclick="toggleTraceMode()">Agent Trace</button>
       <button class="btn-sm" onclick="toggleLang()" id="lang-btn">CN/EN</button>
       <button class="btn-sm" onclick="clearAll()">Clear</button>
       <button class="btn-sm" onclick="logout()">Logout</button>
@@ -292,7 +338,11 @@
       </div>
     </div>
   </div>
+  <div id="suggestions-bar"></div>
   <div class="input-bar">
+    <button class="btn-trace active" id="trace-toggle-btn" onclick="toggleTraceMode()" title="Agent Trace">
+      <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M2 4h12M2 8h8M2 12h10"/><circle cx="13" cy="10" r="2" fill="currentColor" stroke="none"/></svg>
+    </button>
     <textarea id="msg-input" placeholder="Ask about your data..." rows="1" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();send()}" oninput="autoResize(this)"></textarea>
     <button id="send-btn" onclick="send()">Send</button>
     <button id="stop-btn" onclick="stopGeneration()"><span class="stop-icon"></span>Stop</button>
@@ -318,7 +368,7 @@ function applyLang(){
   document.getElementById('connect-btn').textContent=t('connect');
   document.querySelector('.hint').textContent=t('hint');
   const btns=document.querySelectorAll('.header-actions .btn-sm');
-  ['upload','demo','data','','','clear','logout'].forEach((l,i)=>{if(l)btns[i].textContent=t(l)});
+  ['upload','demo','data','','clear','logout'].forEach((l,i)=>{if(l)btns[i].textContent=t(l)});
   document.getElementById('msg-input').placeholder=t('placeholder');
   document.getElementById('send-btn').textContent=t('send');
   const wh=document.querySelector('.welcome h2');if(wh)wh.textContent=t('welcome');
@@ -353,7 +403,7 @@ async function connect(){
   const key=document.getElementById('key-input').value.trim();if(!key)return;
   const btn=document.getElementById('connect-btn'),err=document.getElementById('login-error');
   btn.disabled=true;btn.textContent='Connecting...';err.style.display='none';
-  try{const r=await fetch('https://api.deepseek.com/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+key},body:JSON.stringify({model:'deepseek-chat',messages:[{role:'user',content:'hi'}],max_tokens:1})});if(!r.ok)throw new Error('Invalid API key');apiKey=key;sessionStorage.setItem('dk',key);document.getElementById('login').style.display='none';document.getElementById('app').style.display='flex';document.getElementById('trace-toggle-btn').classList.toggle('active',showTrace);applyLang()}catch(e){err.textContent=e.message||'Connection failed';err.style.display='block'}
+  try{const r=await fetch('https://api.deepseek.com/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+key},body:JSON.stringify({model:'deepseek-chat',messages:[{role:'user',content:'hi'}],max_tokens:1})});if(!r.ok)throw new Error('Invalid API key');apiKey=key;sessionStorage.setItem('dk',key);document.getElementById('login').style.display='none';document.getElementById('app').style.display='flex';applyLang()}catch(e){err.textContent=e.message||'Connection failed';err.style.display='block'}
   btn.disabled=false;btn.textContent='Connect';
 }
 function logout(){apiKey='';sessionStorage.removeItem('dk');datasets={};messages=[];document.getElementById('app').style.display='none';document.getElementById('login').style.display='flex'}
@@ -381,10 +431,9 @@ function onDataLoaded(){
   names.forEach(n=>{h+=`${n} (${datasets[n].rows.length} rows) &nbsp; `});h+='</p><div style="margin-top:12px">';
   names.forEach(n=>{h+=`<p style="font-family:var(--mono);font-size:11px;color:var(--txt2);margin:4px 0"><strong>${n}:</strong> ${datasets[n].columns.join(', ')}</p>`});
   h+='</div>';
-  const ss=getSmartSuggestions();
-  h+=`<p style="margin-top:16px;font-size:14px;color:var(--txt)">${t('dataReady')}</p><div class="suggestions" style="margin-top:12px;justify-content:flex-start">`;
-  ss.forEach(s=>{h+=`<div class="suggestion" onclick="askSuggestion(this)">${s}</div>`});h+='</div>';
   const d=addMsg('ai','',true);d.innerHTML=h;generateCharts();
+  // Populate suggestions bar above input
+  showSuggestionsBar();
 }
 
 function generateCharts(){const chat=document.getElementById('chat'),names=Object.keys(datasets),colors=['#4D7C0F','#3B82F6','#D97706','#6D28D9','#9F1239','#0891B2','#C2410C','#4338CA'];let m=0;for(const name of names){if(m>=2)break;const d=datasets[name];if(d.rows.length<2)continue;const cc=findBestCategoricalColumn(d);if(!cc)continue;const counts={};d.rows.forEach(r=>{const v=(r[cc]||'Other').toString().trim();if(v)counts[v]=(counts[v]||0)+1});const sorted=Object.entries(counts).sort((a,b)=>b[1]-a[1]).slice(0,8);if(sorted.length<2)continue;renderChart(chat,sorted.length<=6?'doughnut':'bar',{labels:sorted.map(t=>t[0]),datasets:[{label:'Count',data:sorted.map(t=>t[1]),backgroundColor:colors.slice(0,sorted.length)}]},`${name} — ${cc} distribution`);m++}}
@@ -491,6 +540,15 @@ function addMsg(role,content,auto=false){
 }
 function askSuggestion(el){document.getElementById('msg-input').value=el.textContent;send()}
 
+function showSuggestionsBar(){
+  const bar=document.getElementById('suggestions-bar');
+  const ss=getSmartSuggestions();
+  if(!ss.length||!Object.keys(datasets).length){bar.classList.remove('show');bar.innerHTML='';return}
+  bar.innerHTML=`<span class="sug-label">${lang==='cn'?'试试':'Try'}:</span>`+ss.map(s=>`<span class="suggestion" onclick="askSuggestion(this)">${s}</span>`).join('');
+  bar.classList.add('show');
+}
+function hideSuggestionsBar(){const bar=document.getElementById('suggestions-bar');bar.classList.remove('show');bar.innerHTML=''}
+
 function stopGeneration(){if(abortController){abortController.abort();abortController=null}}
 function setStreaming(v){
   streaming=v;const sb=document.getElementById('send-btn'),st=document.getElementById('stop-btn');
@@ -501,6 +559,7 @@ async function send(){
   const input=document.getElementById('msg-input'),text=input.value.trim();if(!text||streaming)return;
   if(!Object.keys(datasets).length){input.value='';autoResize(input);addMsg('user',text);addMsg('ai',t('noData'));return}
   input.value='';autoResize(input);addMsg('user',text);
+  hideSuggestionsBar();
   messages.push({role:'user',content:text});
   const reqMsgs=[{role:'system',content:buildSystemPrompt()},...messages.slice(-20)];
   setStreaming(true);
@@ -526,7 +585,7 @@ async function send(){
   abortController=null;setStreaming(false);document.getElementById('msg-input').focus();
 }
 
-function clearAll(){stopGeneration();datasets={};messages=[];updateDataBar();resetToWelcome()}
+function clearAll(){stopGeneration();datasets={};messages=[];updateDataBar();hideSuggestionsBar();resetToWelcome()}
 function resetToWelcome(){const s=getDefaultSuggestions(),chat=document.getElementById('chat');chat.innerHTML=`<div class="welcome" id="welcome"><h2>${t('welcome')}</h2><p>${t('welcomeDesc')}</p><div style="margin-bottom:20px"><button class="btn" onclick="loadDemo()" style="max-width:260px;margin:0 auto;display:block;background:var(--accent)">${t('tryDemo')}</button></div><div class="suggestions">${s.map(x=>`<div class="suggestion" onclick="askSuggestion(this)">${x}</div>`).join('')}</div></div>`}
 function autoResize(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight,120)+'px'}
 </script>
