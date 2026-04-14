@@ -568,7 +568,9 @@
     <div class="header-actions">
       <button class="btn-sm btn-upload" onclick="document.getElementById('file-input').click()">Upload CSV</button>
       <button class="btn-sm" onclick="loadDemo()" id="demo-btn" style="background:var(--bluebg);border-color:var(--bluebr);color:var(--blue)">Demo Data</button>
+      <button class="btn-sm" onclick="deepResearch()" id="research-btn" style="background:var(--violetbg);border-color:var(--violetbr);color:var(--violet)">Deep Research</button>
       <button class="btn-sm" onclick="showPreview()">Data</button>
+      <button class="btn-sm" onclick="toggleLang()" id="lang-btn">CN/EN</button>
       <button class="btn-sm" onclick="clearAll()">Clear</button>
       <button class="btn-sm" onclick="logout()">Logout</button>
     </div>
@@ -608,6 +610,109 @@ let datasets = {};
 let messages = [];
 let streaming = false;
 let chartCounter = 0;
+let lang = localStorage.getItem('ft-lang') || 'en';
+
+// ===== I18N =====
+const i18n = {
+  en: {
+    title: 'FinTalk',
+    subtitle: 'Financial Data Analysis',
+    apiLabel: 'DeepSeek API Key',
+    connect: 'Connect',
+    connecting: 'Connecting...',
+    hint: 'Your key stays in your browser. Nothing is sent to our servers.',
+    upload: 'Upload CSV',
+    demo: 'Demo Data',
+    research: 'Deep Research',
+    data: 'Data',
+    clear: 'Clear',
+    logout: 'Logout',
+    send: 'Send',
+    placeholder: 'Ask about your data...',
+    welcome: 'Welcome to FinTalk',
+    welcomeDesc: 'Upload a CSV file and start asking questions about your financial data — or try the built-in demo.',
+    tryDemo: 'Try Demo — 999 Companies',
+    noData: 'Please upload a CSV file or load the demo data first.',
+    datasets: 'Datasets',
+    totalRows: 'Total Rows',
+    columns: 'Columns',
+    dataReady: 'Your data is ready! Ask me anything, or try one of these:',
+    s1: 'Summarize the dataset', s2: 'Show key insights', s3: 'Find the top 5 by value', s4: 'Generate a report',
+    researchTitle: 'Deep Research',
+    researchPlaceholder: 'Enter a research topic (e.g. "Analyze governance structure of all live virtual banks")...',
+    researchStart: 'Start Research',
+    researchCancel: 'Cancel',
+    researchProgress: 'Researching with web search...',
+    loading: 'Loading...',
+    invalidKey: 'Invalid API key',
+  },
+  cn: {
+    title: 'FinTalk',
+    subtitle: '金融数据分析',
+    apiLabel: 'DeepSeek API Key',
+    connect: '连接',
+    connecting: '连接中...',
+    hint: '密钥仅保存在浏览器中，不会发送到我们的服务器。',
+    upload: '上传 CSV',
+    demo: '示例数据',
+    research: '深度研究',
+    data: '数据',
+    clear: '清空',
+    logout: '退出',
+    send: '发送',
+    placeholder: '问一个关于你数据的问题...',
+    welcome: '欢迎使用 FinTalk',
+    welcomeDesc: '上传 CSV 文件并开始分析，或试试内置示例数据。',
+    tryDemo: '试用示例 — 999 家公司',
+    noData: '请先上传 CSV 文件或加载示例数据。',
+    datasets: '数据集',
+    totalRows: '总行数',
+    columns: '总列数',
+    dataReady: '数据已就绪！可以提问，或试试：',
+    s1: '总结数据集', s2: '显示关键洞察', s3: '找出前5名', s4: '生成分析报告',
+    researchTitle: '深度研究',
+    researchPlaceholder: '输入研究主题（例如："分析所有活跃虚拟银行的治理结构"）...',
+    researchStart: '开始研究',
+    researchCancel: '取消',
+    researchProgress: '正在深度研究（含网络搜索）...',
+    loading: '加载中...',
+    invalidKey: 'API Key 无效',
+  }
+};
+
+function t(key) { return i18n[lang]?.[key] || i18n.en[key] || key; }
+
+function toggleLang() {
+  lang = lang === 'en' ? 'cn' : 'en';
+  localStorage.setItem('ft-lang', lang);
+  applyLang();
+}
+
+function applyLang() {
+  // Login
+  document.querySelector('.login-card > p').textContent = t('subtitle');
+  document.querySelector('.input-group label').textContent = t('apiLabel');
+  document.getElementById('key-input').placeholder = 'sk-...';
+  document.getElementById('connect-btn').textContent = t('connect');
+  document.querySelector('.hint').textContent = t('hint');
+  // Header buttons
+  const btns = document.querySelectorAll('.header-actions .btn-sm');
+  const btnLabels = ['upload','demo','research','data','','clear','logout'];
+  btns.forEach((b, i) => {
+    if (btnLabels[i] === '') return; // lang btn stays as CN/EN
+    if (btnLabels[i]) b.textContent = t(btnLabels[i]);
+  });
+  // Input
+  document.getElementById('msg-input').placeholder = t('placeholder');
+  document.getElementById('send-btn').textContent = t('send');
+  // Welcome if visible
+  const wh = document.querySelector('.welcome h2');
+  if (wh) wh.textContent = t('welcome');
+  const wp = document.querySelector('.welcome > p');
+  if (wp) wp.textContent = t('welcomeDesc');
+  const wbtn = document.querySelector('.welcome .btn');
+  if (wbtn) wbtn.textContent = t('tryDemo');
+}
 
 // ===== LOGIN =====
 async function connect() {
@@ -628,6 +733,7 @@ async function connect() {
     sessionStorage.setItem('dk', key);
     document.getElementById('login').style.display = 'none';
     document.getElementById('app').style.display = 'flex';
+    applyLang();
   } catch (e) {
     err.textContent = e.message || 'Connection failed';
     err.style.display = 'block';
@@ -645,6 +751,7 @@ function logout() {
 }
 
 (function() {
+  applyLang();
   const k = sessionStorage.getItem('dk');
   if (k) { document.getElementById('key-input').value = k; connect(); }
 })();
@@ -749,9 +856,9 @@ function onDataLoaded() {
 
   // Stat cards
   let html = '<div class="analysis-grid">';
-  html += `<div class="stat-card"><span class="val">${names.length}</span><span class="lbl">Datasets</span></div>`;
-  html += `<div class="stat-card"><span class="val">${totalRows.toLocaleString()}</span><span class="lbl">Total Rows</span></div>`;
-  html += `<div class="stat-card"><span class="val">${totalCols}</span><span class="lbl">Columns</span></div>`;
+  html += `<div class="stat-card"><span class="val">${names.length}</span><span class="lbl">${t('datasets')}</span></div>`;
+  html += `<div class="stat-card"><span class="val">${totalRows.toLocaleString()}</span><span class="lbl">${t('totalRows')}</span></div>`;
+  html += `<div class="stat-card"><span class="val">${totalCols}</span><span class="lbl">${t('columns')}</span></div>`;
   html += '</div>';
 
   // Tables loaded
@@ -768,12 +875,12 @@ function onDataLoaded() {
   html += '</div>';
 
   // Add a prompt message encouraging the user to interact
-  html += '<p style="margin-top:16px;font-size:14px;color:var(--txt)">Your data is ready! Ask me anything, or try one of these:</p>';
+  html += `<p style="margin-top:16px;font-size:14px;color:var(--txt)">${t('dataReady')}</p>`;
   html += '<div class="suggestions" style="margin-top:12px;justify-content:flex-start">';
-  html += '<div class="suggestion" onclick="askSuggestion(this)">Summarize the dataset</div>';
-  html += '<div class="suggestion" onclick="askSuggestion(this)">Show key insights</div>';
-  html += '<div class="suggestion" onclick="askSuggestion(this)">Find the top 5 by value</div>';
-  html += '<div class="suggestion" onclick="askSuggestion(this)">Generate a report</div>';
+  html += `<div class="suggestion" onclick="askSuggestion(this)">${t('s1')}</div>`;
+  html += `<div class="suggestion" onclick="askSuggestion(this)">${t('s2')}</div>`;
+  html += `<div class="suggestion" onclick="askSuggestion(this)">${t('s3')}</div>`;
+  html += `<div class="suggestion" onclick="askSuggestion(this)">${t('s4')}</div>`;
   html += '</div>';
 
   const summaryDiv = addMsg('ai', '', true);
@@ -1020,7 +1127,7 @@ async function send() {
     input.value = '';
     autoResize(input);
     addMsg('user', text);
-    addMsg('ai', 'Please upload a CSV file or load the demo data first — then I can help you analyze it.');
+    addMsg('ai', t('noData'));
     return;
   }
 
@@ -1081,7 +1188,106 @@ async function send() {
   document.getElementById('msg-input').focus();
 }
 
-// FIX: "Clear" now resets EVERYTHING — datasets, messages, data bar, and chat
+// ===== DEEP RESEARCH =====
+async function deepResearch() {
+  if (streaming) return;
+  if (Object.keys(datasets).length === 0) {
+    addMsg('ai', t('noData'));
+    return;
+  }
+  const topic = prompt(t('researchPlaceholder'));
+  if (!topic || !topic.trim()) return;
+
+  const welcome = document.getElementById('welcome');
+  if (welcome) welcome.remove();
+
+  addMsg('user', topic.trim());
+
+  // Step indicator
+  const chat = document.getElementById('chat');
+  const progress = document.createElement('div');
+  progress.className = 'msg ai';
+  progress.style.cssText = 'border-left:3px solid var(--violet);';
+  progress.innerHTML = `<p style="font-family:var(--mono);font-size:11px;font-weight:600;color:var(--violet);text-transform:uppercase;letter-spacing:.04em">${t('researchProgress')}</p>`;
+  chat.appendChild(progress);
+  chat.scrollTop = chat.scrollHeight;
+
+  const researchPrompt = lang === 'cn'
+    ? `你是 FinTalk AI 深度研究助手。请对以下主题进行全面深入的分析：
+
+"${topic.trim()}"
+
+请按以下步骤进行：
+1. **数据分析**：基于已加载的数据集，提取相关信息
+2. **网络搜索**：搜索最新的相关新闻、行业报告和市场动态
+3. **综合分析**：将数据分析和网络信息结合，给出深度洞察
+4. **结论与建议**：总结关键发现，提出可行建议
+
+请用中文输出一份结构化的研究报告，包含标题、各章节和具体数据支撑。`
+    : `You are FinTalk AI Deep Research assistant. Conduct a comprehensive analysis on:
+
+"${topic.trim()}"
+
+Follow these steps:
+1. **Data Analysis**: Extract relevant information from the loaded datasets
+2. **Web Research**: Search for latest news, industry reports, and market trends
+3. **Synthesis**: Combine data analysis with web findings for deep insights
+4. **Conclusions**: Summarize key findings with actionable recommendations
+
+Output a structured research report with clear sections and specific data points.`;
+
+  messages.push({ role: 'user', content: researchPrompt });
+  const reqMsgs = [{ role: 'system', content: buildSystemPrompt() }, ...messages.slice(-20)];
+
+  streaming = true;
+  document.getElementById('send-btn').disabled = true;
+
+  let aiText = '';
+  try {
+    const resp = await fetch('https://api.deepseek.com/chat/completions', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + apiKey },
+      body: JSON.stringify({
+        model: 'deepseek-chat',
+        messages: reqMsgs,
+        stream: true,
+        web_search: { enable: true }
+      })
+    });
+    progress.remove();
+    const aiDiv = addMsg('ai', '');
+    aiDiv.style.borderLeft = '3px solid var(--violet)';
+    const reader = resp.body.getReader();
+    const decoder = new TextDecoder();
+    let buf = '';
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      buf += decoder.decode(value, { stream: true });
+      const lines = buf.split('\n');
+      buf = lines.pop();
+      for (const line of lines) {
+        if (!line.startsWith('data: ')) continue;
+        const d = line.slice(6);
+        if (d === '[DONE]') break;
+        try {
+          const j = JSON.parse(d);
+          const c = j.choices?.[0]?.delta?.content;
+          if (c) { aiText += c; aiDiv.innerHTML = marked.parse(aiText); chat.scrollTop = chat.scrollHeight; }
+        } catch {}
+      }
+    }
+  } catch (e) {
+    progress.remove();
+    addMsg('ai', 'Error: ' + (e.message || 'Research failed'));
+  }
+
+  if (aiText) messages.push({ role: 'assistant', content: aiText });
+  streaming = false;
+  document.getElementById('send-btn').disabled = false;
+}
+
+// ===== CLEAR & RESET =====
 function clearAll() {
   datasets = {};
   messages = [];
@@ -1091,14 +1297,14 @@ function clearAll() {
 
 function resetToWelcome() {
   const chat = document.getElementById('chat');
-  chat.innerHTML = `<div class="welcome" id="welcome"><h2>Welcome to FinTalk</h2>
-    <p>Upload a CSV file and start asking questions about your financial data — or try the built-in demo.</p>
-    <div style="margin-bottom:20px"><button class="btn" onclick="loadDemo()" style="max-width:260px;margin:0 auto;display:block;background:var(--accent)">Try Demo — 999 Companies</button></div>
+  chat.innerHTML = `<div class="welcome" id="welcome"><h2>${t('welcome')}</h2>
+    <p>${t('welcomeDesc')}</p>
+    <div style="margin-bottom:20px"><button class="btn" onclick="loadDemo()" style="max-width:260px;margin:0 auto;display:block;background:var(--accent)">${t('tryDemo')}</button></div>
     <div class="suggestions">
-    <div class="suggestion" onclick="askSuggestion(this)">What columns are in my data?</div>
-    <div class="suggestion" onclick="askSuggestion(this)">Summarize the dataset</div>
-    <div class="suggestion" onclick="askSuggestion(this)">Show basic statistics</div>
-    <div class="suggestion" onclick="askSuggestion(this)">Find the top 5 by value</div></div></div>`;
+    <div class="suggestion" onclick="askSuggestion(this)">${t('s1')}</div>
+    <div class="suggestion" onclick="askSuggestion(this)">${t('s2')}</div>
+    <div class="suggestion" onclick="askSuggestion(this)">${t('s3')}</div>
+    <div class="suggestion" onclick="askSuggestion(this)">${t('s4')}</div></div></div>`;
 }
 
 function autoResize(el) {
