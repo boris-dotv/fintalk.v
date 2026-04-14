@@ -6,103 +6,497 @@
   <title>FinTalk AI</title>
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5/papaparse.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;1,400&family=Instrument+Serif:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
     :root {
-      --bg: #0f172a; --card: #1e293b; --border: #334155;
-      --primary: #6366f1; --primary-h: #818cf8;
-      --text: #f1f5f9; --text2: #94a3b8; --text3: #64748b;
-      --green: #22c55e; --red: #ef4444; --amber: #f59e0b;
-      --radius: 12px; --shadow: 0 4px 24px rgba(0,0,0,.3);
+      --bg: #F3F1EC;
+      --bg2: #FFFFFF;
+      --bg3: #FAF9F6;
+      --bg4: #EDEAE4;
+      --txt: #141413;
+      --txt2: #5E5D5A;
+      --txt3: #8A8884;
+      --txtf: #B0AEA9;
+      --bdr: rgba(20,20,19,.12);
+      --bdr2: rgba(20,20,19,.06);
+      --accent: #4D7C0F;
+      --accentbg: rgba(77,124,15,.06);
+      --accentbr: rgba(77,124,15,.2);
+      --blue: #3B82F6;
+      --bluebg: rgba(59,130,246,.06);
+      --bluebr: rgba(59,130,246,.18);
+      --terra: #9F1239;
+      --terrabg: rgba(159,18,57,.05);
+      --amber: #D97706;
+      --amberbg: rgba(217,119,6,.06);
+      --amberbr: rgba(217,119,6,.2);
+      --violet: #6D28D9;
+      --violetbg: rgba(109,40,217,.04);
+      --violetbr: rgba(109,40,217,.18);
+      --serif: 'Instrument Serif', Georgia, serif;
+      --sans: 'DM Sans', system-ui, sans-serif;
+      --mono: 'IBM Plex Mono', monospace;
+      --radius: 12px;
+      --shadow: 0 1px 3px rgba(0,0,0,.04);
+      --shadow-lg: 0 8px 32px rgba(0,0,0,.08);
     }
-    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+    body {
+      font-family: var(--sans);
+      background: var(--bg);
+      color: var(--txt);
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+      font-size: 15px;
+      line-height: 1.7;
+    }
+
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg3); }
+    ::-webkit-scrollbar-thumb { background: rgba(20,20,19,.18); border-radius: 4px; }
 
     /* ===== LOGIN ===== */
-    #login { display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 20px;
-      background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #0f172a 100%); }
-    .login-card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 48px 40px; width: 100%; max-width: 420px; box-shadow: var(--shadow); }
-    .login-card h1 { font-size: 28px; font-weight: 700; margin-bottom: 4px; }
-    .login-card h1 span { color: var(--primary-h); }
-    .login-card p { color: var(--text2); font-size: 14px; margin-bottom: 32px; }
-    .input-group { margin-bottom: 20px; }
-    .input-group label { display: block; font-size: 13px; color: var(--text2); margin-bottom: 6px; }
-    .input-group input { width: 100%; padding: 12px 16px; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-size: 15px; outline: none; transition: border .2s; }
-    .input-group input:focus { border-color: var(--primary); }
-    .btn { width: 100%; padding: 12px; background: var(--primary); color: #fff; border: none; border-radius: 8px; font-size: 15px; font-weight: 600; cursor: pointer; transition: background .2s; }
-    .btn:hover { background: var(--primary-h); }
-    .btn:disabled { opacity: .5; cursor: not-allowed; }
-    .error { color: var(--red); font-size: 13px; margin-top: 12px; display: none; }
-    .hint { color: var(--text3); font-size: 12px; margin-top: 16px; text-align: center; }
+    #login {
+      display: flex; align-items: center; justify-content: center;
+      min-height: 100vh; padding: 24px;
+      background: var(--bg);
+      position: relative;
+    }
+    #login::before {
+      content: '';
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse 60% 50% at 20% 30%, rgba(77,124,15,.04) 0%, transparent 70%),
+        radial-gradient(ellipse 50% 40% at 80% 70%, rgba(109,40,217,.03) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .login-card {
+      background: var(--bg2);
+      border: 1px solid var(--bdr);
+      border-radius: 16px;
+      padding: 56px 48px;
+      width: 100%; max-width: 440px;
+      box-shadow: var(--shadow-lg);
+      position: relative;
+      z-index: 1;
+    }
+    .login-card h1 {
+      font-family: var(--serif);
+      font-size: 36px;
+      font-weight: 400;
+      letter-spacing: -.02em;
+      color: var(--txt);
+      margin-bottom: 4px;
+    }
+    .login-card h1 span { color: var(--accent); }
+    .login-card > p {
+      font-family: var(--mono);
+      color: var(--txt3);
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+      margin-bottom: 36px;
+    }
+    .input-group { margin-bottom: 24px; }
+    .input-group label {
+      display: block;
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--txt2);
+      margin-bottom: 8px;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+    }
+    .input-group input {
+      width: 100%; padding: 14px 18px;
+      background: var(--bg3);
+      border: 1px solid var(--bdr);
+      border-radius: 10px;
+      color: var(--txt);
+      font-family: var(--mono);
+      font-size: 14px;
+      outline: none;
+      transition: border .25s, box-shadow .25s;
+    }
+    .input-group input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(77,124,15,.1);
+    }
+    .input-group input::placeholder { color: var(--txtf); }
+
+    .btn {
+      width: 100%; padding: 14px;
+      background: var(--txt);
+      color: var(--bg2);
+      border: none;
+      border-radius: 10px;
+      font-family: var(--mono);
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all .25s;
+    }
+    .btn:hover { background: var(--txt2); }
+    .btn:disabled { opacity: .4; cursor: not-allowed; }
+
+    .error {
+      color: var(--terra);
+      font-family: var(--mono);
+      font-size: 12px;
+      margin-top: 14px;
+      display: none;
+    }
+    .hint {
+      color: var(--txtf);
+      font-family: var(--mono);
+      font-size: 11px;
+      margin-top: 20px;
+      text-align: center;
+      line-height: 1.6;
+    }
 
     /* ===== APP ===== */
-    #app { display: none; height: 100vh; flex-direction: column; }
-    .header { display: flex; align-items: center; justify-content: space-between; padding: 12px 24px; background: var(--card); border-bottom: 1px solid var(--border); flex-shrink: 0; }
-    .header h1 { font-size: 18px; font-weight: 700; }
-    .header h1 span { color: var(--primary-h); }
+    #app { display: none; height: 100vh; flex-direction: column; background: var(--bg); }
+
+    .header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 32px;
+      background: var(--bg2);
+      border-bottom: 1px solid var(--bdr);
+      flex-shrink: 0;
+    }
+    .header h1 {
+      font-family: var(--serif);
+      font-size: 22px;
+      font-weight: 400;
+      letter-spacing: -.01em;
+    }
+    .header h1 span { color: var(--accent); }
     .header-actions { display: flex; gap: 8px; align-items: center; }
-    .btn-sm { padding: 6px 14px; background: var(--border); border: none; border-radius: 6px; color: var(--text2); font-size: 13px; cursor: pointer; transition: background .2s; }
-    .btn-sm:hover { background: var(--text3); color: var(--text); }
-    .btn-upload { background: var(--primary); color: #fff; }
-    .btn-upload:hover { background: var(--primary-h); }
+
+    .btn-sm {
+      padding: 7px 16px;
+      background: var(--bg3);
+      border: 1px solid var(--bdr2);
+      border-radius: 8px;
+      color: var(--txt2);
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all .2s;
+      letter-spacing: .02em;
+    }
+    .btn-sm:hover { background: var(--bg4); border-color: var(--bdr); color: var(--txt); }
+    .btn-upload {
+      background: var(--accentbg);
+      border-color: var(--accentbr);
+      color: var(--accent);
+    }
+    .btn-upload:hover {
+      background: rgba(77,124,15,.12);
+      color: #3d6310;
+    }
 
     /* data bar */
-    .data-bar { display: none; padding: 10px 24px; background: #1a1f35; border-bottom: 1px solid var(--border); flex-shrink: 0; flex-wrap: wrap; gap: 8px; align-items: center; }
+    .data-bar {
+      display: none;
+      padding: 10px 32px;
+      background: var(--bg3);
+      border-bottom: 1px solid var(--bdr2);
+      flex-shrink: 0;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
     .data-bar.show { display: flex; }
-    .data-tag { display: inline-flex; align-items: center; gap: 6px; background: var(--card); border: 1px solid var(--border); border-radius: 6px; padding: 4px 12px; font-size: 12px; color: var(--text2); }
-    .data-tag .x { cursor: pointer; color: var(--text3); margin-left: 4px; }
-    .data-tag .x:hover { color: var(--red); }
+    .data-tag {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: var(--bg2);
+      border: 1px solid var(--bdr);
+      border-radius: 8px;
+      padding: 5px 14px;
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--txt2);
+    }
+    .data-tag .x {
+      cursor: pointer; color: var(--txtf); margin-left: 4px;
+      font-size: 14px; line-height: 1;
+      transition: color .15s;
+    }
+    .data-tag .x:hover { color: var(--terra); }
 
     /* chat */
-    .chat { flex: 1; overflow-y: auto; padding: 24px; display: flex; flex-direction: column; gap: 16px; }
-    .welcome { text-align: center; margin: auto; max-width: 500px; }
-    .welcome h2 { font-size: 22px; margin-bottom: 8px; }
-    .welcome p { color: var(--text2); font-size: 14px; margin-bottom: 24px; }
-    .suggestions { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
-    .suggestion { padding: 8px 16px; background: var(--card); border: 1px solid var(--border); border-radius: 20px; font-size: 13px; color: var(--text2); cursor: pointer; transition: all .2s; }
-    .suggestion:hover { border-color: var(--primary); color: var(--text); }
+    .chat {
+      flex: 1; overflow-y: auto;
+      padding: 32px;
+      display: flex; flex-direction: column; gap: 20px;
+    }
+
+    .welcome { text-align: center; margin: auto; max-width: 520px; }
+    .welcome h2 {
+      font-family: var(--serif);
+      font-size: 30px;
+      font-weight: 400;
+      letter-spacing: -.02em;
+      margin-bottom: 8px;
+      color: var(--txt);
+    }
+    .welcome p {
+      color: var(--txt3);
+      font-size: 14px;
+      margin-bottom: 28px;
+      line-height: 1.7;
+    }
+    .suggestions { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+    .suggestion {
+      padding: 9px 20px;
+      background: var(--bg2);
+      border: 1px solid var(--bdr);
+      border-radius: 100px;
+      font-family: var(--mono);
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--txt2);
+      cursor: pointer;
+      transition: all .25s;
+    }
+    .suggestion:hover {
+      border-color: var(--accentbr);
+      background: var(--accentbg);
+      color: var(--accent);
+      transform: translateY(-1px);
+    }
 
     /* messages */
-    .msg { max-width: 85%; line-height: 1.6; font-size: 14px; }
-    .msg.user { align-self: flex-end; background: var(--primary); padding: 10px 16px; border-radius: 16px 16px 4px 16px; }
-    .msg.ai { align-self: flex-start; background: var(--card); padding: 14px 18px; border-radius: 16px 16px 16px 4px; border: 1px solid var(--border); }
-    .msg.ai table { border-collapse: collapse; margin: 8px 0; font-size: 13px; width: 100%; }
-    .msg.ai th, .msg.ai td { border: 1px solid var(--border); padding: 6px 10px; text-align: left; }
-    .msg.ai th { background: var(--bg); }
-    .msg.ai code { background: var(--bg); padding: 2px 6px; border-radius: 4px; font-size: 13px; }
-    .msg.ai pre { background: var(--bg); padding: 12px; border-radius: 8px; overflow-x: auto; margin: 8px 0; }
-    .msg.ai pre code { background: none; padding: 0; }
-    .typing { display: flex; gap: 4px; padding: 14px 18px; }
-    .typing span { width: 8px; height: 8px; background: var(--text3); border-radius: 50%; animation: bounce .6s infinite alternate; }
+    .msg {
+      max-width: 80%;
+      line-height: 1.75;
+      font-size: 14px;
+      animation: msgIn .35s ease-out;
+    }
+    @keyframes msgIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .msg.user {
+      align-self: flex-end;
+      background: var(--txt);
+      color: var(--bg2);
+      padding: 12px 20px;
+      border-radius: 16px 16px 4px 16px;
+      font-weight: 400;
+    }
+    .msg.ai {
+      align-self: flex-start;
+      background: var(--bg2);
+      padding: 20px 24px;
+      border-radius: 16px 16px 16px 4px;
+      border: 1px solid var(--bdr);
+      box-shadow: var(--shadow);
+      color: var(--txt);
+    }
+    .msg.ai h1, .msg.ai h2, .msg.ai h3, .msg.ai h4 {
+      font-family: var(--serif);
+      font-weight: 600;
+      margin: 16px 0 8px;
+      color: var(--txt);
+    }
+    .msg.ai h1 { font-size: 20px; }
+    .msg.ai h2 { font-size: 17px; }
+    .msg.ai h3 { font-size: 15px; }
+    .msg.ai p { margin: 6px 0; }
+    .msg.ai ul, .msg.ai ol { margin: 8px 0; padding-left: 20px; }
+    .msg.ai li { margin: 4px 0; }
+    .msg.ai strong { font-weight: 600; color: var(--txt); }
+
+    .msg.ai table {
+      border-collapse: collapse;
+      margin: 12px 0;
+      font-family: var(--mono);
+      font-size: 12px;
+      width: 100%;
+      border: 1px solid var(--bdr2);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .msg.ai th, .msg.ai td {
+      border: 1px solid var(--bdr2);
+      padding: 8px 14px;
+      text-align: left;
+    }
+    .msg.ai th {
+      background: var(--bg3);
+      font-weight: 600;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      color: var(--txt3);
+    }
+    .msg.ai td { color: var(--txt2); }
+    .msg.ai code {
+      background: var(--bg3);
+      padding: 2px 8px;
+      border-radius: 5px;
+      font-family: var(--mono);
+      font-size: 12.5px;
+      border: 1px solid var(--bdr2);
+      color: var(--violet);
+    }
+    .msg.ai pre {
+      background: var(--bg3);
+      padding: 16px 20px;
+      border-radius: 10px;
+      overflow-x: auto;
+      margin: 10px 0;
+      border: 1px solid var(--bdr2);
+    }
+    .msg.ai pre code {
+      background: none; padding: 0; border: none;
+      color: var(--txt);
+    }
+
+    .typing {
+      display: flex; gap: 6px; padding: 20px 24px;
+      align-self: flex-start;
+      background: var(--bg2);
+      border-radius: 16px 16px 16px 4px;
+      border: 1px solid var(--bdr);
+    }
+    .typing span {
+      width: 7px; height: 7px;
+      background: var(--txtf);
+      border-radius: 50%;
+      animation: bounce .6s infinite alternate;
+    }
     .typing span:nth-child(2) { animation-delay: .2s; }
     .typing span:nth-child(3) { animation-delay: .4s; }
     @keyframes bounce { to { opacity: .3; transform: translateY(-4px); } }
 
     /* input */
-    .input-bar { display: flex; gap: 10px; padding: 16px 24px; background: var(--card); border-top: 1px solid var(--border); flex-shrink: 0; }
-    .input-bar textarea { flex: 1; padding: 12px 16px; background: var(--bg); border: 1px solid var(--border); border-radius: 10px; color: var(--text); font-size: 14px; font-family: inherit; resize: none; outline: none; min-height: 44px; max-height: 120px; }
-    .input-bar textarea:focus { border-color: var(--primary); }
-    .input-bar button { padding: 0 20px; background: var(--primary); border: none; border-radius: 10px; color: #fff; font-size: 14px; font-weight: 600; cursor: pointer; transition: background .2s; }
-    .input-bar button:hover { background: var(--primary-h); }
-    .input-bar button:disabled { opacity: .4; cursor: not-allowed; }
+    .input-bar {
+      display: flex; gap: 12px;
+      padding: 18px 32px;
+      background: var(--bg2);
+      border-top: 1px solid var(--bdr);
+      flex-shrink: 0;
+    }
+    .input-bar textarea {
+      flex: 1;
+      padding: 14px 20px;
+      background: var(--bg3);
+      border: 1px solid var(--bdr);
+      border-radius: 12px;
+      color: var(--txt);
+      font-family: var(--sans);
+      font-size: 14px;
+      resize: none;
+      outline: none;
+      min-height: 48px;
+      max-height: 120px;
+      transition: border .25s, box-shadow .25s;
+    }
+    .input-bar textarea:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(77,124,15,.08);
+    }
+    .input-bar textarea::placeholder { color: var(--txtf); }
+    .input-bar button {
+      padding: 0 24px;
+      background: var(--txt);
+      border: none;
+      border-radius: 12px;
+      color: var(--bg2);
+      font-family: var(--mono);
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: background .25s;
+    }
+    .input-bar button:hover { background: var(--txt2); }
+    .input-bar button:disabled { opacity: .3; cursor: not-allowed; }
 
     /* data preview modal */
-    .modal-bg { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.6); z-index: 100; align-items: center; justify-content: center; }
+    .modal-bg {
+      display: none; position: fixed; inset: 0;
+      background: rgba(20,20,19,.4);
+      backdrop-filter: blur(4px);
+      z-index: 100;
+      align-items: center; justify-content: center;
+    }
     .modal-bg.show { display: flex; }
-    .modal { background: var(--card); border-radius: 12px; padding: 24px; max-width: 90vw; max-height: 80vh; overflow: auto; box-shadow: var(--shadow); }
-    .modal h3 { margin-bottom: 12px; }
-    .modal table { border-collapse: collapse; font-size: 12px; }
-    .modal th, .modal td { border: 1px solid var(--border); padding: 4px 8px; text-align: left; white-space: nowrap; }
-    .modal th { background: var(--bg); position: sticky; top: 0; }
-    .modal .close { float: right; cursor: pointer; font-size: 18px; color: var(--text3); }
-    .modal .close:hover { color: var(--text); }
+    .modal {
+      background: var(--bg2);
+      border-radius: 16px;
+      padding: 32px;
+      max-width: 90vw; max-height: 80vh;
+      overflow: auto;
+      box-shadow: var(--shadow-lg);
+      border: 1px solid var(--bdr);
+    }
+    .modal h3 {
+      font-family: var(--serif);
+      font-size: 18px;
+      font-weight: 400;
+      margin-bottom: 14px;
+      color: var(--txt);
+    }
+    .modal table {
+      border-collapse: collapse;
+      font-family: var(--mono);
+      font-size: 11px;
+      border: 1px solid var(--bdr2);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .modal th, .modal td {
+      border: 1px solid var(--bdr2);
+      padding: 8px 12px;
+      text-align: left;
+      white-space: nowrap;
+    }
+    .modal th {
+      background: var(--bg3);
+      position: sticky; top: 0;
+      font-weight: 600;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      color: var(--txt3);
+    }
+    .modal td { color: var(--txt2); }
+    .modal .close {
+      float: right; cursor: pointer;
+      font-size: 20px; color: var(--txtf);
+      transition: color .2s;
+      width: 32px; height: 32px;
+      display: flex; align-items: center; justify-content: center;
+      border-radius: 8px;
+    }
+    .modal .close:hover { color: var(--txt); background: var(--bg3); }
 
     #file-input { display: none; }
 
     @media (max-width: 640px) {
-      .login-card { padding: 32px 24px; }
-      .msg { max-width: 95%; }
-      .input-bar { padding: 12px 16px; }
-      .chat { padding: 16px; }
+      .login-card { padding: 36px 28px; }
+      .msg { max-width: 92%; }
+      .input-bar { padding: 14px 18px; }
+      .chat { padding: 18px; }
+      .header { padding: 12px 18px; }
+      .data-bar { padding: 10px 18px; }
+      .welcome h2 { font-size: 24px; }
     }
   </style>
 </head>
@@ -111,8 +505,8 @@
 <!-- LOGIN -->
 <div id="login">
   <div class="login-card">
-    <h1>Fin<span>Talk</span> AI</h1>
-    <p>Financial Data Analysis Assistant</p>
+    <h1>Fin<span>Talk</span></h1>
+    <p>Financial Data Analysis</p>
     <div class="input-group">
       <label>DeepSeek API Key</label>
       <input type="password" id="key-input" placeholder="sk-..." autocomplete="off">
@@ -126,7 +520,7 @@
 <!-- APP -->
 <div id="app">
   <div class="header">
-    <h1>Fin<span>Talk</span> AI</h1>
+    <h1>Fin<span>Talk</span></h1>
     <div class="header-actions">
       <button class="btn-sm btn-upload" onclick="document.getElementById('file-input').click()">Upload CSV</button>
       <button class="btn-sm" onclick="showPreview()">Data</button>
@@ -138,8 +532,8 @@
   <div class="data-bar" id="data-bar"></div>
   <div class="chat" id="chat">
     <div class="welcome" id="welcome">
-      <h2>Welcome to FinTalk AI</h2>
-      <p>Upload a CSV file and start asking questions about your data. Or just chat directly.</p>
+      <h2>Welcome to FinTalk</h2>
+      <p>Upload a CSV file and start asking questions about your financial data — or just chat directly.</p>
       <div class="suggestions">
         <div class="suggestion" onclick="askSuggestion(this)">What columns are in my data?</div>
         <div class="suggestion" onclick="askSuggestion(this)">Summarize the dataset</div>
@@ -162,8 +556,8 @@
 <script>
 // ===== STATE =====
 let apiKey = '';
-let datasets = {}; // name -> { columns, rows, raw }
-let messages = []; // { role, content }
+let datasets = {};
+let messages = [];
 let streaming = false;
 
 // ===== LOGIN =====
@@ -200,10 +594,9 @@ function logout() {
   document.getElementById('app').style.display = 'none';
   document.getElementById('login').style.display = 'flex';
   document.getElementById('chat').innerHTML = document.getElementById('chat').querySelector('.welcome') ?
-    document.getElementById('chat').innerHTML : '<div class="welcome" id="welcome"><h2>Welcome to FinTalk AI</h2></div>';
+    document.getElementById('chat').innerHTML : '<div class="welcome" id="welcome"><h2>Welcome to FinTalk</h2></div>';
 }
 
-// auto-login from session
 (function() {
   const k = sessionStorage.getItem('dk');
   if (k) { document.getElementById('key-input').value = k; connect(); }
@@ -248,7 +641,7 @@ function showPreview() {
   let html = '<span class="close" onclick="document.getElementById(\'preview-modal\').classList.remove(\'show\')">&times;</span>';
   for (const name of names) {
     const d = datasets[name];
-    html += `<h3>${name} (${d.rows.length} rows)</h3>`;
+    html += `<h3>${name} <span style="font-family:var(--mono);font-size:12px;color:var(--txt3);font-weight:500">${d.rows.length} rows</span></h3>`;
     const cols = d.columns.slice(0, 15);
     html += '<table><thead><tr>' + cols.map(c => `<th>${c}</th>`).join('') + (d.columns.length > 15 ? '<th>...</th>' : '') + '</tr></thead><tbody>';
     for (let i = 0; i < Math.min(5, d.rows.length); i++) {
@@ -271,10 +664,8 @@ function buildSystemPrompt() {
     sys += `Columns (${d.columns.length}): ${d.columns.join(', ')}\n`;
     sys += `Total rows: ${d.rows.length}\n\n`;
 
-    // Include data — limit to keep within context
     const maxRows = d.rows.length <= 100 ? d.rows.length : 50;
     const subset = d.rows.slice(0, maxRows);
-    // Markdown table
     sys += '| ' + d.columns.join(' | ') + ' |\n';
     sys += '| ' + d.columns.map(() => '---').join(' | ') + ' |\n';
     for (const row of subset) {
@@ -305,9 +696,7 @@ function addMsg(role, content) {
   return div;
 }
 
-function addSystemMsg(md) {
-  addMsg('ai', md);
-}
+function addSystemMsg(md) { addMsg('ai', md); }
 
 function askSuggestion(el) {
   document.getElementById('msg-input').value = el.textContent;
@@ -324,11 +713,8 @@ async function send() {
   addMsg('user', text);
 
   messages.push({ role: 'user', content: text });
-
-  // Build request messages
   const reqMsgs = [{ role: 'system', content: buildSystemPrompt() }, ...messages.slice(-20)];
 
-  // Show typing indicator
   const chat = document.getElementById('chat');
   const typing = document.createElement('div');
   typing.className = 'msg ai typing';
@@ -385,7 +771,7 @@ async function send() {
 function clearChat() {
   messages = [];
   const chat = document.getElementById('chat');
-  chat.innerHTML = `<div class="welcome" id="welcome"><h2>Welcome to FinTalk AI</h2><p>Upload a CSV file and start asking questions.</p>
+  chat.innerHTML = `<div class="welcome" id="welcome"><h2>Welcome to FinTalk</h2><p>Upload a CSV file and start asking questions.</p>
     <div class="suggestions"><div class="suggestion" onclick="askSuggestion(this)">Summarize the dataset</div>
     <div class="suggestion" onclick="askSuggestion(this)">Show basic statistics</div></div></div>`;
 }
