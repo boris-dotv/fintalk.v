@@ -25,6 +25,8 @@ Ask a question, get a verified answer. No manual SQL, no data wrangling, no conf
 
 Behind the scenes, FinTalk trains its own NL2SQL models (SFT + GRPO reinforcement learning), orchestrates a dual-agent system for query understanding, and serves everything through a **single-file zero-config MCP Server**. Every data point is traceable to a verifiable source.
 
+> **Adopted by [Digital Financial Services Research Center Limited](https://www.polyu.edu.hk/kteo/entrepreneurship/start-ups/polyu-start-ups-list/mf/2023/digital-financial-services-research-center-limited/)** (PolyU Micro Fund 2023) — a neobank research center building authoritative financial databases for academic and industrial research.
+
 <p align="center">
   <img src="assets/structure_v2.png" alt="FinTalk.ai System Architecture" width="800"/>
 </p>
