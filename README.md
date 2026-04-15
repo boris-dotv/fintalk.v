@@ -1,4 +1,4 @@
-# FinTalk.ai
+# [FinTalk.ai](https://boris-dotv.github.io/fintalk.v/)
 
 **Turn Natural Language into Financial Intelligence — 999 Companies, One Command**
 
