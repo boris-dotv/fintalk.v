@@ -57,8 +57,8 @@ Most financial data tools make you choose: either a static dataset, or a generic
 **Feishu Bot — Natural language financial analysis in chat:**
 
 <p align="center">
-  <img src="assets/feishu_1.jpeg" alt="Feishu Bot Demo 1" width="400"/>
-  <img src="assets/feishu_2.jpeg" alt="Feishu Bot Demo 2" width="400"/>
+  <img src="assets/feishu_demo1.jpeg" alt="Feishu Bot Demo 1" width="400"/>
+  <img src="assets/feishu_demo2.jpeg" alt="Feishu Bot Demo 2" width="400"/>
 </p>
 
 **MCP Server connected in Claude Code:**
