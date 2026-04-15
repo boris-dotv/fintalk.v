@@ -1,8 +1,9 @@
-# [FinTalk.ai](https://boris-dotv.github.io/fintalk.v/)
+# FinTalk.ai
 
 **Turn Natural Language into Financial Intelligence — 999 Companies, One Command**
 
 <p align="center">
+  <a href="https://boris-dotv.github.io/fintalk.v/"><img src="https://img.shields.io/badge/Official%20Website-FinTalk.ai-059669.svg" alt="Official Website"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-Apache_2.0-blue.svg" alt="License"></a>
   <a href="#"><img src="https://img.shields.io/badge/Python-3.10+-3776AB.svg?logo=python&logoColor=white" alt="Python"></a>
   <a href="#"><img src="https://img.shields.io/badge/MCP-Server-6366f1.svg" alt="MCP Server"></a>
