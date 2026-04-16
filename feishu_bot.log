@@ -1,0 +1,71 @@
+[Wed Apr 15 12:17:17 CST 2026] Starting FinTalk Feishu Bot...
+2026-04-15 12:17:23,281 WARNING formula.py not found — ratio helpers disabled
+2026-04-15 12:17:24,050 INFO Loaded companies: 999 rows from company.csv
+2026-04-15 12:17:24,070 INFO Loaded management: 2883 rows from management.csv
+2026-04-15 12:17:24,085 INFO Loaded shareholders: 2206 rows from shareholder.csv
+2026-04-15 12:17:24,094 INFO Loaded employee_notech: 603 rows from employee_noTech.csv
+2026-04-15 12:17:24,261 INFO Loaded companies: 999 rows from company.csv
+2026-04-15 12:17:24,279 INFO Loaded management: 2883 rows from management.csv
+2026-04-15 12:17:24,293 INFO Loaded shareholders: 2206 rows from shareholder.csv
+2026-04-15 12:17:24,301 INFO Loaded employee_notech: 603 rows from employee_noTech.csv
+FinTalk Feishu Bot starting (WebSocket long-connection mode)...
+No public IP or ngrok needed. Bot connects to Feishu directly.
+[Lark] [2026-04-15 12:17:24,905] [INFO] connected to wss://msg-frontier.feishu.cn/ws/v2?fpid=493&aid=552564&device_id=7628835307031235775&access_key=e114d3f5ae70f99c91a0f70004589b88&service_id=33554678&ticket=98bc511d-1044-41a2-8e0a-870aa6834d58 [conn_id=7628835307031235775]
+2026-04-15 12:17:24,905 INFO connected to wss://msg-frontier.feishu.cn/ws/v2?fpid=493&aid=552564&device_id=7628835307031235775&access_key=e114d3f5ae70f99c91a0f70004589b88&service_id=33554678&ticket=98bc511d-1044-41a2-8e0a-870aa6834d58 [conn_id=7628835307031235775]
+2026-04-15 12:18:02,004 INFO Received: 分析一下上面发的那个表格
+2026-04-15 12:18:02,004 INFO No recent tables, searching chat oc_f1d1e3e63c717ab70df08d0060bcf036 for CSV files...
+2026-04-15 12:18:02,004 ERROR Fetch recent file error: 'Client' object has no attribute 'config'
+2026-04-15 12:18:05,028 INFO Routed to: query_data
+2026-04-15 12:18:12,794 INFO Received: 员工说表格里渣打银行全港最牛逼，是否属实
+2026-04-15 12:18:12,794 INFO No recent tables, searching chat oc_f1d1e3e63c717ab70df08d0060bcf036 for CSV files...
+2026-04-15 12:18:12,795 ERROR Fetch recent file error: 'Client' object has no attribute 'config'
+2026-04-15 12:18:16,230 INFO Routed to: query_data
+2026-04-15 12:18:21,916 INFO Received: 分析一下上面发的那个表格
+2026-04-15 12:18:21,916 INFO No recent tables, searching chat oc_f1d1e3e63c717ab70df08d0060bcf036 for CSV files...
+2026-04-15 12:18:21,916 ERROR Fetch recent file error: 'Client' object has no attribute 'config'
+2026-04-15 12:18:24,658 INFO Routed to: query_data
+2026-04-15 12:18:38,693 INFO Downloaded file: /var/folders/08/yb_3587x5yg47mprsypmh_pm0000gp/T/fintalk_uploads/sample_companies.csv
+2026-04-15 12:18:48,742 INFO Received: 分析一下我这个表格
+2026-04-15 12:18:51,181 INFO Routed to: query_data
+2026-04-15 12:19:08,275 INFO Received: 分析一下我这个表格
+2026-04-15 12:19:10,593 INFO Routed to: query_data
+2026-04-15 12:19:53,552 INFO Received: 分析一下上面的那个表格，都说了啥，我员工摸鱼了没有
+2026-04-15 12:19:55,861 INFO Routed to: query_data
+2026-04-15 12:23:26,267 INFO Received: 分析一下上面发的那个表格
+2026-04-15 12:23:28,627 INFO Routed to: query_data
+2026-04-15 12:24:12,943 INFO Received: 分析一下我这个表格
+2026-04-15 12:24:15,367 INFO Routed to: query_data
+2026-04-15 13:02:32,228 INFO Received: 给我分析一下上面这个表
+2026-04-15 13:02:34,292 INFO Routed to: query_data
+2026-04-15 13:10:43,244 INFO Received: 分析一下表格内香港金融公司的格局
+2026-04-15 13:10:46,827 INFO Routed to: query_data
+2026-04-15 13:12:12,324 INFO Received: 分析一下上面这个表格
+2026-04-15 13:12:14,279 INFO Routed to: query_data
+2026-04-15 13:15:20,081 INFO Received: 员工说表格里渣打银行全港最牛逼，是否属实
+2026-04-15 13:15:22,916 INFO Routed to: query_data
+2026-04-15 13:18:13,193 INFO Received: 员工说表格里渣打银行全港最牛逼，是否属实
+2026-04-15 13:18:16,333 INFO Routed to: query_data
+2026-04-15 13:19:58,020 INFO Received: 分析一下上面的那个表格，都说了啥，我员工摸鱼了没有
+2026-04-15 13:19:59,751 INFO Routed to: query_data
+2026-04-15 13:23:30,830 INFO Received: 分析一下上面发的那个表格
+2026-04-15 13:23:33,108 INFO Routed to: query_data
+2026-04-15 13:24:17,276 INFO Received: 分析一下我这个表格
+2026-04-15 13:24:19,583 INFO Routed to: query_data
+2026-04-15 19:02:36,017 INFO Received: 给我分析一下上面这个表
+2026-04-15 19:02:39,341 INFO Routed to: query_data
+2026-04-15 19:06:59,656 INFO Received: 没问你还回复？没完没了了是吧
+2026-04-15 19:07:02,522 INFO Routed to: chat
+2026-04-15 19:10:47,156 INFO Received: 分析一下表格内香港金融公司的格局
+2026-04-15 19:10:49,795 INFO Routed to: query_data
+2026-04-15 19:12:16,789 INFO Received: 分析一下上面这个表格
+2026-04-15 19:12:18,767 INFO Routed to: query_data
+2026-04-15 19:15:24,762 INFO Received: 员工说表格里渣打银行全港最牛逼，是否属实
+2026-04-15 19:15:28,043 INFO Routed to: query_data
+2026-04-15 19:18:17,796 INFO Received: 员工说表格里渣打银行全港最牛逼，是否属实
+2026-04-15 19:18:21,410 INFO Routed to: query_data
+2026-04-15 19:20:02,686 INFO Received: 分析一下上面的那个表格，都说了啥，我员工摸鱼了没有
+2026-04-15 19:20:04,908 INFO Routed to: query_data
+2026-04-15 19:23:34,837 INFO Received: 分析一下上面发的那个表格
+2026-04-15 19:23:37,572 INFO Routed to: query_data
+2026-04-15 19:24:21,747 INFO Received: 分析一下我这个表格
+2026-04-15 19:24:24,430 INFO Routed to: query_data
