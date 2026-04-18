@@ -31,6 +31,12 @@ Behind the scenes, FinTalk trains its own NL2SQL models (SFT + GRPO reinforcemen
 > **Official Website:** [https://boris-dotv.github.io/fintalk.v/](https://boris-dotv.github.io/fintalk.v/)
 
 <p align="center">
+  <img src="assets/neobanker.jpg" alt="Neobanker live at InnoEX — Business of Innovation and Technology Week (BIT Week)" width="400"/>
+  <br/>
+  <em>Neobanker at InnoEX 2025 — PolyU Pavilion, Business of Innovation and Technology Week</em>
+</p>
+
+<p align="center">
   <img src="assets/structure_v2.png" alt="FinTalk.ai System Architecture" width="800"/>
 </p>
 
