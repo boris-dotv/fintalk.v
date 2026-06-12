@@ -5,6 +5,7 @@ Rejection Detector - 拒识检测模块
 """
 
 import logging
+import re
 
 logger = logging.getLogger(__name__)
 
@@ -60,9 +61,22 @@ Decision:"""
 
         result = self.llm_caller(prompt, temperature=0.1)
 
-        try:
-            accept = int(result.strip()) == 1
+        # Robust parsing — LLM output may include whitespace, punctuation, or extra text
+        # e.g. "1", "0", " 1 ", "1 (accept)", "Decision: 0"
+        match = re.search(r'\b([01])\b', result)
+        if match:
+            accept = match.group(1) == "1"
             logger.info(f"   🛡️  Rejection check: {query[:50]}... -> {'Accept' if accept else 'Reject'}")
             return accept
-        except:
-            return True  # 默认接受
+
+        # If LLM response is unparseable, fall back to keyword heuristics
+        lowered = result.lower()
+        if any(kw in lowered for kw in ("accept", "yes", "within scope")):
+            logger.info(f"   🛡️  Rejection check (heuristic): {query[:50]}... -> Accept")
+            return True
+        if any(kw in lowered for kw in ("reject", "no", "out of scope", "unrelated")):
+            logger.info(f"   🛡️  Rejection check (heuristic): {query[:50]}... -> Reject")
+            return False
+
+        logger.warning(f"   🛡️  Rejection check unparseable, defaulting to accept: {query[:50]}...")
+        return True  # 默认接受
