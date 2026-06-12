@@ -145,22 +145,38 @@ def main():
         print("AI chose to skip — nothing to improve today")
         sys.exit(0)
 
-    # 4. Apply change
+    # 4. Skip if no actual change (AI hallucinated identical OLD/NEW)
+    if old_text == new_text:
+        print("AI returned identical OLD/NEW — no real change, skipping")
+        sys.exit(0)
+
+    # 5. Apply change
     if not apply_change(file_path, old_text, new_text):
         print("Failed to apply change, exiting")
         sys.exit(1)
 
-    # 5. Commit & push
+    # 6. Commit & push
     subprocess.run(["git", "config", "user.name", "fintalk-bot"], check=True)
     subprocess.run(["git", "config", "user.email", "bot@fintalk.ai"], check=True)
     subprocess.run(["git", "add", file_path], check=True)
-    
-    # Build commit message
-    desc = new_text.split("\n")[0][:60] if new_text else "minor improvement"
+
+    # Verify there's actually a diff
+    diff_check = subprocess.run(
+        ["git", "diff", "--cached", "--quiet"],
+        capture_output=True,
+    )
+    if diff_check.returncode == 0:
+        print("No diff to commit — skipping")
+        sys.exit(0)
+
+    # Build sanitized commit message (first meaningful line, no quotes/brackets)
+    desc = new_text.strip().split("\n")[0][:60] if new_text else "minor improvement"
+    # Strip problematic characters for git commit messages
+    desc = desc.replace('"', "'").replace("`", "'").replace("\\", "")
     msg = f"auto: {file_path} - {desc}"
     subprocess.run(["git", "commit", "-m", msg], check=True)
     subprocess.run(["git", "push"], check=True)
-    
+
     print(f"✅ Committed & pushed: {msg}")
 
 
