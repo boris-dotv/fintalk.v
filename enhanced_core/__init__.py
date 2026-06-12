@@ -12,6 +12,8 @@ from .correlation_checker import CorrelationChecker
 from .function_registry import FinancialFunctionRegistry
 from .streaming_nlg import StreamingNLG
 from .conversation_manager import ConversationManager
+from . import _version
+__version__ = _version.__version__
 
 __all__ = [
     "ParallelExecutor",
