@@ -12,6 +12,7 @@ import re
 import time
 import random
 import numpy as np
+import os
 from openai import OpenAI, APIConnectionError, RateLimitError
 from typing import List, Dict, Any
 from loguru import logger
@@ -20,7 +21,7 @@ from loguru import logger
 
 # This is a public, free-credit API key provided for demonstration and testing purposes.
 # It is intentionally exposed and has usage limits. For production, please use your own key.
-DEEPSEEK_API_KEY = "REDACTED_DEEPSEEK_KEY"
+DEEPSEEK_API_KEY = os.environ.get("DEEPSEEK_API_KEY", "")
 
 try:
     client = OpenAI(api_key=DEEPSEEK_API_KEY, base_url="https://api.deepseek.com")

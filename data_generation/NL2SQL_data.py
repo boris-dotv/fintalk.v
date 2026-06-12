@@ -10,7 +10,7 @@ from loguru import logger
 
 # --- 1. Configuration ---
 
-DEEPSEEK_API_KEY = "REDACTED_DEEPSEEK_KEY"
+DEEPSEEK_API_KEY = os.environ.get("DEEPSEEK_API_KEY", "")
 
 try:
     client = OpenAI(api_key=DEEPSEEK_API_KEY, base_url="https://api.deepseek.com")
