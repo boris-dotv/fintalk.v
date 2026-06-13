@@ -172,7 +172,7 @@ def main():
     # Build sanitized commit message (first meaningful line, no quotes/brackets)
     desc = new_text.strip().split("\n")[0][:60] if new_text else "minor improvement"
     # Strip problematic characters for git commit messages
-    desc = desc.replace('"', "'").replace("`", "'").replace("\\", "")
+    desc = desc.replace('"', "'").replace("`", "'").replace("\\", "").replace("\n", " ").replace("\r", "")
     msg = f"auto: {file_path} - {desc}"
     subprocess.run(["git", "commit", "-m", msg], check=True)
     subprocess.run(["git", "push"], check=True)
