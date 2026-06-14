@@ -156,8 +156,8 @@ def main():
         sys.exit(1)
 
     # 6. Commit & push
-    subprocess.run(["git", "config", "user.name", "fintalk-bot"], check=True)
-    subprocess.run(["git", "config", "user.email", "bot@fintalk.ai"], check=True)
+    subprocess.run(["git", "config", "user.name", "boris-dotv"], check=True)
+    subprocess.run(["git", "config", "user.email", "1322553126@qq.com"], check=True)
     subprocess.run(["git", "add", file_path], check=True)
 
     # Verify there's actually a diff
