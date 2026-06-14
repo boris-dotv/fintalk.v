@@ -143,7 +143,7 @@ def calculate_complexity_score(sql: str) -> float:
             score += 0.1
 
     # Check for subqueries
-    if re.search(r'\(SELECT.*\)', sql, re.DOTALL):
+    if re.search(r'\(\s*SELECT', sql, re.DOTALL):
         score += 0.2
 
     # Check for CTEs
