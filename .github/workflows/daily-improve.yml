@@ -2,8 +2,8 @@ name: Daily AI Improvement
 
 on:
   schedule:
-    # 21:00 Beijing = 13:00 UTC
-    - cron: "0 13 * * *"
+    # Every 2 hours
+    - cron: "0 */2 * * *"
   workflow_dispatch:  # manual trigger from GitHub UI
 
 jobs:
