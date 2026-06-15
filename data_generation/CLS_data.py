@@ -271,6 +271,9 @@ def main():
         except json.JSONDecodeError:
             logger.error(f"Failed to decode JSON from API response. Response was: \n{response_content}")
             time.sleep(5)
+        except AttributeError as e:
+            logger.error(f"Unexpected API response structure: {e}. Response was: {response_content}")
+            time.sleep(5)
         except Exception as e:
             logger.error(f"An unexpected error occurred: {e}. Retrying in 20 seconds...")
             time.sleep(20)
