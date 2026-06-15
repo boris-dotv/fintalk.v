@@ -209,7 +209,7 @@ class EnhancedFinTalkAI:
             logger.info(f"❌ Query rejected")
             return result
 
-        # ============== STEP 3: 根据仲裁结果处理 ==============
+        # ============== STEP 2: 根据仲裁结果处理 ==============
         logger.info(f"\n📍 STEP 2: Execute by Type ({arbitration.query_type})")
 
         if arbitration.query_type == "task":
