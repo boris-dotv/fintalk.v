@@ -352,7 +352,6 @@ Provide a clear, professional answer with business implications."""
     def _print_summary(self, results: Dict):
         """Print execution summary."""
         print(f"\n📊 EXECUTION SUMMARY:")
-        print(f"   Steps Executed: {len(results.get('steps', []))}")
         print(f"   Companies Analyzed: 2")
         print(f"   SQL Queries: 4")
         print(f"   Formula Calculations: 2")
