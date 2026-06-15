@@ -322,7 +322,7 @@ def main():
 
     # 7. Save results
     logger.info("\n=== Generation Complete ===")
-    logger.info(f"Metrics: {metrics}")
+    logger.info(f"Metrics: total_generated={metrics.total_generated}, syntax_errors={metrics.syntax_errors}, duplicates_filtered={metrics.duplicates_filtered}, low_quality_filtered={metrics.low_quality_filtered}")
     logger.info(f"Generated {len(generated_samples)} high-quality samples")
 
     # Save to JSONL
