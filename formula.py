@@ -1,10 +1,51 @@
 # Save this file as fintalk.ai/formula.py
+import ast
+import operator as _op
 import re
 from loguru import logger
 from typing import List, Dict, Tuple, Any
 
 # A simple cache for the formulas to avoid reading them repeatedly
 _FORMULA_CACHE = None
+
+# Allowed operators for safe AST evaluation
+_SAFE_BINOPS = {
+    ast.Add: _op.add,
+    ast.Sub: _op.sub,
+    ast.Mult: _op.mul,
+    ast.Div: _op.truediv,
+}
+
+_SAFE_UNARYOPS = {
+    ast.UAdd: _op.pos,
+    ast.USub: _op.neg,
+}
+
+
+def _safe_eval_node(node: ast.AST, values: Dict[str, float]) -> float:
+    """
+    Recursively evaluate a safe AST arithmetic node.
+    Only allows: numbers, variables, basic arithmetic (+, -, *, /), parentheses.
+    Everything else (function calls, attribute access, etc.) raises ValueError.
+    """
+    if isinstance(node, ast.Expression):
+        return _safe_eval_node(node.body, values)
+    if isinstance(node, ast.Constant):
+        return float(node.value)
+    if isinstance(node, ast.BinOp):
+        left = _safe_eval_node(node.left, values)
+        right = _safe_eval_node(node.right, values)
+        op = _SAFE_BINOPS.get(type(node.op))
+        if op is None:
+            raise ValueError(f"Unsupported operator: {type(node.op).__name__}")
+        return op(left, right)
+    if isinstance(node, ast.UnaryOp):
+        operand = _safe_eval_node(node.operand, values)
+        op = _SAFE_UNARYOPS.get(type(node.op))
+        if op is None:
+            raise ValueError(f"Unsupported unary operator: {type(node.op).__name__}")
+        return op(operand)
+    raise ValueError(f"Unsupported AST node type: {type(node).__name__}")
 
 def get_financial_formulas() -> List[Tuple[str, str]]:
     """
@@ -78,18 +119,16 @@ def calculate_from_expression(expression: str, values: Dict[str, float]) -> floa
     Safely calculates the result of a mathematical expression by substituting
     variable names with their numerical values.
 
+    Uses AST-based evaluation instead of eval() — only arithmetic operations
+    (+, -, *, /) and parentheses are permitted. Function calls, attribute access,
+    and other potentially dangerous constructs are rejected.
+
     Args:
         expression: The mathematical formula string (e.g., "(A - B) / B").
         values: A dictionary mapping variable names to their float values (e.g., {'A': 100.0, 'B': 80.0}).
 
     Returns:
         The calculated result as a float.
-    
-    Security Note:
-        This function uses `eval()`, which can be a security risk if the expression
-        is not controlled. In this framework, all expressions are hardcoded and
-        pre-defined in `get_financial_formulas`, making this usage safe. 
-        Do NOT use this function with arbitrary, user-provided expressions.
     """
     # Create a local copy to avoid modifying the original dict
     local_values = values.copy()
@@ -100,17 +139,17 @@ def calculate_from_expression(expression: str, values: Dict[str, float]) -> floa
     # Replace variable names in the expression with their numerical values
     for var in sorted_vars:
         expression = expression.replace(var, str(local_values[var]))
-    
+
     try:
-        # Evaluate the final mathematical expression
-        result = eval(expression)
+        tree = ast.parse(expression, mode="eval")
+        result = _safe_eval_node(tree, local_values)
         return result
     except ZeroDivisionError:
         logger.warning(f"Attempted to divide by zero in expression '{expression}'. Returning Not-a-Number.")
         return float('nan')
-    except (SyntaxError, NameError, TypeError) as e:
+    except (SyntaxError, ValueError, TypeError) as e:
         logger.error(f"Failed to calculate expression '{expression}'. Error: {e}")
-        return float('nan') # Return Not-a-Number on other errors
+        return float('nan')  # Return Not-a-Number on other errors
 
 if __name__ == '__main__':
     # Example usage to demonstrate the library's capabilities
