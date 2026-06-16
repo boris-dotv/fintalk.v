@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
-Daily autonomous code improvement for FinTalk.v.
-Called by GitHub Actions. Reads the codebase, picks a file,
-asks DeepSeek for one improvement, applies it, commits, pushes.
+Autonomous code improvement for FinTalk.v — runs every 2 hours via GitHub Actions.
+Reads the codebase, asks DeepSeek for one improvement, applies it, commits, pushes.
+If nothing to improve, drops a philosophical thought as a comment to keep the streak.
 """
 
 import os
@@ -13,6 +13,92 @@ import json
 from pathlib import Path
 from urllib.request import Request, urlopen
 from urllib.error import URLError
+
+# ── Fallback: philosophical one-liners for when there's nothing to improve ──
+PHILOSOPHY = [
+    "We suffer more in imagination than in reality. — Seneca",
+    "The impediment to action advances action. What stands in the way becomes the way. — Marcus Aurelius",
+    "No person has the power to have everything they want, but it is in their power not to want what they don't have. — Seneca",
+    "First say to yourself what you would be; then do what you have to do. — Epictetus",
+    "Waste no more time arguing what a good man should be. Be one. — Marcus Aurelius",
+    "He who fears death will never do anything worth of a man who is alive. — Seneca",
+    "It's not what happens to you, but how you react to it that matters. — Epictetus",
+    "The happiness of your life depends upon the quality of your thoughts. — Marcus Aurelius",
+    "Luck is what happens when preparation meets opportunity. — Seneca",
+    "Don't explain your philosophy. Embody it. — Epictetus",
+    "If it is not right, do not do it; if it is not true, do not say it. — Marcus Aurelius",
+    "Sometimes even to live is an act of courage. — Seneca",
+    "Any person capable of angering you becomes your master. — Epictetus",
+    "The best revenge is not to be like your enemy. — Marcus Aurelius",
+    "A gem cannot be polished without friction, nor a man perfected without trials. — Seneca",
+    "A rational person should cultivate indifference to things beyond their control. If you find yourself looping on a problem you cannot solve, you must actively step away.",
+    "Your blog is your calling card. Your work is your evidence. Your image is your signal. The three are one.",
+    "Code is not just logic — it is clarity, discipline, and respect for the next reader.",
+    "The goal is not to be impressive. The goal is to say something the reader didn't know they needed to hear.",
+    "Every line of code is a decision. Make it a thoughtful one.",
+    "Build things that make people stop scrolling and start thinking.",
+    "Between stimulus and response there is a space. In that space is our power to choose our response.",
+    "One person saving ten seconds saves the world seven hundred billion seconds.",
+    "The bottleneck is never the tool. It's the clarity of thought behind it.",
+    "Ship it. Then ship it better.",
+    "Don't just read the docs. Write the docs you wish you had read.",
+    "Your GitHub graph is a fossil record of your curiosity. Make it dense.",
+    "Done is better than perfect, but thoughtful is better than done.",
+    "The answer is always in the code. You just haven't read enough of it yet.",
+    "Complexity is a tax paid by everyone who touches the code after you. Be merciful.",
+]
+
+
+def fallback_commit():
+    """When the AI finds nothing to improve, add a philosophical comment to keep the streak."""
+    os.chdir(REPO_ROOT)
+
+    # Pick a random Python file (not this script, not empty __init__.py)
+    eligible = [
+        p for p in PYTHON_FILES
+        if "daily_improve" not in p
+        and Path(p).stat().st_size > 20  # skip near-empty files
+    ]
+    if not eligible:
+        print("No eligible files for fallback comment")
+        return False
+
+    target = random.choice(eligible)
+    fp = REPO_ROOT / target
+    content = fp.read_text(encoding="utf-8")
+
+    # Pick a random philosophy line
+    thought = random.choice(PHILOSOPHY)
+    comment_line = f"# {thought}\n"
+
+    # Insert after the last import or first meaningful line, or at end of file
+    lines = content.split("\n")
+    insert_at = len(lines)
+    for i, line in enumerate(lines):
+        if line.startswith("import ") or line.startswith("from "):
+            insert_at = i + 1
+
+    # Insert after a blank line following imports, if possible
+    if insert_at < len(lines) and lines[insert_at].strip() == "":
+        insert_at += 1
+
+    lines.insert(insert_at, comment_line.rstrip())
+    new_content = "\n".join(lines)
+    fp.write_text(new_content, encoding="utf-8")
+    print(f"Added philosophy to {target} at line {insert_at+1}")
+
+    # Git config
+    subprocess.run(["git", "config", "user.name", "boris-dotv"], check=True)
+    subprocess.run(["git", "config", "user.email", "1322553126@qq.com"], check=True)
+    subprocess.run(["git", "add", target], check=True)
+
+    # Commit message: first 50 chars of the thought
+    short = thought[:50].replace('"', "'").replace("`", "'")
+    msg = f"auto: philosophy — {short}"
+    subprocess.run(["git", "commit", "-m", msg], check=True)
+    subprocess.run(["git", "push"], check=True)
+    print(f"✅ Fallback committed & pushed: {msg}")
+    return True
 
 API_KEY = os.environ["DEEPSEEK_API_KEY"]
 API_URL = "https://api.deepseek.com/chat/completions"
@@ -36,9 +122,9 @@ NEW: <replacement lines>
 Rules:
 - ONE change only, small and safe
 - OLD must match the file exactly (copy-paste from the provided code)
-- Prioritize: bug fixes > error handling > type hints > refactoring > docstrings
+- ANY improvement counts: bug fixes, error handling, type hints, refactoring, docstrings, clearer variable names, better comments, logging, edge case handling
 - Do NOT change logic or APIs
-- If you see nothing worth changing, output: SKIP"""
+- If you TRULY see nothing at all worth changing after careful review, output: SKIP"""
 
 
 def call_deepseek(prompt: str) -> str:
@@ -142,12 +228,14 @@ def main():
     # 3. Parse response
     file_path, old_text, new_text = parse_response(response)
     if file_path is None:
-        print("AI chose to skip — nothing to improve today")
+        print("AI chose to skip — inserting philosophy instead")
+        fallback_commit()
         sys.exit(0)
 
     # 4. Skip if no actual change (AI hallucinated identical OLD/NEW)
     if old_text == new_text:
-        print("AI returned identical OLD/NEW — no real change, skipping")
+        print("AI returned identical OLD/NEW — inserting philosophy instead")
+        fallback_commit()
         sys.exit(0)
 
     # 5. Apply change
@@ -166,7 +254,11 @@ def main():
         capture_output=True,
     )
     if diff_check.returncode == 0:
-        print("No diff to commit — skipping")
+        print("No diff to commit — inserting philosophy instead")
+        # Unstage the no-op change first
+        subprocess.run(["git", "reset", "HEAD", "--", file_path], capture_output=True)
+        subprocess.run(["git", "checkout", "--", file_path], capture_output=True)
+        fallback_commit()
         sys.exit(0)
 
     # Build sanitized commit message (first meaningful line, no quotes/brackets)
