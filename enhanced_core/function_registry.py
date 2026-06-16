@@ -163,18 +163,29 @@ class FinancialFunctionRegistry:
             return {"error": str(e)}
 
     def _get_company_id(self, company_name: str) -> Optional[int]:
-        """获取公司ID"""
-        company_map = {
-            "za bank": 1,
-            "welab bank": 2,
-            "airstar bank": 3,
-            "livo bank": 4,
-            "mox bank": 5
-        }
+        """获取公司ID，通过查询数据库进行模糊匹配"""
+        if self.osworld:
+            results = self.osworld.execute_sql(
+                f"SELECT company_sort_id, name FROM companies "
+                f"WHERE LOWER(name) LIKE '%{company_name.lower()}%' "
+                f"OR LOWER(name) LIKE '%{company_name.lower().replace(' ', '%')}%' "
+                f"ORDER BY company_sort_id LIMIT 1"
+            )
+        elif self.db:
+            cursor = self.db.cursor()
+            cursor.execute(
+                "SELECT company_sort_id, name FROM companies "
+                "WHERE LOWER(name) LIKE ? OR LOWER(name) LIKE ? "
+                "ORDER BY company_sort_id LIMIT 1",
+                (f"%{company_name.lower()}%", f"%{company_name.lower().replace(' ', '%')}%")
+            )
+            results = [dict(zip(["company_sort_id", "name"], row)) for row in cursor.fetchall()]
+        else:
+            return None
 
-        for key, value in company_map.items():
-            if key in company_name.lower():
-                return value
+        if results:
+            logger.info(f"   🔍 Company match: '{company_name}' -> '{results[0]['name']}'")
+            return results[0]["company_sort_id"]
         return None
 
     def _execute_sql(self, sql: str) -> List[Dict]:
