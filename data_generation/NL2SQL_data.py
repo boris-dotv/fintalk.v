@@ -193,6 +193,9 @@ def main():
         logger.info(f"Loading existing dataset from {SFT_OUTPUT_FILE} to resume.")
         with open(SFT_OUTPUT_FILE, 'r', encoding='utf-8') as f:
             for line in f:
+                line = line.strip()
+                if not line:
+                    continue
                 try:
                     data = json.loads(line)
                     sft_dataset.append(data)
