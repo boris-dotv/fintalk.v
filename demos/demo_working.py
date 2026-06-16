@@ -114,7 +114,7 @@ def setup_database(csv_dir: str) -> sqlite3.Connection:
             df = pd.read_csv(file_path, encoding='latin-1')
 
         df.to_sql(table_name, conn, if_exists='replace', index=False)
-        logger.success(f"Loaded {len(df)} rows into '{table_name}'")
+        logger.info(f"Loaded {len(df)} rows into '{table_name}'")
 
     DB_CONNECTION = conn
     return conn
