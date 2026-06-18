@@ -12,7 +12,6 @@ import re
 import time
 import random
 import numpy as np
-import os
 from openai import OpenAI, APIConnectionError, RateLimitError
 from typing import List, Dict, Any
 from loguru import logger
