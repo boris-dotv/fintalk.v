@@ -215,8 +215,6 @@ class FinancialFunctionRegistry:
 
     def _get_executive_director_ratio(self, company_name: str) -> Dict:
         """获取执行董事比率"""
-        import sys
-        sys.path.append("..")
         from formula import find_formula_for_query, calculate_from_expression
 
         company_id = self._get_company_id(company_name)
