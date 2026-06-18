@@ -33,7 +33,7 @@ class CorrelationChecker:
         Returns:
             True if correlated, False otherwise
         """
-        if not prev_query:
+        if not prev_query or not curr_query:
             return False
 
         prompt = f"""Are these two queries correlated in a multi-turn conversation?
