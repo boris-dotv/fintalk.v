@@ -26,7 +26,7 @@ from formula import find_formula_for_query, calculate_from_expression
 
 # API Configuration
 API_URL = "https://qianfan.baidubce.com/v2/chat/completions"
-API_KEY = "REDACTED_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+API_KEY = os.environ["QIANFAN_API_KEY"]
 HEADERS = {
     "Content-Type": "application/json",
     "Authorization": f"Bearer {API_KEY}"
