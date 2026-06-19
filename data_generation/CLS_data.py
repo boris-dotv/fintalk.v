@@ -211,7 +211,7 @@ def main():
         
         logger.info(f"Progress: {len(sft_dataset)} / {TARGET_DATASET_SIZE}")
         
-        num_samples = min(3, len(sft_dataset))
+        num_samples = min(5, len(sft_dataset))
         recent_examples_for_feedback = random.sample(sft_dataset, num_samples) if sft_dataset else []
         prompt = generate_diverse_cls_prompt(recent_examples_for_feedback)
         
