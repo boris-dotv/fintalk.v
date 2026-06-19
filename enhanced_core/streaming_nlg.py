@@ -130,6 +130,7 @@ Answer:"""
                 json=payload,
                 timeout=30
             )
+            response.raise_for_status()
             return response.json()["choices"][0]["message"]["content"]
         except Exception as e:
             logger.error(f"NLG generation error: {e}")
