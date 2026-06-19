@@ -1,4 +1,6 @@
 import os
+import sys
+
 os.environ['SENTENCE_TRANSFORMERS_HOME'] = '/raidnvme/czc/SENTENCE_TRANSFORMERS_HOME'
 
 # for huggingface
