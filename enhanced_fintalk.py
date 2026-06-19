@@ -340,9 +340,10 @@ If no function matches, return {{"function_name": "none"}}"""
     def _handle_general_query(self, query: str) -> str:
         """处理通用查询"""
         # 简单处理：如果有公司名，返回公司信息
-        if "za bank" in query.lower():
+        query_lower = query.lower()
+        if "za bank" in query_lower:
             func_result = self.function_registry.execute("get_company_info", {"company_name": "ZA Bank"})
-        elif "welab" in query.lower():
+        elif "welab" in query_lower:
             func_result = self.function_registry.execute("get_company_info", {"company_name": "WeLab Bank"})
         else:
             return "请指定你想查询的公司名称（如：ZA Bank 或 WeLab Bank）"
