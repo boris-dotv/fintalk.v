@@ -197,7 +197,9 @@ class ToolExecutor:
                 "tool": "execute_sql",
                 "input": sql,
                 "error": str(e),
-                "status": "error"
+                "status": "error",
+                "output": [],
+                "rows_affected": 0
             }
 
     def use_formula(self, formula_name: str, values: Dict[str, float]) -> Dict[str, Any]:
