@@ -285,7 +285,7 @@ def reply_message(message_id: str, text: str):
         .request_body(
             ReplyMessageRequestBody.builder()
             .msg_type("interactive")
-            .content(json.dumps(card))
+            .content(json.dumps(card, ensure_ascii=False))
             .build()
         )
         .build()
