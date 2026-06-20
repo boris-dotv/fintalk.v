@@ -42,6 +42,7 @@ def run_demo():
     print("\n🚀 启动完整Demo...")
     from demos.demo_with_mcp import demo_with_mcp
     demo_with_mcp()
+    input("\n按 Enter 键继续...")
 
 
 def run_test():
