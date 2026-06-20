@@ -30,7 +30,7 @@ logger = logging.getLogger(__name__)
 
 # LLM API
 API_URL = "https://qianfan.baidubce.com/v2/chat/completions"
-API_KEY = os.environ["QIANFAN_API_KEY"]
+API_KEY = os.environ.get("QIANFAN_API_KEY", "")
 HEADERS = {
     "Content-Type": "application/json",
     "Authorization": f"Bearer {API_KEY}"
