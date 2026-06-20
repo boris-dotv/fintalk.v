@@ -34,7 +34,7 @@ def print_menu():
     print("      enhanced_fintalk.py (无交互)")
     print("\n  [0] 🚪 退出")
     print("\n" + "="*80)
-    print("\n请选择 [0-3]: ", end="")
+    print("\n请选择 [0-3]: ", end="", flush=True)
 
 
 def run_demo():
