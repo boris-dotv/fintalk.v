@@ -58,6 +58,7 @@ def fallback_commit():
         p for p in PYTHON_FILES
         if "daily_improve" not in p
         and Path(p).stat().st_size > 20  # skip near-empty files
+        and not p.endswith("__init__.py")  # skip __init__.py files
     ]
     if not eligible:
         print("No eligible files for fallback comment")
