@@ -106,6 +106,9 @@ class FinTalkDatabase:
     # ---- CSV loading ----
 
     def _load_csv_to_table(self, filepath: Path, table_name: str) -> int:
+        if not filepath.exists():
+            logger.error(f"CSV file not found: {filepath}")
+            return 0
         with open(filepath, "r", encoding="utf-8-sig", errors="replace") as f:
             reader = csv.reader(f)
             header = next(reader, None)
