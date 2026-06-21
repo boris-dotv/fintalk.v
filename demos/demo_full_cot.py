@@ -220,7 +220,8 @@ class ToolExecutor:
                 "tool": "use_formula",
                 "input": {"formula": formula_name, "values": values},
                 "error": str(e),
-                "status": "error"
+                "status": "error",
+                "output": None
             }
 
 
