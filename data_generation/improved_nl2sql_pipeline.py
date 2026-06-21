@@ -129,6 +129,11 @@ def validate_sql_syntax(sql: str) -> Tuple[bool, str]:
         return False, str(e)
     except Exception as e:
         return False, f"Unexpected error: {e}"
+    finally:
+        try:
+            conn.close()
+        except:
+            pass
 
 
 def calculate_complexity_score(sql: str) -> float:
