@@ -293,6 +293,8 @@ def reply_message(message_id: str, text: str):
     resp = lark_client.im.v1.message.reply(req)
     if not resp.success():
         logger.error(f"Reply failed: code={resp.code}, msg={resp.msg}")
+    else:
+        logger.info(f"Successfully replied to message {message_id}")
 
 
 # ================================================================
