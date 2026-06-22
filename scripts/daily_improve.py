@@ -257,8 +257,8 @@ def main():
     if diff_check.returncode == 0:
         print("No diff to commit — inserting philosophy instead")
         # Unstage the no-op change first
-        subprocess.run(["git", "reset", "HEAD", "--", file_path], capture_output=True)
-        subprocess.run(["git", "checkout", "--", file_path], capture_output=True)
+        subprocess.run(["git", "reset", "HEAD", "--", file_path], capture_output=True, check=False)
+        subprocess.run(["git", "checkout", "--", file_path], capture_output=True, check=False)
         fallback_commit()
         sys.exit(0)
 
