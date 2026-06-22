@@ -85,9 +85,12 @@ class StreamingNLG:
                     except json.JSONDecodeError:
                         continue
 
-        except Exception as e:
+        except requests.exceptions.RequestException as e:
             logger.error(f"Streaming error: {e}")
             yield f"[Error: {str(e)}]"
+        except Exception as e:
+            logger.error(f"Unexpected streaming error: {e}")
+            yield f"[Error: Unexpected error: {str(e)}]"
 
     def generate_answer(self, query: str, data: Dict[str, Any]) -> str:
         """
