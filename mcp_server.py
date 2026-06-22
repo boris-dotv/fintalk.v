@@ -109,6 +109,9 @@ class FinTalkDatabase:
         if not filepath.exists():
             logger.error(f"CSV file not found: {filepath}")
             return 0
+        if not filepath.is_file():
+            logger.error(f"Path is not a file: {filepath}")
+            return 0
         with open(filepath, "r", encoding="utf-8-sig", errors="replace") as f:
             reader = csv.reader(f)
             header = next(reader, None)
