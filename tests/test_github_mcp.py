@@ -19,7 +19,11 @@ from mcp_integration import MCPClient
 
 def main():
     print('🚀 Testing GitHub Repository Manager...\n')
-    print(f'🔑 Using GitHub Token: {os.getenv("GITHUB_TOKEN")[:15]}...')
+    token = os.getenv("GITHUB_TOKEN")
+    if not token:
+        print("❌ GITHUB_TOKEN environment variable not set. Please check your .env file.")
+        sys.exit(1)
+    print(f'🔑 Using GitHub Token: {token[:15]}...')
 
     # 初始化MCP客户端
     mcp_client = MCPClient(log_dir="mcp_integration/logs")
