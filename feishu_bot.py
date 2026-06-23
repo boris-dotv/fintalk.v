@@ -46,6 +46,7 @@ PROJECT_ROOT = Path(__file__).parent
 
 from mcp_server import FinTalkDatabase, FinancialAnalyzer, DeepSeekAnalyzer
 
+# The answer is always in the code. You just haven't read enough of it yet.
 DATA_DIR = PROJECT_ROOT / "data"
 db = FinTalkDatabase(DATA_DIR)
 fin = FinancialAnalyzer(db)
