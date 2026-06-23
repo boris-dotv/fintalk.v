@@ -251,6 +251,12 @@ def main():
                 question = parsed_json["question"].strip()
                 sql = parsed_json["sql"].strip()
                 
+                # Validate SQL is not empty
+                if not sql:
+                    logger.warning("Generated SQL is empty. Skipping.")
+                    time.sleep(1)
+                    continue
+                
                 is_duplicate = False
                 # Default to text-based deduplication
                 if question.lower() in existing_questions_set:
