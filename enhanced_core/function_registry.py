@@ -165,10 +165,11 @@ class FinancialFunctionRegistry:
     def _get_company_id(self, company_name: str) -> Optional[int]:
         """获取公司ID，通过查询数据库进行模糊匹配"""
         if self.osworld:
+            safe_name = company_name.lower().replace("'", "''")
             results = self.osworld.execute_sql(
                 f"SELECT company_sort_id, name FROM companies "
-                f"WHERE LOWER(name) LIKE '%{company_name.lower()}%' "
-                f"OR LOWER(name) LIKE '%{company_name.lower().replace(' ', '%')}%' "
+                f"WHERE LOWER(name) LIKE '%{safe_name}%' "
+                f"OR LOWER(name) LIKE '%{safe_name.replace(' ', '%')}%' "
                 f"ORDER BY company_sort_id LIMIT 1"
             )
         elif self.db:
