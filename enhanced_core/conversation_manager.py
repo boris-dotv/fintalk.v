@@ -44,7 +44,8 @@ class ConversationManager:
         self.context: Dict[str, Any] = {
             "last_company": None,
             "last_query_type": None,
-            "entities": []
+            "entities": [],
+            "last_query": None
         }
         self.slots: Dict[str, Any] = {}
         logger.info("✅ ConversationManager initialized")
