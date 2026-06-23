@@ -46,8 +46,12 @@ class QueryArbitrator:
         prompt = self._build_arbitration_prompt(query, history)
         result = self.llm_caller(prompt, temperature=0.1)
 
-        # 解析结果
-        result = result.strip().upper()
+        # 解析结果 - handle potential None or non-string return
+        if result is None or not isinstance(result, str):
+            logger.warning(f"Unexpected LLM response type: {type(result)}, defaulting to 'A'")
+            result = "A"
+        else:
+            result = result.strip().upper()
         if result not in ["A", "B", "C", "D"]:
             result = "A"  # 默认任务类型
 
