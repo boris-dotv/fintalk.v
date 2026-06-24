@@ -203,10 +203,11 @@ Return JSON:
                 results["company_id"] = query_result[0]["company_sort_id"]
 
             if query_result and "count" in query_result[0]:
+                count_val = query_result[0]["count"]
                 if "executive" in step.get("description", "").lower():
-                    results["executive_count"] = query_result[0]["count"]
+                    results["executive_count"] = count_val
                 else:
-                    results["total_directors"] = query_result[0]["count"]
+                    results["total_directors"] = count_val
 
         elif step.get("action") == "calculate_formula":
             formula_name = step.get("formula", "")
