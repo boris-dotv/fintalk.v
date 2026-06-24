@@ -145,18 +145,23 @@ def demo_with_mcp():
                 if 'search github' in user_input.lower():
                     # 提取搜索查询
                     query = user_input.lower().replace('search github for', '').replace('search github', '').strip()
+                    if not query:
+                        query = "model context protocol"  # default query if none provided
                     result = mcp_client.call_tool("search_github", {"query": query, "language": "python"})
 
                 elif 'create file' in user_input.lower():
                     # 提取文件名
                     file_name = user_input.split('create file')[-1].split()[0].strip()
-                    test_content = '# Created via MCP\nprint("Hello from FinTalk.AI MCP!")'
-                    result = mcp_client.call_tool("github_repo_manager", {
-                        "action": "create_file",
-                        "path": file_name,
-                        "content": test_content,
-                        "message": f"Create {file_name} via FinTalk.AI MCP"
-                    })
+                    if not file_name:
+                        result = {"error": "No file name provided", "status": "error"}
+                    else:
+                        test_content = '# Created via MCP\nprint("Hello from FinTalk.AI MCP!")'
+                        result = mcp_client.call_tool("github_repo_manager", {
+                            "action": "create_file",
+                            "path": file_name,
+                            "content": test_content,
+                            "message": f"Create {file_name} via FinTalk.AI MCP"
+                        })
 
                 elif 'get' in user_input.lower() and 'file' in user_input.lower():
                     # 提取文件路径
