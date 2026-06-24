@@ -240,7 +240,8 @@ def main():
                 messages=[{"role": "system", "content": "You are an expert assistant..."}, {"role": "user", "content": prompt}],
                 stream=False,
                 timeout=120.0,
-                max_tokens=2048
+                max_tokens=2048,
+                temperature=0.9
             )
             response_content = response.choices[0].message.content
             
