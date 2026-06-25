@@ -471,7 +471,9 @@ class DeepSeekAnalyzer:
             )
             resp.raise_for_status()
             return resp.json()["choices"][0]["message"]["content"]
-        except Exception as e:
+        except requests.exceptions.Timeout:
+            return "AI analysis error: Request timed out after 30 seconds"
+        except requests.exceptions.RequestException as e:
             return f"AI analysis error: {e}"
 
 
