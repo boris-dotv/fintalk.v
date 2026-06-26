@@ -172,6 +172,8 @@ class FinancialFunctionRegistry:
                 f"OR LOWER(name) LIKE '%{safe_name.replace(' ', '%')}%' "
                 f"ORDER BY company_sort_id LIMIT 1"
             )
+            if results is None:
+                return None
         elif self.db:
             cursor = self.db.cursor()
             cursor.execute(
