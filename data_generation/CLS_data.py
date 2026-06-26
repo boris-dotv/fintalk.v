@@ -272,6 +272,7 @@ def main():
             # Reset response_content to avoid using stale data in subsequent error handling
             response_content = None
             time.sleep(5)
+            continue
         except AttributeError as e:
             logger.error(f"Unexpected API response structure: {e}. Response was: {response_content}")
             time.sleep(5)
