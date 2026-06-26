@@ -268,6 +268,7 @@ class EnhancedFinTalkAI:
                 answer = self.nlg.generate_answer(query, func_result)
                 return answer
             else:
+                logger.error(f"Function execution error: {func_result['error']}")
                 return f"抱歉，{func_result['error']}"
 
         # 尝试通用处理
