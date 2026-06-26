@@ -55,8 +55,7 @@ class QueryArbitrator:
         if result not in ["A", "B", "C", "D"]:
             logger.warning(f"Unexpected arbitration result '{result}', defaulting to 'A'")
             result = "A"  # 默认任务类型
-        else:
-            logger.info(f"Arbitration result: {result}")
+        logger.info(f"Arbitration result: {result}")
 
         type_map = {
             "A": ("task", "Data retrieval, calculation, or comparison"),
