@@ -90,7 +90,7 @@ def get_financial_formulas() -> List[Tuple[str, str]]:
         'asset_liability_ratio=Total Assets / Total Liabilities',
         'debt_to_equity_ratio=Total Liabilities / Total Equity'
     ]
-    _FORMULA_CACHE = [tuple(t.split('=')) for t in formulas]
+    _FORMULA_CACHE = [tuple(t.split('=', 1)) for t in formulas]
     return _FORMULA_CACHE
 
 def find_formula_for_query(query: str) -> Tuple[str, str, List[str]]:
