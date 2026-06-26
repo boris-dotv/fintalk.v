@@ -234,7 +234,7 @@ Respond with ONLY valid JSON."""
             result["query_result"] = query_result
 
             # Store intermediate data for subsequent steps
-            if "company_sort_id" in query_result[0]:
+            if query_result and len(query_result) > 0 and "company_sort_id" in query_result[0]:
                 results["company_id"] = query_result[0]["company_sort_id"]
 
             if "executive_count" in str(sql).lower():
