@@ -189,6 +189,7 @@ class FinancialFunctionRegistry:
         if results:
             logger.info(f"   🔍 Company match: '{company_name}' -> '{results[0]['name']}'")
             return results[0]["company_sort_id"]
+        logger.warning(f"   ⚠️ No company found for: '{company_name}'")
         return None
 
     def _execute_sql(self, sql: str) -> List[Dict]:
