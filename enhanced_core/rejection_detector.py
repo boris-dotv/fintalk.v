@@ -63,7 +63,7 @@ Decision:"""
 
         # Robust parsing — LLM output may include whitespace, punctuation, or extra text
         # e.g. "1", "0", " 1 ", "1 (accept)", "Decision: 0"
-        match = re.search(r'\b([01])\b', result.strip())
+        match = re.search(r'\b([01])\b', result.strip()) if result else None
         if match:
             accept = match.group(1) == "1"
             logger.info(f"   🛡️  Rejection check: {query[:50]}... -> {'Accept' if accept else 'Reject'}")
