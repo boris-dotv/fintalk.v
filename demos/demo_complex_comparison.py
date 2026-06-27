@@ -299,7 +299,7 @@ Keep it simple with 4-5 steps."""
             _, expr_welab, _ = find_formula_for_query("top_3_shareholder_concentration")
             result_welab = calculate_from_expression(expr_welab, formula_values_welab)
 
-            print(f"   ZA Bank: {result_za:.2%}")
+            print(f"   ZA Bank: {result_za:.2%}" if result_za is not None else "   ZA Bank: N/A")
             print(f"   WeLab Bank: {result_welab:.2%}")
 
             diff = abs(za_conc - welab_conc)
