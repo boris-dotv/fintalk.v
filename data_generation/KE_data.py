@@ -229,11 +229,15 @@ def main():
         logger.info(f"Loading existing dataset from {SFT_OUTPUT_FILE} to resume.")
         with open(SFT_OUTPUT_FILE, 'r', encoding='utf-8') as f:
             for line in f:
+                line = line.strip()
+                if not line:
+                    continue
                 try:
                     data = json.loads(line)
                     sft_dataset.append(data)
                     existing_queries_set.add(data['noisy_query'].lower().strip())
-                except json.JSONDecodeError:
+                except (json.JSONDecodeError, KeyError) as e:
+                    logger.warning(f"Skipping malformed line: {e}")
                     continue
         logger.info(f"Loaded {len(sft_dataset)} existing data points.")
 
