@@ -109,7 +109,7 @@ def find_formula_for_query(query: str) -> Tuple[str, str, List[str]]:
     for name, expression in formulas:
         if name in query_normalized:
             # Extract variables from the expression (e.g., 'A/B' -> ['A', 'B'])
-            variables = re.split(r'[()*/+-]', expression)
+            variables = re.split(r'[()*/+\-]', expression)
             variables = [v.strip() for v in variables if v.strip()]
             return name, expression, variables
     return None, None, None
