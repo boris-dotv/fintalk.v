@@ -30,6 +30,7 @@ from enhanced_core import (
 from formula import find_formula_for_query, calculate_from_expression
 from OSWorld.docker_osworld_adapter import DockerOSWorldAdapter
 
+# No person has the power to have everything they want, but it is in their power not to want what they don't have. — Seneca
 # Logging
 logging.basicConfig(
     level=logging.INFO,
