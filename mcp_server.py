@@ -475,6 +475,8 @@ class DeepSeekAnalyzer:
             return "AI analysis error: Request timed out after 30 seconds"
         except requests.exceptions.RequestException as e:
             return f"AI analysis error: {e}"
+        except Exception as e:
+            return f"AI analysis error: Unexpected error: {e}"
 
 
 # ================================================================
