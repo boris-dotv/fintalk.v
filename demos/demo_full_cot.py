@@ -563,10 +563,8 @@ Respond with ONLY valid JSON:"""
                 "Total Count of Directors": total_count
             }
 
-        return {
-            "Count of Executive Directors": 7.0,
-            "Total Count of Directors": 10.0
-        }
+        # Return empty dict for unknown formulas instead of hardcoded defaults
+        return {}
 
     def _synthesize_answer(self, user_query: str, execution_results: List[Dict]) -> str:
         """Synthesize final answer from execution results."""
