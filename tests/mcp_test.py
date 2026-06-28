@@ -3,4 +3,8 @@
 Test file created via MCP GitHub Repository Manager
 Updated via MCP!
 """
-print("Hello from MCP - Updated!")
+def main() -> None:
+    print("Hello from MCP - Updated!")
+
+if __name__ == "__main__":
+    main()
