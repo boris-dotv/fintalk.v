@@ -92,11 +92,11 @@ def demo_with_mcp():
                 break
 
             # 特殊命令
-            if user_input.lower() == 'mcp':
+            if user_input.lower() in ['mcp', 'mcp summary']:
                 print(mcp_client.get_logs_summary())
                 continue
 
-            if user_input.lower() == 'mcp full':
+            if user_input.lower() in ['mcp full', 'mcp full log', 'mcp logs']:
                 print(mcp_client.view_logs())
                 continue
 
