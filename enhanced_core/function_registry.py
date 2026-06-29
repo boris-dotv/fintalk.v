@@ -159,7 +159,7 @@ class FinancialFunctionRegistry:
                 return {"error": f"Unknown function: {function_name}"}
 
         except Exception as e:
-            logger.error(f"Function execution error: {e}")
+            logger.error(f"Function execution error: {function_name} - {e}", exc_info=True)
             return {"error": str(e)}
 
     def _get_company_id(self, company_name: str) -> Optional[int]:
