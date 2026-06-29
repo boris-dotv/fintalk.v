@@ -132,7 +132,7 @@ def validate_sql_syntax(sql: str) -> Tuple[bool, str]:
     finally:
         try:
             conn.close()
-        except:
+        except Exception:
             pass
 
 
