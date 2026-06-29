@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+"""Enhanced FinTalk.AI Core Modules - MCP architecture core functionality."""
 """
 Enhanced FinTalk.AI Core Modules
 MCP架构的核心功能模块化实现
