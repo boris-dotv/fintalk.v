@@ -217,7 +217,6 @@ def summarize_result(query: str, tool_name: str, raw_result: str) -> str:
 def _fetch_recent_file_from_chat(chat_id: str) -> dict | None:
     """Look through recent chat messages to find the latest CSV file."""
     try:
-        token = lark_client.config.app_settings.app_id  # just to check client exists
         import time
         # Get messages from last 10 minutes
         start_time = str(int((time.time() - 600) * 1000))
