@@ -120,10 +120,9 @@ Provide a concise answer (under 100 words) that:
 Answer:"""
 
         payload = {
-            "model": "deepseek-v3.2-think",
+            "model": "deepseek-chat",
             "messages": [{"role": "user", "content": nlg_prompt}],
             "temperature": 0.7,
-            "web_search": {"enable": False}
         }
 
         try:
