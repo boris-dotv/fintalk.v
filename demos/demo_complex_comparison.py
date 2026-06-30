@@ -252,6 +252,10 @@ Keep it simple with 4-5 steps."""
                 print(f"   ❌ SQL execution failed")
                 return result
 
+            if not query_result:
+                print(f"   ⚠️ SQL returned no rows")
+                return result
+
             print(f"   ✅ Query Result: {query_result}")
             result["query_result"] = query_result
 
