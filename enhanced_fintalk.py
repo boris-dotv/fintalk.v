@@ -273,7 +273,10 @@ class EnhancedFinTalkAI:
                 return f"抱歉，{func_result['error']}"
 
         # 尝试通用处理
-        return self._handle_general_query(query)
+        answer = self._handle_general_query(query)
+        if answer:
+            return answer
+        return "抱歉，我无法处理您的查询。"
 
     def _handle_knowledge_query(self, query: str) -> str:
         """处理知识查询"""
