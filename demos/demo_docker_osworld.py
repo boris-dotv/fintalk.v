@@ -204,9 +204,10 @@ Return JSON:
 
             if query_result and "count" in query_result[0]:
                 count_val = query_result[0]["count"]
-                if "executive" in step.get("description", "").lower():
+                desc_lower = step.get("description", "").lower()
+                if "executive" in desc_lower:
                     results["executive_count"] = count_val
-                else:
+                elif "total" in desc_lower or "all" in desc_lower:
                     results["total_directors"] = count_val
 
         elif step.get("action") == "calculate_formula":
