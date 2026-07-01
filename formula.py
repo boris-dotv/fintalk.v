@@ -154,7 +154,7 @@ def calculate_from_expression(expression: str, values: Dict[str, float]) -> floa
     except ZeroDivisionError:
         logger.warning(f"Attempted to divide by zero in expression '{expression}'. Returning Not-a-Number.")
         return float('nan')
-    except (SyntaxError, ValueError, TypeError) as e:
+    except (SyntaxError, ValueError, TypeError, OverflowError) as e:
         logger.error(f"Failed to calculate expression '{expression}'. Error: {e}")
         return float('nan')  # Return Not-a-Number on other errors
 
