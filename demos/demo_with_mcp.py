@@ -93,11 +93,13 @@ def demo_with_mcp():
 
             # 特殊命令
             if user_input.lower() in ['mcp', 'mcp summary']:
-                print(mcp_client.get_logs_summary())
+                summary = mcp_client.get_logs_summary()
+                print(summary if summary else "No MCP logs available.")
                 continue
 
             if user_input.lower() in ['mcp full', 'mcp full log', 'mcp logs']:
-                print(mcp_client.view_logs())
+                logs = mcp_client.view_logs()
+                print(logs if logs else "No MCP logs available.")
                 continue
 
             if user_input.lower() == 'tools':
