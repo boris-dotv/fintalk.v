@@ -88,7 +88,7 @@ def parse_percentage(perc_str: str) -> float:
     # Remove % sign and convert
     try:
         return float(str(perc_str).replace('%', '').strip())
-    except:
+    except (ValueError, TypeError):
         return 0.0
 
 # ============== COMPLEX ORCHESTRATOR ==============
