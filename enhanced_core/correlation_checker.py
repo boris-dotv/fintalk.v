@@ -43,7 +43,7 @@ Query 2: {curr_query}
 
 Output ONLY: Yes or No"""
 
-        result = self.llm_caller(prompt, temperature=0.1)
+        result = self.llm_caller(prompt, temperature=0.1) or ""
         is_correlated = "yes" in result.lower()
 
         logger.info(f"   🔗 Correlation check -> {is_correlated}")
