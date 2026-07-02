@@ -221,8 +221,7 @@ class ToolExecutor:
                 "input": {"formula": formula_name, "values": values},
                 "error": str(e),
                 "status": "error",
-                "output": None,
-                "rows_affected": 0
+                "output": None
             }
 
 
