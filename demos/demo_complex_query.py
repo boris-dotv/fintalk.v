@@ -86,6 +86,11 @@ def setup_database():
         "management": os.path.join(csv_dir, "management.csv"),
         "shareholders": os.path.join(csv_dir, "shareholder.csv")
     }
+    # Validate that all CSV files exist before attempting to load them
+    missing = [name for name, path in csv_files.items() if not os.path.exists(path)]
+    if missing:
+        print(f"❌ Missing CSV files: {', '.join(missing)}")
+        sys.exit(1)
 
     for table_name, file_path in csv_files.items():
         if os.path.exists(file_path):
