@@ -174,6 +174,9 @@ class FinancialFunctionRegistry:
             )
             if results is None:
                 return None
+            # Ensure results is a list for consistent processing below
+            if not isinstance(results, list):
+                results = list(results)
         elif self.db:
             cursor = self.db.cursor()
             cursor.execute(
