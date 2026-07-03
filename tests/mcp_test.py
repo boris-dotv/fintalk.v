@@ -6,6 +6,7 @@ Updated via MCP!
 def main() -> None:
     """Print a greeting message."""
     print("Hello from MCP - Updated!")
+    print("Test completed successfully.")
 
 if __name__ == "__main__":
     main()
