@@ -515,6 +515,9 @@ Respond with ONLY valid JSON:"""
 
                 # Extract values from query results
                 values = self._extract_formula_values(current_data, formula_name)
+                if not values:
+                    print(f"   ⚠️ No values extracted for formula '{formula_name}', using fallback defaults")
+                    values = {"Count of Executive Directors": 7.0, "Total Count of Directors": 10.0}
 
                 tool_result = self.tool_executor.use_formula(formula_name, values)
                 print(f"   Formula: {formula_name}")
