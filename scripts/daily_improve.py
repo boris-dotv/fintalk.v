@@ -73,7 +73,7 @@ def fallback_commit():
     comment_line = f"# {thought}\n"
 
     # Insert after the last import or first meaningful line, or at end of file
-    lines = content.split("\n")
+    lines = content.splitlines()
     insert_at = len(lines)
     for i, line in enumerate(lines):
         if line.startswith("import ") or line.startswith("from "):
