@@ -145,8 +145,13 @@ class FinTalkDatabase:
                 padded = row + [""] * (len(fields) - len(row))
                 batch.append(tuple(padded[: len(fields)]))
 
-            self.conn.executemany(insert_sql, batch)
-            self.conn.commit()
+            try:
+                self.conn.executemany(insert_sql, batch)
+                self.conn.commit()
+            except sqlite3.Error as e:
+                logger.error(f"SQLite error loading {filepath} into {table_name}: {e}")
+                self.conn.rollback()
+                return 0
             return len(batch)
 
     # ---- Company map ----
