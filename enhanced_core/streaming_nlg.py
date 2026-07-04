@@ -63,6 +63,7 @@ class StreamingNLG:
                 stream=True,
                 timeout=60
             )
+            response.raise_for_status()
 
             for line in response.iter_lines(decode_unicode=False):
                 if not line:
