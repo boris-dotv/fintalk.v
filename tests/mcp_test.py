@@ -3,7 +3,7 @@
 Test file created via MCP GitHub Repository Manager
 Updated via MCP!
 """
-def main() -> None:
+def main() -> None:  # pragma: no cover
     """Print a greeting message."""
     print("Hello from MCP - Updated!")
     print("Test completed successfully.")
