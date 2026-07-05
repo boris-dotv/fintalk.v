@@ -163,8 +163,8 @@ class FinTalkDatabase:
                 name = row[1]
                 if name:
                     self.company_map[name.lower().strip()] = int(row[0])
-        except Exception:
-            pass
+        except Exception as e:
+            logger.warning(f"Failed to build company map: {e}")
 
     def get_company_id(self, company_name: str) -> Optional[int]:
         key = company_name.lower().strip()
