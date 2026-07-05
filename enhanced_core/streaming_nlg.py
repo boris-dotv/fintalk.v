@@ -134,7 +134,11 @@ Answer:"""
                 timeout=30
             )
             response.raise_for_status()
-            return response.json()["choices"][0]["message"]["content"]
+            response_json = response.json()
+            if "choices" not in response_json or len(response_json["choices"]) == 0:
+                logger.error("NLG response missing choices")
+                return f"Based on the data, {query}"
+            return response_json["choices"][0]["message"]["content"]
         except Exception as e:
             logger.error(f"NLG generation error: {e}")
             return f"Based on the data, {query}"
