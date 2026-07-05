@@ -92,6 +92,11 @@ class ParallelExecutor:
                         error=str(e)
                     )
 
+            # Cancel any remaining futures that didn't complete
+            for future in future_to_task:
+                if not future.done():
+                    future.cancel()
+
         total_time = time.time() - start_time
         logger.info(f"✅ All {len(tasks)} tasks completed in {total_time:.3f}s")
 
