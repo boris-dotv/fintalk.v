@@ -158,26 +158,6 @@ def calculate_from_expression(expression: str, values: Dict[str, float]) -> floa
         logger.error(f"Failed to calculate expression '{expression}'. Error: {e}")
         return float('nan')  # Return Not-a-Number on other errors
 
-    # Replace variable names in the expression with their numerical values
-    for var in sorted_vars:
-        expression = expression.replace(var, str(local_values[var]))
-
-    # Validate that no unexpected characters remain after substitution
-    if re.search(r'[a-zA-Z_]', expression):
-        logger.warning(f"Expression '{expression}' still contains variable-like tokens after substitution.")
-        return float('nan')
-
-    try:
-        tree = ast.parse(expression, mode="eval")
-        result = _safe_eval_node(tree, local_values)
-        return result
-    except ZeroDivisionError:
-        logger.warning(f"Attempted to divide by zero in expression '{expression}'. Returning Not-a-Number.")
-        return float('nan')
-    except (SyntaxError, ValueError, TypeError, OverflowError) as e:
-        logger.error(f"Failed to calculate expression '{expression}'. Error: {e}")
-        return float('nan')  # Return Not-a-Number on other errors
-
 if __name__ == '__main__':
     # Example usage to demonstrate the library's capabilities
     
