@@ -79,6 +79,12 @@ class ParallelExecutor:
                     result = future.result()
                     results[task_name] = result
                     logger.info(f"   ✅ Task '{task_name}' completed: {result.execution_time:.3f}s")
+                except TimeoutError:
+                    logger.error(f"   ⏰ Task '{task_name}' timed out after {timeout}s")
+                    results[task_name] = TaskResult(
+                        task_name=task_name,
+                        error=f"Task timed out after {timeout}s"
+                    )
                 except Exception as e:
                     logger.error(f"   ❌ Task '{task_name}' failed: {e}")
                     results[task_name] = TaskResult(
