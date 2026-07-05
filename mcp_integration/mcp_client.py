@@ -14,6 +14,7 @@ from datetime import datetime
 from pathlib import Path
 import requests
 
+# Done is better than perfect, but thoughtful is better than done.
 logger = logging.getLogger(__name__)
 
 
