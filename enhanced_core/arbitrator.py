@@ -52,9 +52,9 @@ class QueryArbitrator:
             result = "A"
         else:
             result = result.strip().upper()
-        if result not in ["A", "B", "C", "D"]:
-            logger.warning(f"Unexpected arbitration result '{result}', defaulting to 'A'")
-            result = "A"  # 默认任务类型
+            if result not in ["A", "B", "C", "D"]:
+                logger.warning(f"Unexpected arbitration result '{result}', defaulting to 'A'")
+                result = "A"  # 默认任务类型
         logger.info(f"Arbitration result: {result}")
 
         type_map = {
