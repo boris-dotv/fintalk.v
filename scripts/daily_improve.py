@@ -83,7 +83,7 @@ def fallback_commit():
     if insert_at < len(lines) and lines[insert_at].strip() == "":
         insert_at += 1
     # Ensure we don't insert beyond the last line
-    if insert_at > len(lines):
+    if insert_at >= len(lines):
         insert_at = len(lines)
 
     lines.insert(insert_at, comment_line.rstrip())
