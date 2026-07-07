@@ -257,6 +257,8 @@ def main():
         
         num_samples = min(3, len(sft_dataset))
         recent_examples_for_feedback = random.sample(sft_dataset, num_samples) if sft_dataset else []
+        if recent_examples_for_feedback:
+            logger.debug(f"Using {len(recent_examples_for_feedback)} recent examples for negative feedback.")
         prompt = generate_diverse_ke_prompt(db_schema_summary, recent_examples_for_feedback)
         
         response_content = None
