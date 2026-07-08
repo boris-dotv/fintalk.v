@@ -25,6 +25,7 @@ from datetime import datetime
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from formula import find_formula_for_query, calculate_from_expression
 
+# The bottleneck is never the tool. It's the clarity of thought behind it.
 # ============== API Configuration ==============
 API_URL = "https://qianfan.baidubce.com/v2/chat/completions"
 API_KEY = os.environ["QIANFAN_API_KEY"]
