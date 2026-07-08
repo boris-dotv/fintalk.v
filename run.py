@@ -64,7 +64,7 @@ def main():
 
     while True:
         print_menu()
-        choice = input().strip()
+        choice = input().strip() if sys.stdin.isatty() else sys.stdin.readline().strip()
 
         if choice == "1":
             run_demo()
