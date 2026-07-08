@@ -139,8 +139,9 @@ def calculate_from_expression(expression: str, values: Dict[str, float]) -> floa
     sorted_vars = sorted(local_values.keys(), key=len, reverse=True)
 
     # Replace variable names in the expression with their numerical values
+    # Use word boundaries to avoid replacing substrings (e.g., "A" in "AB")
     for var in sorted_vars:
-        expression = expression.replace(var, str(local_values[var]))
+        expression = re.sub(r'\b' + re.escape(var) + r'\b', str(local_values[var]), expression)
 
     # Validate that no unexpected characters remain after substitution
     if re.search(r'[a-zA-Z_]', expression):
