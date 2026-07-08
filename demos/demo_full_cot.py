@@ -567,7 +567,6 @@ Respond with ONLY valid JSON:"""
             }
 
         # Return empty dict for unknown formulas instead of hardcoded defaults
-        logger.warning(f"No values could be extracted for formula '{formula_name}' from current data")
         return {}
 
     def _synthesize_answer(self, user_query: str, execution_results: List[Dict]) -> str:
