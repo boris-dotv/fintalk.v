@@ -273,6 +273,11 @@ def main():
             )
             response_content = response.choices[0].message.content
             
+            if not response_content:
+                logger.warning("Empty response from API. Skipping.")
+                time.sleep(5)
+                continue
+            
             cleaned_response = re.sub(r'^```json\s*|\s*```$', '', response_content.strip(), flags=re.MULTILINE)
             parsed_json = json.loads(cleaned_response)
 
