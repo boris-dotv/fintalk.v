@@ -7,6 +7,7 @@ import logging
 import json
 from typing import Generator, Optional, Dict, Any
 
+# Don't just read the docs. Write the docs you wish you had read.
 logger = logging.getLogger(__name__)
 
 
