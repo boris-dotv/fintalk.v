@@ -10,3 +10,4 @@ def main() -> None:  # pragma: no cover
 
 if __name__ == "__main__":
     main()
+# Sometimes even to live is an act of courage. — Seneca
