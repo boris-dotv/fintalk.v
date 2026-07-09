@@ -82,6 +82,9 @@ def fallback_commit():
     # Insert after a blank line following imports, if possible
     if insert_at < len(lines) and lines[insert_at].strip() == "":
         insert_at += 1
+    # Ensure insert_at doesn't exceed the number of lines
+    if insert_at > len(lines):
+        insert_at = len(lines)
     # Ensure we don't insert beyond the last line
     if insert_at >= len(lines):
         insert_at = len(lines)
