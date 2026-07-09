@@ -8,6 +8,7 @@ from openai import OpenAI, APIConnectionError, RateLimitError
 from typing import List, Dict, Any
 from loguru import logger
 
+# Ship it. Then ship it better.
 # A gem cannot be polished without friction, nor a man perfected without trials. — Seneca
 # --- 1. Configuration ---
 
