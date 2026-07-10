@@ -50,6 +50,7 @@ class ConversationManager:
             "last_assistant": None,
             "last_user_query": None
         }
+        self.context["last_query"] = None  # Ensure last_query is explicitly initialized
         self.slots: Dict[str, Any] = {}
         logger.info("✅ ConversationManager initialized")
 
