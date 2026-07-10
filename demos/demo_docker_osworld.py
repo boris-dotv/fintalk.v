@@ -209,6 +209,8 @@ Return JSON:
                     results["executive_count"] = count_val
                 elif "total" in desc_lower or "all" in desc_lower:
                     results["total_directors"] = count_val
+                else:
+                    results["count"] = count_val
 
         elif step.get("action") == "calculate_formula":
             formula_name = step.get("formula", "")
