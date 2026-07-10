@@ -392,7 +392,7 @@ def on_message(event: P2ImMessageReceiveV1) -> None:
     # If user mentions a file/table but we have no context, try to find it in chat history
     file_keywords = ["表格", "表", "文件", "csv", "file", "table", "数据"]
     if not _recent_tables and any(kw in text.lower() for kw in file_keywords):
-        chat_id = msg.chat_id if hasattr(msg, "chat_id") else ""
+        chat_id = getattr(msg, "chat_id", "")
         if chat_id:
             logger.info(f"No recent tables, searching chat {chat_id} for CSV files...")
             file_info = _fetch_recent_file_from_chat(chat_id)
