@@ -269,7 +269,7 @@ def _get_tenant_token() -> str:
     _token_cache["expires"] = now + data.get("expire", 7200) - 60
     return token
 
-_token_cache: dict = {"token": "", "expires": 0}
+_token_cache: Dict[str, Any] = {"token": "", "expires": 0}
 
 FEISHU_BASE = "https://open.feishu.cn/open-apis"
 
