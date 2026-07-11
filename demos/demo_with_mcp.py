@@ -135,7 +135,7 @@ def demo_with_mcp():
             start_time = time.time()
 
             # 检查是否需要MCP工具
-            mcp_keywords = ['search', 'github', 'create', 'update', 'get file', 'branch', 'issue']
+            mcp_keywords = ['search', 'github', 'create', 'update', 'get file', 'branch', 'issue', 'repo']
 
             use_mcp = any(keyword in user_input.lower() for keyword in mcp_keywords)
 
