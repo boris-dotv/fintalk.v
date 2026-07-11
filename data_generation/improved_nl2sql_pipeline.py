@@ -134,7 +134,6 @@ def validate_sql_syntax(sql: str) -> Tuple[bool, str]:
             conn.close()
         except Exception:
             pass
-    return False, "Validation failed"
 
 
 def calculate_complexity_score(sql: str) -> float:
