@@ -24,7 +24,7 @@ def main():
     if not token:
         print("❌ GITHUB_TOKEN environment variable not set. Please check your .env file.")
         sys.exit(1)
-    print(f'🔑 Using GitHub Token: {token[:15]}...')
+    print(f'🔑 Using GitHub Token: {token[:8]}...')
 
     # 初始化MCP客户端
     mcp_client = MCPClient(log_dir="mcp_integration/logs")
