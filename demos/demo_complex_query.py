@@ -74,7 +74,7 @@ def call_llm(prompt: str, temperature: float = 0.3) -> str:
         return response.json()["choices"][0]["message"]["content"]
     except Exception as e:
         print(f"❌ API Error: {e}")
-        return None
+        return ""
 
 
 def setup_database():
