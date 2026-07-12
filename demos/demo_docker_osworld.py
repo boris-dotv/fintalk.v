@@ -211,6 +211,8 @@ Return JSON:
                     results["total_directors"] = count_val
                 else:
                     results["count"] = count_val
+            if query_result and "share_percentage" in query_result[0]:
+                results["share_percentages"] = [row["share_percentage"] for row in query_result]
 
         elif step.get("action") == "calculate_formula":
             formula_name = step.get("formula", "")
