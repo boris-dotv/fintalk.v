@@ -243,6 +243,8 @@ def main():
                     logger.warning(f"Skipping malformed line: {e}")
                     continue
         logger.info(f"Loaded {len(sft_dataset)} existing data points.")
+    else:
+        logger.info(f"No existing dataset found at {SFT_OUTPUT_FILE}. Starting fresh generation.")
 
         # [Embedding Logic]
         # if embedding_model_instance and sft_dataset:
