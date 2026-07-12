@@ -112,11 +112,15 @@ class FinTalkDatabase:
         if not filepath.is_file():
             logger.error(f"Path is not a file: {filepath}")
             return 0
-        with open(filepath, "r", encoding="utf-8-sig", errors="replace") as f:
-            reader = csv.reader(f)
-            header = next(reader, None)
-            if not header:
-                return 0
+        try:
+            with open(filepath, "r", encoding="utf-8-sig", errors="replace") as f:
+                reader = csv.reader(f)
+                header = next(reader, None)
+                if not header:
+                    return 0
+        except IOError as e:
+            logger.error(f"IOError reading {filepath}: {e}")
+            return 0
 
             # Deduplicate column names (e.g. company.csv has two "digital_bank_license")
             seen: dict[str, int] = {}
