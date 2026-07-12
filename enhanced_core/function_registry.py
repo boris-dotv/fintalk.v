@@ -189,7 +189,7 @@ class FinancialFunctionRegistry:
         else:
             return None
 
-        if results:
+        if results and len(results) > 0:
             logger.info(f"   🔍 Company match: '{company_name}' -> '{results[0]['name']}'")
             return results[0]["company_sort_id"]
         logger.warning(f"   ⚠️ No company found for: '{company_name}'")
