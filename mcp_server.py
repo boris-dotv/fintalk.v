@@ -123,40 +123,40 @@ class FinTalkDatabase:
             return 0
 
             # Deduplicate column names (e.g. company.csv has two "digital_bank_license")
-            seen: dict[str, int] = {}
-            fields = []
-            for col in header:
-                col = col.strip()
-                if not col:
-                    col = f"_col{len(fields)}"
-                if col in seen:
-                    seen[col] += 1
-                    fields.append(f"{col}_{seen[col]}")
-                else:
-                    seen[col] = 0
-                    fields.append(col)
+        seen: dict[str, int] = {}
+        fields = []
+        for col in header:
+            col = col.strip()
+            if not col:
+                col = f"_col{len(fields)}"
+            if col in seen:
+                seen[col] += 1
+                fields.append(f"{col}_{seen[col]}")
+            else:
+                seen[col] = 0
+                fields.append(col)
 
-            cols_def = ", ".join(f'"{c}" TEXT' for c in fields)
-            self.conn.execute(f'DROP TABLE IF EXISTS "{table_name}"')
-            self.conn.execute(f'CREATE TABLE "{table_name}" ({cols_def})')
+        cols_def = ", ".join(f'"{c}" TEXT' for c in fields)
+        self.conn.execute(f'DROP TABLE IF EXISTS "{table_name}"')
+        self.conn.execute(f'CREATE TABLE "{table_name}" ({cols_def})')
 
-            placeholders = ", ".join(["?"] * len(fields))
-            insert_sql = f'INSERT INTO "{table_name}" VALUES ({placeholders})'
+        placeholders = ", ".join(["?"] * len(fields))
+        insert_sql = f'INSERT INTO "{table_name}" VALUES ({placeholders})'
 
-            batch: list[tuple] = []
-            for row in reader:
-                # Pad or truncate row to match column count
-                padded = row + [""] * (len(fields) - len(row))
-                batch.append(tuple(padded[: len(fields)]))
+        batch: list[tuple] = []
+        for row in reader:
+            # Pad or truncate row to match column count
+            padded = row + [""] * (len(fields) - len(row))
+            batch.append(tuple(padded[: len(fields)]))
 
-            try:
-                self.conn.executemany(insert_sql, batch)
-                self.conn.commit()
-            except sqlite3.Error as e:
-                logger.error(f"SQLite error loading {filepath} into {table_name}: {e}")
-                self.conn.rollback()
-                return 0
-            return len(batch)
+        try:
+            self.conn.executemany(insert_sql, batch)
+            self.conn.commit()
+        except sqlite3.Error as e:
+            logger.error(f"SQLite error loading {filepath} into {table_name}: {e}")
+            self.conn.rollback()
+            return 0
+        return len(batch)
 
     # ---- Company map ----
 
