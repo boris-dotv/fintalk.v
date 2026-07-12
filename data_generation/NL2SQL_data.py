@@ -315,6 +315,9 @@ def main():
         except json.JSONDecodeError:
             logger.error(f"Failed to decode JSON from API response. Response was: \n{response_content}")
             time.sleep(5)
+        except KeyboardInterrupt:
+            logger.warning("Generation interrupted by user. Exiting gracefully.")
+            break
         except Exception as e:
             logger.error(f"An unexpected error occurred: {e}. Retrying in 20 seconds...")
             time.sleep(20)
