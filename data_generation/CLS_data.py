@@ -273,6 +273,11 @@ def main():
             response_content = None
             time.sleep(5)
             continue
+        except json.JSONDecodeError as e:
+            logger.error(f"Failed to decode JSON from API response: {e}. Response was: \n{response_content}")
+            response_content = None
+            time.sleep(5)
+            continue
         except (KeyError, TypeError) as e:
             logger.error(f"Missing expected key or type error in parsed JSON: {e}. Response was: {response_content}")
             response_content = None
