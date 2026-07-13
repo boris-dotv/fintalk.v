@@ -72,8 +72,11 @@ def call_llm(prompt: str, temperature: float = 0.3) -> str:
         response = requests.post(API_URL, headers=HEADERS, json=payload, timeout=30)
         response.raise_for_status()
         return response.json()["choices"][0]["message"]["content"]
-    except Exception as e:
+    except requests.exceptions.RequestException as e:
         print(f"❌ API Error: {e}")
+        return ""
+    except (KeyError, IndexError, json.JSONDecodeError) as e:
+        print(f"❌ API Response Parse Error: {e}")
         return ""
 
 
