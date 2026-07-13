@@ -150,7 +150,7 @@ def calculate_from_expression(expression: str, values: Dict[str, float]) -> floa
 
     # Validate that no unexpected characters remain after substitution
     if re.search(r'[a-zA-Z_]', expression):
-        logger.warning(f"Expression '{expression}' still contains variable-like tokens after substitution.")
+        logger.warning(f"Expression '{expression}' still contains variable-like tokens after substitution. Original expression: '{expression}'")
         return float('nan')
 
     try:
