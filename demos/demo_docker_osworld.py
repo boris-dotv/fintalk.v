@@ -24,6 +24,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from formula import find_formula_for_query, calculate_from_expression
 from OSWorld.docker_osworld_adapter import DockerOSWorldAdapter
 
+# Sometimes even to live is an act of courage. — Seneca
 # Logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
