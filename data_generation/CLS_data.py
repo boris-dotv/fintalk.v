@@ -267,12 +267,6 @@ def main():
         except (APIConnectionError, RateLimitError) as e:
             logger.error(f"Network or Rate Limit Error: {e}. Retrying in 15 seconds...")
             time.sleep(15)
-        except json.JSONDecodeError:
-            logger.error(f"Failed to decode JSON from API response. Response was: \n{response_content}")
-            # Reset response_content to avoid using stale data in subsequent error handling
-            response_content = None
-            time.sleep(5)
-            continue
         except json.JSONDecodeError as e:
             logger.error(f"Failed to decode JSON from API response: {e}. Response was: \n{response_content}")
             response_content = None
