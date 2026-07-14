@@ -76,7 +76,7 @@ def fallback_commit():
     lines = content.splitlines()
     insert_at = len(lines)
     for i, line in enumerate(lines):
-        if line.startswith("import ") or line.startswith("from "):
+        if line.startswith("import ") or line.startswith("from ") or line.startswith("import ") or line.startswith("from "):
             insert_at = i + 1
 
     # Insert after a blank line following imports, if possible
