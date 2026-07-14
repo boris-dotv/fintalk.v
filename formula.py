@@ -14,6 +14,7 @@ _SAFE_BINOPS = {
     ast.Sub: _op.sub,
     ast.Mult: _op.mul,
     ast.Div: _op.truediv,
+    ast.Pow: _op.pow,
 }
 
 _SAFE_UNARYOPS = {
