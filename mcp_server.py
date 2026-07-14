@@ -122,7 +122,7 @@ class FinTalkDatabase:
             logger.error(f"IOError reading {filepath}: {e}")
             return 0
 
-            # Deduplicate column names (e.g. company.csv has two "digital_bank_license")
+        # Deduplicate column names (e.g. company.csv has two "digital_bank_license")
         seen: dict[str, int] = {}
         fields = []
         for col in header:
