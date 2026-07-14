@@ -212,6 +212,15 @@ Return JSON:
                     results["total_directors"] = count_val
                 else:
                     results["count"] = count_val
+            if query_result and "COUNT(*)" in query_result[0]:
+                count_val = query_result[0]["COUNT(*)"]
+                desc_lower = step.get("description", "").lower()
+                if "executive" in desc_lower:
+                    results["executive_count"] = count_val
+                elif "total" in desc_lower or "all" in desc_lower:
+                    results["total_directors"] = count_val
+                else:
+                    results["count"] = count_val
             if query_result and "share_percentage" in query_result[0]:
                 results["share_percentages"] = [row["share_percentage"] for row in query_result]
 
