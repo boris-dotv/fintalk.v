@@ -95,11 +95,6 @@ def setup_database():
     if missing:
         print(f"❌ Missing CSV files: {', '.join(missing)}")
         sys.exit(1)
-    # Validate that all CSV files exist before attempting to load them
-    missing = [name for name, path in csv_files.items() if not os.path.exists(path)]
-    if missing:
-        print(f"❌ Missing CSV files: {', '.join(missing)}")
-        sys.exit(1)
 
     for table_name, file_path in csv_files.items():
         try:
