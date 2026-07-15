@@ -26,7 +26,7 @@ def print_menu():
     print("\n" + "="*80)
     print("  运行模式选择")
     print("="*80)
-    print("\n  [1] 🚀 完整Demo (demos/demo_with_mcp.py)")
+    print("\n  [1] 🚀 完整Demo (demos/demo_full_cot.py)")
     print("      本地数据库 + MCP外部工具 + GitHub管理")
     print("\n  [2] 🧪 GitHub MCP测试 (tests/test_github_mcp.py)")
     print("      测试GitHub API集成功能")
