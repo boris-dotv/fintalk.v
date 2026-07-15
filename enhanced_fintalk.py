@@ -355,7 +355,7 @@ If no function matches, return {{"function_name": "none"}}"""
             return "FinTalk.AI 是一个基于MCP架构的金融数据分析助手，由DeepSeek提供技术支持。"
         else:
             logger.warning(f"No company matched in query: {query}")
-            return "请指定你想查询的公司名称（如：ZA Bank 或 WeLab Bank）"
+            return f"请指定你想查询的公司名称（如：ZA Bank 或 WeLab Bank）。当前查询：{query}"
 
         if "error" not in func_result:
             return self.nlg.generate_answer(query, func_result)
