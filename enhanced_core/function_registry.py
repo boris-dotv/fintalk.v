@@ -177,6 +177,9 @@ class FinancialFunctionRegistry:
             # Ensure results is a list for consistent processing below
             if not isinstance(results, list):
                 results = list(results)
+            else:
+                # If results is already a list, ensure it contains dicts with expected keys
+                results = [dict(zip(["company_sort_id", "name"], row)) if not isinstance(row, dict) else row for row in results]
         elif self.db:
             cursor = self.db.cursor()
             cursor.execute(
