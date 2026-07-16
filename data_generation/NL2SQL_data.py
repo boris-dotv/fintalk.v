@@ -321,9 +321,6 @@ def main():
         except Exception as e:
             logger.error(f"An unexpected error occurred: {e}. Retrying in 20 seconds...")
             time.sleep(20)
-        except Exception as e:
-            logger.error(f"An unexpected error occurred: {e}. Retrying in 20 seconds...")
-            time.sleep(20)
 
     logger.success("--- Pipeline Complete! ---")
     logger.info(f"Target dataset size of {TARGET_DATASET_SIZE} reached.")
