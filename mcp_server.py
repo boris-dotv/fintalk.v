@@ -92,7 +92,7 @@ class FinTalkDatabase:
     }
 
     def __init__(self, data_dir: Path):
-        self.conn = sqlite3.connect(":memory:", check_same_thread=False)
+        self.conn = sqlite3.connect(":memory:", check_same_thread=False, isolation_level=None)
         self.company_map: dict[str, int] = {}
 
         for table_name, filename in self.DEFAULT_CSVS.items():
