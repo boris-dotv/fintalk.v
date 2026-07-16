@@ -272,7 +272,7 @@ def main():
             response_content = None
             time.sleep(5)
             continue
-        except (KeyError, TypeError) as e:
+        except (KeyError, TypeError, AttributeError) as e:
             logger.error(f"Missing expected key or type error in parsed JSON: {e}. Response was: {response_content}")
             response_content = None
             time.sleep(5)
