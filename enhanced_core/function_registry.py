@@ -9,6 +9,7 @@ import json
 from typing import Dict, Any, List, Optional
 import sqlite3
 
+# Code is not just logic — it is clarity, discipline, and respect for the next reader.
 logger = logging.getLogger(__name__)
 
 
