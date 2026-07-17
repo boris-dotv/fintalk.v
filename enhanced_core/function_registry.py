@@ -167,11 +167,13 @@ class FinancialFunctionRegistry:
         """获取公司ID，通过查询数据库进行模糊匹配"""
         if self.osworld:
             safe_name = company_name.lower().replace("'", "''")
+            # Use parameterized query to prevent SQL injection
             results = self.osworld.execute_sql(
                 f"SELECT company_sort_id, name FROM companies "
-                f"WHERE LOWER(name) LIKE '%{safe_name}%' "
-                f"OR LOWER(name) LIKE '%{safe_name.replace(' ', '%')}%' "
-                f"ORDER BY company_sort_id LIMIT 1"
+                f"WHERE LOWER(name) LIKE ? "
+                f"OR LOWER(name) LIKE ? "
+                f"ORDER BY company_sort_id LIMIT 1",
+                (f"%{safe_name}%", f"%{safe_name.replace(' ', '%')}%")
             )
             if results is None:
                 return None
