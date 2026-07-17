@@ -56,6 +56,7 @@ class QueryArbitrator:
                 logger.warning(f"Unexpected arbitration result '{result}', defaulting to 'A'")
                 result = "A"  # 默认任务类型
         logger.info(f"Arbitration result: {result}")
+        logger.info(f"Arbitration result: {result}")
 
         type_map = {
             "A": ("task", "Data retrieval, calculation, or comparison"),
