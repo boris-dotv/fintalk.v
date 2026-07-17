@@ -37,7 +37,7 @@ def demo_with_mcp():
 
     # 初始化MCP客户端
     print("\n📡 Initializing MCP (Model Context Protocol)...")
-    mcp_client = MCPClient(log_dir="mcp_integration/logs")
+    mcp_client = MCPClient(log_dir=os.path.join(os.path.dirname(__file__), "..", "mcp_integration", "logs"))
 
     print_feature("✅ 本地数据库函数", "查询公司、管理层、股东数据")
     print_feature("✅ MCP外部工具", "GitHub搜索、GitHub仓库管理")
