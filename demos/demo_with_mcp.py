@@ -99,7 +99,10 @@ def demo_with_mcp():
 
             if user_input.lower() in ['mcp full', 'mcp full log', 'mcp logs']:
                 logs = mcp_client.view_logs()
-                print(logs if logs else "No MCP logs available.")
+                if logs:
+                    print(logs)
+                else:
+                    print("No MCP logs available.")
                 continue
 
             if user_input.lower() == 'tools':
