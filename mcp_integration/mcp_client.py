@@ -55,7 +55,8 @@ class MCPLogger:
 
         # 控制台输出
         arrow = "➡️  " if direction == "out" else "⬅️  "
-        logger.debug(f"{arrow} MCP [{message_type}]: {json.dumps(data, ensure_ascii=False)[:200]}...")
+        data_str = json.dumps(data, ensure_ascii=False)
+        logger.debug(f"{arrow} MCP [{message_type}]: {data_str[:200]}...")
 
     def get_summary(self) -> Dict[str, Any]:
         """获取日志摘要"""
