@@ -169,11 +169,11 @@ class FinancialFunctionRegistry:
             safe_name = company_name.lower().replace("'", "''")
             # Use parameterized query to prevent SQL injection
             results = self.osworld.execute_sql(
-                f"SELECT company_sort_id, name FROM companies "
-                f"WHERE LOWER(name) LIKE ? "
-                f"OR LOWER(name) LIKE ? "
-                f"ORDER BY company_sort_id LIMIT 1",
-                (f"%{safe_name}%", f"%{safe_name.replace(' ', '%')}%")
+                "SELECT company_sort_id, name FROM companies "
+                "WHERE LOWER(name) LIKE ? "
+                "OR LOWER(name) LIKE ? "
+                "ORDER BY company_sort_id LIMIT 1",
+                (f"%{company_name.lower()}%", f"%{company_name.lower().replace(' ', '%')}%")
             )
             if results is None:
                 return None
