@@ -110,7 +110,7 @@ def setup_database(csv_dir: str) -> sqlite3.Connection:
 
         try:
             df = pd.read_csv(file_path, encoding='utf-8', encoding_errors='ignore')
-        except UnicodeDecodeError:
+        except (UnicodeDecodeError, pd.errors.ParserError):
             df = pd.read_csv(file_path, encoding='latin-1')
 
         df.to_sql(table_name, conn, if_exists='replace', index=False)
