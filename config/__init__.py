@@ -1,7 +1,7 @@
 import os
 import sys
 
-os.environ['SENTENCE_TRANSFORMERS_HOME'] = os.path.join('/raidnvme/czc', 'SENTENCE_TRANSFORMERS_HOME')
+os.environ['SENTENCE_TRANSFORMERS_HOME'] = os.path.join('/raidnvme/czc', 'SENTENCE_TRANSFORMERS_HOME')  # type: ignore[arg-type]
 
 # for huggingface
 if os.path.dirname(os.path.abspath(__file__)).startswith('/home'):
