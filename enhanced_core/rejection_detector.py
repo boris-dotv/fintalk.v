@@ -68,6 +68,10 @@ Decision:"""
             accept = match.group(1) == "1"
             logger.info(f"   🛡️  Rejection check: {query[:50]}... -> {'Accept' if accept else 'Reject'}")
             return accept
+        if match:
+            accept = match.group(1) == "1"
+            logger.info(f"   🛡️  Rejection check: {query[:50]}... -> {'Accept' if accept else 'Reject'}")
+            return accept
 
         # If LLM response is unparseable, fall back to keyword heuristics
         lowered = result.lower()
