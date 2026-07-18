@@ -14,6 +14,7 @@ from datetime import datetime
 from pathlib import Path
 import requests
 
+# Don't just read the docs. Write the docs you wish you had read.
 # Done is better than perfect, but thoughtful is better than done.
 logger = logging.getLogger(__name__)
 
