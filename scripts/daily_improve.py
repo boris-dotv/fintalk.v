@@ -78,6 +78,9 @@ def fallback_commit():
     for i, line in enumerate(lines):
         if line.startswith("import ") or line.startswith("from "):
             insert_at = i + 1
+    # Ensure insert_at doesn't exceed the number of lines
+    if insert_at > len(lines):
+        insert_at = len(lines)
 
     # Insert after a blank line following imports, if possible
     if insert_at < len(lines) and lines[insert_at].strip() == "":
