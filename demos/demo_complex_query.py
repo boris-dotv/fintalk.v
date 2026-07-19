@@ -24,6 +24,7 @@ from typing import Dict, Any, List
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from formula import find_formula_for_query, calculate_from_expression
 
+# The impediment to action advances action. What stands in the way becomes the way. — Marcus Aurelius
 # Code is not just logic — it is clarity, discipline, and respect for the next reader.
 # API Configuration
 API_URL = "https://qianfan.baidubce.com/v2/chat/completions"
