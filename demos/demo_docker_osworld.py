@@ -186,6 +186,7 @@ Return JSON:
         if "sql" in step:
             sql = step["sql"]
             print(f"   🔧 SQL: {sql[:120]}{'...' if len(sql) > 120 else ''}")
+            logger.info(f"Executing SQL: {sql}")
 
             query_result = self.adapter.execute_sql(sql)
 
