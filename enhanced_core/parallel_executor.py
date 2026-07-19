@@ -8,6 +8,7 @@ import logging
 import time
 from typing import Dict, Any, List, Callable, Optional
 from concurrent.futures import ThreadPoolExecutor, as_completed
+from concurrent.futures import TimeoutError as FuturesTimeoutError
 from dataclasses import dataclass, field
 
 logger = logging.getLogger(__name__)
@@ -73,29 +74,34 @@ class ParallelExecutor:
                 future_to_task[future] = task_name
 
             # 收集结果
-            for future in as_completed(future_to_task, timeout=timeout):
-                task_name = future_to_task[future]
-                try:
-                    result = future.result()
-                    results[task_name] = result
-                    logger.info(f"   ✅ Task '{task_name}' completed: {result.execution_time:.3f}s")
-                except TimeoutError:
-                    logger.error(f"   ⏰ Task '{task_name}' timed out after {timeout}s")
+            try:
+                for future in as_completed(future_to_task, timeout=timeout):
+                    task_name = future_to_task[future]
+                    try:
+                        result = future.result()
+                        results[task_name] = result
+                        logger.info(f"   ✅ Task '{task_name}' completed: {result.execution_time:.3f}s")
+                    except Exception as e:
+                        logger.error(f"   ❌ Task '{task_name}' failed: {e}")
+                        results[task_name] = TaskResult(
+                            task_name=task_name,
+                            error=str(e)
+                        )
+            except FuturesTimeoutError:
+                # The overall timeout elapsed before every task finished.
+                # Record the tasks still pending instead of letting the
+                # TimeoutError propagate and abort the whole request.
+                logger.error(f"   ⏰ Parallel execution timed out after {timeout}s")
+
+            # Cancel any remaining futures and record them as timed out so the
+            # caller always receives a result for every submitted task.
+            for future, task_name in future_to_task.items():
+                if task_name not in results:
+                    future.cancel()
                     results[task_name] = TaskResult(
                         task_name=task_name,
                         error=f"Task timed out after {timeout}s"
                     )
-                except Exception as e:
-                    logger.error(f"   ❌ Task '{task_name}' failed: {e}")
-                    results[task_name] = TaskResult(
-                        task_name=task_name,
-                        error=str(e)
-                    )
-
-            # Cancel any remaining futures that didn't complete
-            for future in future_to_task:
-                if not future.done():
-                    future.cancel()
 
         total_time = time.time() - start_time
         logger.info(f"✅ All {len(tasks)} tasks completed in {total_time:.3f}s")

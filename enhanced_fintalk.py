@@ -59,9 +59,16 @@ def llm_caller(prompt: str, temperature: float = 0.3) -> str:
             "Content-Type": "application/json",
             "Authorization": f"Bearer {API_KEY}"
         }, json=payload, timeout=30)
+        response.raise_for_status()
         return response.json()["choices"][0]["message"]["content"]
-    except Exception as e:
-        logger.error(f"LLM API error: {e}")
+    except requests.exceptions.RequestException as e:
+        logger.error(f"LLM API request failed: {e}")
+        return ""
+    except (KeyError, ValueError, TypeError) as e:
+        # Malformed / unexpected response body — log the payload for diagnosis
+        body = locals().get("response")
+        body_text = body.text[:500] if body is not None else "<no response>"
+        logger.error(f"LLM API returned an unexpected response ({e}): {body_text}")
         return ""
 
 
@@ -187,11 +194,34 @@ class EnhancedFinTalkAI:
 
         parallel_results = self.parallel_executor.execute_parallel(tasks, timeout=60)
 
-        # 提取结果
-        rewritten_query = parallel_results["rewrite"].result
-        arbitration = parallel_results["arbitrate"].result
-        accept = parallel_results["rejection"].result
-        is_correlated = parallel_results["correlation"].result
+        # 提取结果 - surface any task-level failures instead of silently
+        # dereferencing a missing/None result.
+        def _task_value(name: str, default):
+            task_result = parallel_results.get(name)
+            if task_result is None:
+                logger.error(f"Parallel task '{name}' produced no result; using default")
+                return default
+            if task_result.error:
+                logger.error(f"Parallel task '{name}' failed: {task_result.error}; using default")
+                return default
+            return task_result.result
+
+        rewritten_query = _task_value("rewrite", user_query)
+        arbitration = _task_value("arbitrate", None)
+        accept = _task_value("rejection", True)
+        is_correlated = _task_value("correlation", False)
+
+        # Arbitration drives the whole downstream flow; if it failed we cannot
+        # reliably classify the query, so fail loudly to the user.
+        if arbitration is None:
+            logger.error("Arbitration failed; unable to classify query")
+            return {
+                "query": user_query,
+                "rewritten_query": rewritten_query,
+                "status": "error",
+                "answer": "抱歉，系统暂时无法处理您的请求，请稍后再试。",
+                "execution_time": time.time() - start_time
+            }
 
         logger.info(f"\n📊 Parallel Results:")
         logger.info(f"   Rewrite: {user_query} -> {rewritten_query}")

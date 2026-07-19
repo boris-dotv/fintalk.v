@@ -46,7 +46,7 @@ class StreamingNLG:
         Yields:
             文本片段
         """
-        import requests as _requests
+        import requests
 
         payload = {
             "model": "deepseek-v3.2-think",
