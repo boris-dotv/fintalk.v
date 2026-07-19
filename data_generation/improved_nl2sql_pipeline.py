@@ -201,8 +201,8 @@ Respond with ONLY a number between 0 and 1 (e.g., 0.85)"""
         match = re.search(r'0?\.\d+|1\.0|0|1', response)
         if match:
             return float(match.group())
-    except:
-        pass
+    except Exception as e:
+        logger.warning(f"Quality scoring failed, using default score: {e}")
     return 0.5  # Default score if API fails
 
 

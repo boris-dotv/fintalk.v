@@ -290,7 +290,8 @@ class FinancialFunctionRegistry:
                 return 0.0
             try:
                 return float(str(perc_str).replace('%', '').strip())
-            except:
+            except (ValueError, TypeError):
+                logger.warning(f"Could not parse share percentage '{perc_str}', treating as 0")
                 return 0.0
 
         concentration = sum(

@@ -207,7 +207,8 @@ def summarize_result(query: str, tool_name: str, raw_result: str) -> str:
         )
         resp.raise_for_status()
         return resp.json()["choices"][0]["message"]["content"]
-    except Exception:
+    except Exception as e:
+        logger.error(f"Summarize error, falling back to raw result: {e}")
         return raw_result[:2000]
 
 
@@ -232,7 +233,9 @@ def _fetch_recent_file_from_chat(chat_id: str) -> dict | None:
                 "page_size": 20,
                 "sort_type": "ByCreateTimeDesc",
             },
+            timeout=15,
         )
+        resp.raise_for_status()
         data = resp.json()
         if data.get("code") != 0:
             logger.error(f"Fetch messages failed: {data}")
@@ -262,8 +265,14 @@ def _get_tenant_token() -> str:
     resp = requests.post(
         f"{FEISHU_BASE}/auth/v3/tenant_access_token/internal",
         json={"app_id": APP_ID, "app_secret": APP_SECRET},
+        timeout=15,
     )
+    resp.raise_for_status()
     data = resp.json()
+    if data.get("code") != 0:
+        raise RuntimeError(
+            f"Failed to get tenant access token: code={data.get('code')}, msg={data.get('msg')}"
+        )
     token = data.get("tenant_access_token", "")
     _token_cache["token"] = token
     _token_cache["expires"] = now + data.get("expire", 7200) - 60
