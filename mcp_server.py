@@ -118,23 +118,29 @@ class FinTalkDatabase:
                 header = next(reader, None)
                 if not header:
                     return 0
+
+                # Deduplicate column names (e.g. company.csv has two "digital_bank_license")
+                seen: dict[str, int] = {}
+                fields = []
+                for col in header:
+                    col = col.strip()
+                    if not col:
+                        col = f"_col{len(fields)}"
+                    if col in seen:
+                        seen[col] += 1
+                        fields.append(f"{col}_{seen[col]}")
+                    else:
+                        seen[col] = 0
+                        fields.append(col)
+
+                batch: list[tuple] = []
+                for row in reader:
+                    # Pad or truncate row to match column count
+                    padded = row + [""] * (len(fields) - len(row))
+                    batch.append(tuple(padded[: len(fields)]))
         except IOError as e:
             logger.error(f"IOError reading {filepath}: {e}")
             return 0
-
-        # Deduplicate column names (e.g. company.csv has two "digital_bank_license")
-        seen: dict[str, int] = {}
-        fields = []
-        for col in header:
-            col = col.strip()
-            if not col:
-                col = f"_col{len(fields)}"
-            if col in seen:
-                seen[col] += 1
-                fields.append(f"{col}_{seen[col]}")
-            else:
-                seen[col] = 0
-                fields.append(col)
 
         cols_def = ", ".join(f'"{c}" TEXT' for c in fields)
         self.conn.execute(f'DROP TABLE IF EXISTS "{table_name}"')
@@ -142,12 +148,6 @@ class FinTalkDatabase:
 
         placeholders = ", ".join(["?"] * len(fields))
         insert_sql = f'INSERT INTO "{table_name}" VALUES ({placeholders})'
-
-        batch: list[tuple] = []
-        for row in reader:
-            # Pad or truncate row to match column count
-            padded = row + [""] * (len(fields) - len(row))
-            batch.append(tuple(padded[: len(fields)]))
 
         try:
             self.conn.executemany(insert_sql, batch)
@@ -218,14 +218,46 @@ class FinTalkDatabase:
 
     # ---- Query ----
 
+    # Authorizer actions permitted for read-only user queries.
+    _READONLY_ACTIONS = frozenset(
+        {
+            sqlite3.SQLITE_SELECT,
+            sqlite3.SQLITE_READ,
+            sqlite3.SQLITE_FUNCTION,
+            getattr(sqlite3, "SQLITE_RECURSIVE", 33),
+        }
+    )
+
+    @classmethod
+    def _readonly_authorizer(cls, action, arg1, arg2, db_name, trigger):
+        # Deny anything that is not a pure read (writes, DDL, PRAGMA, ATTACH, ...).
+        return sqlite3.SQLITE_OK if action in cls._READONLY_ACTIONS else sqlite3.SQLITE_DENY
+
+    @staticmethod
+    def _permissive_authorizer(action, arg1, arg2, db_name, trigger):
+        # Used to clear the read-only authorizer: passing None to
+        # set_authorizer() does not reliably reset it on all CPython versions.
+        return sqlite3.SQLITE_OK
+
     def execute_query(self, sql: str) -> list[dict]:
-        stripped = sql.strip()
+        stripped = sql.strip().rstrip(";").strip()
+        if not stripped:
+            raise ValueError("Empty query")
         if not stripped.upper().startswith("SELECT"):
             raise ValueError("Only SELECT queries are allowed")
+        # Reject stacked / multiple statements (e.g. "SELECT 1; DROP TABLE x").
+        if ";" in stripped:
+            raise ValueError("Only a single SELECT statement is allowed")
 
-        cur = self.conn.execute(stripped)
-        col_names = [d[0] for d in cur.description]
-        return [dict(zip(col_names, r)) for r in cur.fetchall()]
+        # Defense in depth: enforce read-only at the SQLite engine level so no
+        # write/DDL slips through even if the textual checks are bypassed.
+        self.conn.set_authorizer(self._readonly_authorizer)
+        try:
+            cur = self.conn.execute(stripped)
+            col_names = [d[0] for d in cur.description]
+            return [dict(zip(col_names, r)) for r in cur.fetchall()]
+        finally:
+            self.conn.set_authorizer(self._permissive_authorizer)
 
     # ---- External CSV ----
 
