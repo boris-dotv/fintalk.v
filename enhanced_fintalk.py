@@ -29,6 +29,8 @@ from enhanced_core import (
 # Import existing components
 from formula import find_formula_for_query, calculate_from_expression
 from OSWorld.docker_osworld_adapter import DockerOSWorldAdapter
+from common.db import build_memory_db
+from common.llm import chat_completion
 
 # Ship it. Then ship it better.
 # No person has the power to have everything they want, but it is in their power not to want what they don't have. — Seneca
@@ -48,21 +50,16 @@ API_KEY = os.getenv("DEEPSEEK_API_KEY", "")
 # ============== LLM Caller ==============
 def llm_caller(prompt: str, temperature: float = 0.3) -> str:
     """LLM调用函数"""
-    import requests
-    payload = {
-        "model": os.getenv("DEEPSEEK_MODEL", "deepseek-chat"),
-        "messages": [{"role": "user", "content": prompt}],
-        "temperature": temperature,
-    }
-    try:
-        response = requests.post(API_URL, headers={
-            "Content-Type": "application/json",
-            "Authorization": f"Bearer {API_KEY}"
-        }, json=payload, timeout=30)
-        return response.json()["choices"][0]["message"]["content"]
-    except Exception as e:
-        logger.error(f"LLM API error: {e}")
-        return ""
+    return chat_completion(
+        [{"role": "user", "content": prompt}],
+        api_url=API_URL,
+        api_key=API_KEY,
+        model=os.getenv("DEEPSEEK_MODEL", "deepseek-chat"),
+        temperature=temperature,
+        timeout=30,
+        logger=logger,
+        default="",
+    )
 
 
 # ============== Enhanced FinTalk.AI ==============
@@ -113,26 +110,11 @@ class EnhancedFinTalkAI:
 
     def _init_local_db(self):
         """初始化本地数据库"""
-        import pandas as pd
-        import sqlite3
-
-        self.db = sqlite3.connect(':memory:', check_same_thread=False)
-        data_dir = "data"
-
-        csv_files = {
-            "companies": os.path.join(data_dir, "company.csv"),
-            "management": os.path.join(data_dir, "management.csv"),
-            "shareholders": os.path.join(data_dir, "shareholder.csv")
-        }
-
-        for table_name, file_path in csv_files.items():
-            if os.path.exists(file_path):
-                try:
-                    df = pd.read_csv(file_path, encoding='utf-8', encoding_errors='ignore')
-                except UnicodeDecodeError:
-                    df = pd.read_csv(file_path, encoding='latin-1')
-                df.to_sql(table_name, self.db, if_exists='replace', index=False)
-                logger.info(f"   Loaded {len(df)} rows into '{table_name}'")
+        self.db = build_memory_db(
+            "data",
+            logger=logger,
+            connect_kwargs={"check_same_thread": False},
+        )
 
     def process_query(self,
                      user_query: str,

@@ -26,6 +26,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'O
 
 from formula import find_formula_for_query, calculate_from_expression
 from OSWorld.osworld_adapter import FinTalkOSWorldAdapter, SAMPLE_TASKS
+from common.llm import chat_completion
 
 # Logging setup
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -42,18 +43,19 @@ HEADERS = {
 
 def call_llm(prompt: str, temperature: float = 0.3, timeout: int = 30) -> str:
     """Call LLM API."""
-    import requests
-    payload = {
-        "model": "deepseek-v3.2-think",
-        "messages": [{"role": "user", "content": prompt}],
-        "temperature": temperature,
-        "web_search": {"enable": False}
-    }
     try:
-        response = requests.post(API_URL, headers=HEADERS, json=payload, timeout=timeout)
-        return response.json()["choices"][0]["message"]["content"]
+        return chat_completion(
+            [{"role": "user", "content": prompt}],
+            api_url=API_URL,
+            headers=HEADERS,
+            model="deepseek-v3.2-think",
+            temperature=temperature,
+            timeout=timeout,
+            web_search={"enable": False},
+            logger=logger,
+            raise_on_error=True,
+        )
     except Exception as e:
-        logger.error(f"LLM API error: {e}")
         return f"ERROR: {str(e)}"
 
 

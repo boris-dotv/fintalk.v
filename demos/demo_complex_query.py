@@ -23,6 +23,8 @@ from typing import Dict, Any, List
 # Setup
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from formula import find_formula_for_query, calculate_from_expression
+from common.db import default_csv_files, load_csv_tables
+from common.llm import chat_completion
 
 # Code is not just logic — it is clarity, discipline, and respect for the next reader.
 # API Configuration
@@ -62,21 +64,19 @@ CREATE TABLE shareholders (
 
 def call_llm(prompt: str, temperature: float = 0.3) -> str:
     """Call LLM API."""
-    payload = {
-        "model": "deepseek-v3.2-think",
-        "messages": [{"role": "user", "content": prompt}],
-        "temperature": temperature,
-        "web_search": {"enable": False}
-    }
     try:
-        response = requests.post(API_URL, headers=HEADERS, json=payload, timeout=30)
-        response.raise_for_status()
-        return response.json()["choices"][0]["message"]["content"]
-    except requests.exceptions.RequestException as e:
+        return chat_completion(
+            [{"role": "user", "content": prompt}],
+            api_url=API_URL,
+            headers=HEADERS,
+            model="deepseek-v3.2-think",
+            temperature=temperature,
+            timeout=30,
+            web_search={"enable": False},
+            raise_on_error=True,
+        )
+    except Exception as e:
         print(f"❌ API Error: {e}")
-        return ""
-    except (KeyError, IndexError, json.JSONDecodeError) as e:
-        print(f"❌ API Response Parse Error: {e}")
         return ""
 
 
@@ -85,24 +85,15 @@ def setup_database():
     conn = sqlite3.connect(':memory:')
     csv_dir = os.path.join(os.path.dirname(__file__), "..", "data")
 
-    csv_files = {
-        "companies": os.path.join(csv_dir, "company.csv"),
-        "management": os.path.join(csv_dir, "management.csv"),
-        "shareholders": os.path.join(csv_dir, "shareholder.csv")
-    }
+    csv_files = default_csv_files(csv_dir)
     # Validate that all CSV files exist before attempting to load them
     missing = [name for name, path in csv_files.items() if not os.path.exists(path)]
     if missing:
         print(f"❌ Missing CSV files: {', '.join(missing)}")
         sys.exit(1)
 
-    for table_name, file_path in csv_files.items():
-        try:
-            df = pd.read_csv(file_path, encoding='utf-8', encoding_errors='ignore')
-        except:
-            df = pd.read_csv(file_path, encoding='latin-1')
-        df.to_sql(table_name, conn, if_exists='replace', index=False)
-        print(f"✅ Loaded {len(df)} rows into '{table_name}'")
+    for table_name, rows in load_csv_tables(conn, csv_files).items():
+        print(f"✅ Loaded {rows} rows into '{table_name}'")
 
     return conn
 
