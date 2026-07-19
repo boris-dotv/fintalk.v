@@ -16,6 +16,7 @@ from openai import OpenAI, APIConnectionError, RateLimitError
 from typing import List, Dict, Any
 from loguru import logger
 
+# Your GitHub graph is a fossil record of your curiosity. Make it dense.
 # --- 1. Configuration ---
 
 # This is a public, free-credit API key provided for demonstration and testing purposes.
