@@ -24,6 +24,8 @@ from datetime import datetime
 # Setup
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from formula import find_formula_for_query, calculate_from_expression
+from common.db import default_csv_files, load_csv_tables
+from common.llm import chat_completion
 
 # API Configuration
 API_URL = "https://qianfan.baidubce.com/v2/chat/completions"
@@ -35,15 +37,17 @@ HEADERS = {
 
 def call_llm(prompt: str, temperature: float = 0.3, timeout: int = 30) -> str:
     """Call LLM API."""
-    payload = {
-        "model": "deepseek-v3.2-think",
-        "messages": [{"role": "user", "content": prompt}],
-        "temperature": temperature,
-        "web_search": {"enable": False}
-    }
     try:
-        response = requests.post(API_URL, headers=HEADERS, json=payload, timeout=timeout)
-        return response.json()["choices"][0]["message"]["content"]
+        return chat_completion(
+            [{"role": "user", "content": prompt}],
+            api_url=API_URL,
+            headers=HEADERS,
+            model="deepseek-v3.2-think",
+            temperature=temperature,
+            timeout=timeout,
+            web_search={"enable": False},
+            raise_on_error=True,
+        )
     except Exception as e:
         return f"ERROR: {str(e)}"
 
@@ -51,21 +55,8 @@ def setup_database():
     """Load CSV data into SQLite."""
     conn = sqlite3.connect(':memory:')
     csv_dir = os.path.join(os.path.dirname(__file__), "..", "data")
-
-    csv_files = {
-        "companies": os.path.join(csv_dir, "company.csv"),
-        "management": os.path.join(csv_dir, "management.csv"),
-        "shareholders": os.path.join(csv_dir, "shareholder.csv")
-    }
-
-    for table_name, file_path in csv_files.items():
-        if os.path.exists(file_path):
-            try:
-                df = pd.read_csv(file_path, encoding='utf-8', encoding_errors='ignore')
-            except UnicodeDecodeError:
-                df = pd.read_csv(file_path, encoding='latin-1')
-            df.to_sql(table_name, conn, if_exists='replace', index=False)
-            print(f"✅ Loaded {len(df)} rows into '{table_name}'")
+    for table_name, rows in load_csv_tables(conn, default_csv_files(csv_dir)).items():
+        print(f"✅ Loaded {rows} rows into '{table_name}'")
 
     return conn
 

@@ -7,6 +7,8 @@ import logging
 import json
 from typing import Generator, Optional, Dict, Any
 
+from common.llm import chat_completion
+
 # Don't just read the docs. Write the docs you wish you had read.
 logger = logging.getLogger(__name__)
 
@@ -105,8 +107,6 @@ class StreamingNLG:
         Returns:
             自然语言答案
         """
-        import requests
-
         nlg_prompt = f"""# Role: Financial Data Analyst
 
 Based on the query result, provide a clear and professional answer.
@@ -121,25 +121,13 @@ Provide a concise answer (under 100 words) that:
 
 Answer:"""
 
-        payload = {
-            "model": "deepseek-chat",
-            "messages": [{"role": "user", "content": nlg_prompt}],
-            "temperature": 0.7,
-        }
-
-        try:
-            response = requests.post(
-                self.api_url,
-                headers=self.headers,
-                json=payload,
-                timeout=30
-            )
-            response.raise_for_status()
-            response_json = response.json()
-            if "choices" not in response_json or len(response_json["choices"]) == 0:
-                logger.error("NLG response missing choices")
-                return f"Based on the data, {query}"
-            return response_json["choices"][0]["message"]["content"]
-        except Exception as e:
-            logger.error(f"NLG generation error: {e}")
-            return f"Based on the data, {query}"
+        return chat_completion(
+            [{"role": "user", "content": nlg_prompt}],
+            api_url=self.api_url,
+            headers=self.headers,
+            model="deepseek-chat",
+            temperature=0.7,
+            timeout=30,
+            logger=logger,
+            default=f"Based on the data, {query}",
+        )

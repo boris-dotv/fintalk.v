@@ -31,6 +31,8 @@ HEADERS = {
 # Add parent directory to path for formula.py
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from formula import find_formula_for_query, calculate_from_expression
+from common.db import default_csv_files, load_csv_tables
+from common.llm import chat_completion
 
 # ============== Database Schema Summary ==============
 DB_SCHEMA_SUMMARY = """
@@ -69,21 +71,18 @@ SAMPLE COMPANY NAMES: ZA Bank, WeLab Bank, Airstar Bank, Livo Bank, Mox Bank, et
 # ============== API Call Function ==============
 def call_llm(messages: List[Dict[str, str]], temperature: float = 0.7) -> str:
     """Call Baidu Qianfan API."""
-    payload = {
-        "model": "deepseek-v3.2-think",
-        "messages": messages,
-        "temperature": temperature,
-        "top_p": 0.95,
-        "web_search": {"enable": False}
-    }
-
-    try:
-        response = requests.post(API_URL, headers=HEADERS, json=payload, timeout=60)
-        response.raise_for_status()
-        return response.json()["choices"][0]["message"]["content"]
-    except Exception as e:
-        logger.error(f"API call failed: {e}")
-        return None
+    return chat_completion(
+        messages,
+        api_url=API_URL,
+        headers=HEADERS,
+        model="deepseek-v3.2-think",
+        temperature=temperature,
+        timeout=60,
+        top_p=0.95,
+        web_search={"enable": False},
+        logger=logger,
+        default=None,
+    )
 
 
 # ============== Database Setup ==============
@@ -95,26 +94,7 @@ def setup_database(csv_dir: str) -> sqlite3.Connection:
     logger.info(f"Setting up database from {csv_dir}...")
 
     conn = sqlite3.connect(':memory:')
-
-    # Load CSV files
-    csv_files = {
-        "companies": os.path.join(csv_dir, "company.csv"),
-        "management": os.path.join(csv_dir, "management.csv"),
-        "shareholders": os.path.join(csv_dir, "shareholder.csv")
-    }
-
-    for table_name, file_path in csv_files.items():
-        if not os.path.exists(file_path):
-            logger.warning(f"CSV not found: {file_path}")
-            continue
-
-        try:
-            df = pd.read_csv(file_path, encoding='utf-8', encoding_errors='ignore')
-        except (UnicodeDecodeError, pd.errors.ParserError):
-            df = pd.read_csv(file_path, encoding='latin-1')
-
-        df.to_sql(table_name, conn, if_exists='replace', index=False)
-        logger.info(f"Loaded {len(df)} rows into '{table_name}'")
+    load_csv_tables(conn, default_csv_files(csv_dir), logger=logger)
 
     DB_CONNECTION = conn
     return conn

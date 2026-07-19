@@ -24,6 +24,8 @@ from datetime import datetime
 # Setup
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from formula import find_formula_for_query, calculate_from_expression
+from common.db import default_csv_files, load_csv_tables
+from common.llm import chat_completion
 
 # The bottleneck is never the tool. It's the clarity of thought behind it.
 # ============== API Configuration ==============
@@ -61,17 +63,18 @@ Sample company names: ZA Bank, WeLab Bank, Airstar Bank, Mox Bank, Livo Bank
 # ============== Helper Functions ==============
 def call_llm(messages: List[Dict], temperature: float = 0.5, timeout: int = 600) -> str:
     """Call LLM API with detailed error handling."""
-    payload = {
-        "model": "deepseek-v3.2-think",
-        "messages": messages,
-        "temperature": temperature,
-        "top_p": 0.95,
-        "web_search": {"enable": False}
-    }
     try:
-        response = requests.post(API_URL, headers=HEADERS, json=payload, timeout=timeout)
-        response.raise_for_status()
-        return response.json()["choices"][0]["message"]["content"]
+        return chat_completion(
+            messages,
+            api_url=API_URL,
+            headers=HEADERS,
+            model="deepseek-v3.2-think",
+            temperature=temperature,
+            timeout=timeout,
+            top_p=0.95,
+            web_search={"enable": False},
+            raise_on_error=True,
+        )
     except requests.exceptions.Timeout:
         return "ERROR: Timeout - API took too long to respond"
     except Exception as e:
@@ -81,20 +84,7 @@ def setup_database():
     """Load CSV data into SQLite (OSWorld file system access)."""
     conn = sqlite3.connect(':memory:')
     csv_dir = os.path.join(os.path.dirname(__file__), "..", "data")
-
-    csv_files = {
-        "companies": os.path.join(csv_dir, "company.csv"),
-        "management": os.path.join(csv_dir, "management.csv"),
-        "shareholders": os.path.join(csv_dir, "shareholder.csv")
-    }
-
-    for table_name, file_path in csv_files.items():
-        if os.path.exists(file_path):
-            try:
-                df = pd.read_csv(file_path, encoding='utf-8', encoding_errors='ignore')
-            except:
-                df = pd.read_csv(file_path, encoding='latin-1')
-            df.to_sql(table_name, conn, if_exists='replace', index=False)
+    load_csv_tables(conn, default_csv_files(csv_dir))
 
     return conn
 

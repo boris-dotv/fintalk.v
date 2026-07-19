@@ -11,6 +11,7 @@ Key Improvements:
 """
 
 import os
+import sys
 import json
 import re
 import time
@@ -19,6 +20,9 @@ import requests
 from typing import List, Dict, Any, Tuple
 from dataclasses import dataclass
 from loguru import logger
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+from common.llm import chat_completion
 
 # ============== Configuration ==============
 
@@ -91,21 +95,18 @@ class GenerationMetrics:
 
 def call_llm_api(prompt: str, temperature: float = 0.7) -> str:
     """Call Baidu Qianfan API for LLM inference."""
-    payload = {
-        "model": "deepseek-v3.2-think",
-        "messages": [{"role": "user", "content": prompt}],
-        "temperature": temperature,
-        "top_p": 0.95,
-        "web_search": {"enable": False}
-    }
-
-    try:
-        response = requests.post(API_URL, headers=HEADERS, json=payload, timeout=60)
-        response.raise_for_status()
-        return response.json()["choices"][0]["message"]["content"]
-    except Exception as e:
-        logger.error(f"API call failed: {e}")
-        raise
+    return chat_completion(
+        [{"role": "user", "content": prompt}],
+        api_url=API_URL,
+        headers=HEADERS,
+        model="deepseek-v3.2-think",
+        temperature=temperature,
+        timeout=60,
+        top_p=0.95,
+        web_search={"enable": False},
+        logger=logger,
+        raise_on_error=True,
+    )
 
 
 def validate_sql_syntax(sql: str) -> Tuple[bool, str]:
