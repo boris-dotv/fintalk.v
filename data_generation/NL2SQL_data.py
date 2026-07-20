@@ -317,6 +317,7 @@ def main():
             time.sleep(5)
         except KeyboardInterrupt:
             logger.warning("Generation interrupted by user. Exiting gracefully.")
+            logger.info(f"Partial dataset with {len(sft_dataset)} entries saved to '{SFT_OUTPUT_FILE}'.")
             break
         except Exception as e:
             logger.error(f"An unexpected error occurred: {e}. Retrying in 20 seconds...")
