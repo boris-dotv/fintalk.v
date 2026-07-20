@@ -7,6 +7,7 @@ Rejection Detector - 拒识检测模块
 import logging
 import re
 
+# If it is not right, do not do it; if it is not true, do not say it. — Marcus Aurelius
 logger = logging.getLogger(__name__)
 
 
