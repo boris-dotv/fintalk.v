@@ -262,9 +262,13 @@ def _get_tenant_token() -> str:
     resp = requests.post(
         f"{FEISHU_BASE}/auth/v3/tenant_access_token/internal",
         json={"app_id": APP_ID, "app_secret": APP_SECRET},
+        timeout=10,
     )
+    resp.raise_for_status()
     data = resp.json()
     token = data.get("tenant_access_token", "")
+    if not token:
+        raise RuntimeError("Failed to get tenant access token")
     _token_cache["token"] = token
     _token_cache["expires"] = now + data.get("expire", 7200) - 60
     return token
