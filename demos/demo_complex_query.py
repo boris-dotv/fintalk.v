@@ -72,7 +72,11 @@ def call_llm(prompt: str, temperature: float = 0.3) -> str:
     try:
         response = requests.post(API_URL, headers=HEADERS, json=payload, timeout=30)
         response.raise_for_status()
-        return response.json()["choices"][0]["message"]["content"]
+        data = response.json()
+        if "choices" not in data or not data["choices"]:
+            print(f"❌ API Response missing 'choices': {data}")
+            return ""
+        return data["choices"][0]["message"]["content"]
     except requests.exceptions.RequestException as e:
         print(f"❌ API Error: {e}")
         return ""
