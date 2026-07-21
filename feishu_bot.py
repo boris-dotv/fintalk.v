@@ -296,11 +296,14 @@ def reply_message(message_id: str, text: str):
         )
         .build()
     )
-    resp = lark_client.im.v1.message.reply(req)
-    if not resp.success():
-        logger.error(f"Reply failed: code={resp.code}, msg={resp.msg}")
-    else:
-        logger.info(f"Successfully replied to message {message_id}")
+    try:
+        resp = lark_client.im.v1.message.reply(req)
+        if not resp.success():
+            logger.error(f"Reply failed: code={resp.code}, msg={resp.msg}")
+        else:
+            logger.info(f"Successfully replied to message {message_id}")
+    except Exception as e:
+        logger.error(f"Exception while replying to message {message_id}: {e}")
 
 
 # ================================================================
