@@ -349,7 +349,7 @@ If no function matches, return {{"function_name": "none"}}"""
         query_lower = query.lower()
         if "za bank" in query_lower:
             func_result = self.function_registry.execute("get_company_info", {"company_name": "ZA Bank"})
-        elif "welab" in query_lower:
+        elif "welab" in query_lower or "welab bank" in query_lower:
             func_result = self.function_registry.execute("get_company_info", {"company_name": "WeLab Bank"})
         elif "fintalk" in query_lower:
             return "FinTalk.AI 是一个基于MCP架构的金融数据分析助手，由DeepSeek提供技术支持。"
