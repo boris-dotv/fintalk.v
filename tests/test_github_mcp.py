@@ -6,7 +6,7 @@
 
 import os
 import sys
-from dotenv import load_dotenv
+from dotenv import load_dotenv, find_dotenv
 
 # 加载环境变量
 load_dotenv()
