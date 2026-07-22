@@ -49,7 +49,8 @@ class ConversationManager:
             "last_sql": None,
             "last_assistant": None,
             "last_user_query": None,
-            "last_query_time": None
+            "last_query_time": None,
+            "last_company_mention_time": None
         }
         self.slots: Dict[str, Any] = {}
         logger.info("✅ ConversationManager initialized")
