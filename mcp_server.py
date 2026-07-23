@@ -486,6 +486,7 @@ class DeepSeekAnalyzer:
         except requests.exceptions.RequestException as e:
             return f"AI analysis error: {e}"
         except Exception as e:
+            logger.exception("Unexpected error in AI analysis")
             return f"AI analysis error: Unexpected error: {e}"
 
 
