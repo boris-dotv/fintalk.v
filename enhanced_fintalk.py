@@ -248,6 +248,7 @@ class EnhancedFinTalkAI:
 
         logger.info(f"\n✅ Completed in {result['execution_time']:.2f}s")
         logger.info(f"💬 Answer: {(answer[:100] if answer else 'No answer') + ('...' if answer and len(answer) > 100 else '')}")
+        logger.info(f"💬 Query Type: {arbitration.query_type}")
 
         return result
 
