@@ -117,6 +117,7 @@ class FinTalkDatabase:
                 reader = csv.reader(f)
                 header = next(reader, None)
                 if not header:
+                    logger.warning(f"CSV file {filepath} has no header row")
                     return 0
         except IOError as e:
             logger.error(f"IOError reading {filepath}: {e}")
