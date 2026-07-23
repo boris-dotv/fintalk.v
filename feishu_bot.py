@@ -129,7 +129,8 @@ def route_query(query: str) -> dict:
         content = resp.json()["choices"][0]["message"]["content"]
         return json.loads(content)
     except json.JSONDecodeError as e:
-        logger.error(f"Route JSON parse error: {e}, content: {content[:200] if 'content' in locals() else 'N/A'}")
+        content_str = content if 'content' in locals() else 'N/A'
+        logger.error(f"Route JSON parse error: {e}, content: {content_str[:200]}")
         return {"tool": "chat", "params": {"reply": f"Sorry, I couldn't parse the response: {e}"}}
     except Exception as e:
         logger.error(f"Route error: {e}")
