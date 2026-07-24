@@ -364,7 +364,7 @@ Respond with ONLY valid JSON:"""
                 raise ValueError("No JSON found in response")
         except (json.JSONDecodeError, ValueError, KeyError) as e:
             # Fallback to default plan if JSON parsing fails
-            print(f"⚠️  LLM response parsing failed ({str(e)[:50]}...), using fallback plan")
+            logger.warning(f"⚠️  LLM response parsing failed ({str(e)[:50]}...), using fallback plan")
             return self._get_fallback_plan(user_query)
 
     def _get_fallback_plan(self, user_query: str) -> Dict[str, Any]:
