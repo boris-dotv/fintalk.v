@@ -278,9 +278,6 @@ def main():
             response_content = None
             time.sleep(5)
             continue
-        except AttributeError as e:
-            logger.error(f"Unexpected API response structure: {e}. Response was: {response_content}")
-            time.sleep(5)
         except Exception as e:
             logger.error(f"An unexpected error occurred: {e}. Retrying in 20 seconds...")
             time.sleep(20)
