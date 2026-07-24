@@ -50,6 +50,7 @@ class ConversationManager:
             "last_assistant": None,
             "last_user_query": None,
             "last_query_time": None,
+            "last_company_mention_time": None,
             "last_company_mention_time": None
         }
         self.slots: Dict[str, Any] = {}
