@@ -89,6 +89,8 @@ def fallback_commit():
     # Ensure we don't insert at the very end (after last line) to avoid extra blank line at EOF
     if insert_at == len(lines) and len(lines) > 0:
         insert_at = len(lines) - 1
+    # Ensure insert_at is not negative
+    insert_at = max(insert_at, 0)
 
     lines.insert(insert_at, comment_line.rstrip())
     new_content = "\n".join(lines)
