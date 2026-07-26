@@ -203,7 +203,10 @@ class FinancialFunctionRegistry:
     def _execute_sql(self, sql: str) -> List[Dict]:
         """执行SQL"""
         if self.osworld:
-            return self.osworld.execute_sql(sql)
+            result = self.osworld.execute_sql(sql)
+            if result is None:
+                return []
+            return result
         else:
             cursor = self.db.cursor()
             cursor.execute(sql)
