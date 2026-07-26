@@ -324,6 +324,9 @@ def main():
         except Exception as e:
             logger.error(f"Error in iteration {i+1}: {e}")
             time.sleep(2)
+        finally:
+            # Ensure rate limiting even on successful iterations
+            time.sleep(1)
 
     # 7. Save results
     logger.info("\n=== Generation Complete ===")
