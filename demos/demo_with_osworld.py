@@ -243,6 +243,9 @@ Respond with ONLY valid JSON."""
             if "total_directors" in str(sql).lower() or "COUNT" in str(sql):
                 results["total_directors"] = query_result[0].get("COUNT(*)", query_result[0].get("total_directors", 0))
 
+            # Store the full query result for later use
+            results["last_query_result"] = query_result
+
         # Formula calculation step
         elif step.get("action") == "calculate_formula":
             formula_name = step.get("formula", "")
