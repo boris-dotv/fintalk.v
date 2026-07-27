@@ -12,7 +12,8 @@ from .correlation_checker import CorrelationChecker
 from .function_registry import FinancialFunctionRegistry
 from .streaming_nlg import StreamingNLG
 from .conversation_manager import ConversationManager
-# from . import _version  # Commented out - _version module not yet implemented
+# Version placeholder - uncomment when _version module is implemented
+# from . import _version
 
 __all__ = [
     "ParallelExecutor",
