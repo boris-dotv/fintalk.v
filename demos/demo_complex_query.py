@@ -104,7 +104,7 @@ def setup_database():
     for table_name, file_path in csv_files.items():
         try:
             df = pd.read_csv(file_path, encoding='utf-8', encoding_errors='ignore')
-        except:
+        except UnicodeDecodeError:
             df = pd.read_csv(file_path, encoding='latin-1')
         df.to_sql(table_name, conn, if_exists='replace', index=False)
         print(f"✅ Loaded {len(df)} rows into '{table_name}'")
