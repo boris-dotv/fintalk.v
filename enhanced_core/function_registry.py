@@ -173,7 +173,7 @@ class FinancialFunctionRegistry:
                 "WHERE LOWER(name) LIKE ? "
                 "OR LOWER(name) LIKE ? "
                 "ORDER BY company_sort_id LIMIT 1",
-                (f"%{company_name.lower()}%", f"%{company_name.lower().replace(' ', '%')}%")
+                (f"%{safe_name}%", f"%{safe_name.replace(' ', '%')}%")
             )
             if results is None:
                 return None
