@@ -110,8 +110,13 @@ def setup_database(csv_dir: str) -> sqlite3.Connection:
 
         try:
             df = pd.read_csv(file_path, encoding='utf-8', encoding_errors='ignore')
-        except (UnicodeDecodeError, pd.errors.ParserError):
-            df = pd.read_csv(file_path, encoding='latin-1')
+        except (UnicodeDecodeError, pd.errors.ParserError, pd.errors.EmptyDataError):
+            logger.warning(f"Could not read {file_path}, trying latin-1 encoding or skipping")
+            try:
+                df = pd.read_csv(file_path, encoding='latin-1')
+            except (UnicodeDecodeError, pd.errors.ParserError, pd.errors.EmptyDataError):
+                logger.error(f"Skipping {file_path} - unable to read file")
+                continue
 
         df.to_sql(table_name, conn, if_exists='replace', index=False)
         logger.info(f"Loaded {len(df)} rows into '{table_name}'")
