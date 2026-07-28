@@ -44,7 +44,7 @@ class QueryRewriter:
         # 防止误改写
         if not rewritten or self._is_bad_rewrite(query, rewritten):
             logger.info(f"   ✏️  No rewrite needed: {query}")
-            return query.strip() if query else ""
+            return query.strip() if query else query
 
         logger.info(f"   ✏️  Rewrite: {query} -> {rewritten}")
         return rewritten
