@@ -321,6 +321,9 @@ def main():
 
             time.sleep(1)  # Rate limiting
 
+        except requests.exceptions.Timeout:
+            logger.error(f"Timeout in iteration {i+1}, retrying...")
+            time.sleep(5)
         except Exception as e:
             logger.error(f"Error in iteration {i+1}: {e}")
             time.sleep(2)
