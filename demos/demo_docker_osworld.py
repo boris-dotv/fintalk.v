@@ -196,7 +196,7 @@ Return JSON:
 
             print(f"   ✅ Result: {len(query_result)} rows")
             if query_result:
-                print(f"   📊 Sample: {query_result[0]}")
+                print(f"   📊 Sample: {query_result[0] if query_result else 'N/A'}")
 
             result["query_result"] = query_result
 
