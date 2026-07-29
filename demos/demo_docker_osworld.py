@@ -217,7 +217,7 @@ Return JSON:
                             results["count"] = count_val
                         break
             if query_result and "share_percentage" in query_result[0]:
-                results["share_percentages"] = [row["share_percentage"] for row in query_result]
+                results["share_percentages"] = [row["share_percentage"] for row in query_result if row["share_percentage"] is not None]
 
         elif step.get("action") == "calculate_formula":
             formula_name = step.get("formula", "")
