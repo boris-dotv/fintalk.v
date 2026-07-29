@@ -30,3 +30,7 @@ _mcp_etc/redis-6.0.8/*
 _mcp_etc/config/*
 
 *.out
+
+# Runtime logs (may leak API tokens, session tickets, chat IDs, user messages)
+*.log
+mcp_integration/logs/
