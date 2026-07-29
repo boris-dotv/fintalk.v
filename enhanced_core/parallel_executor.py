@@ -97,6 +97,14 @@ class ParallelExecutor:
                 if not future.done():
                     future.cancel()
 
+        # 确保所有任务都有结果，即使超时或未完成
+        for task_name in tasks:
+            if task_name not in results:
+                results[task_name] = TaskResult(
+                    task_name=task_name,
+                    error="Task did not complete (possibly cancelled or timed out)"
+                )
+
         total_time = time.time() - start_time
         logger.info(f"✅ All {len(tasks)} tasks completed in {total_time:.3f}s")
 
