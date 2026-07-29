@@ -315,13 +315,7 @@ Keep it simple with 4-5 steps."""
             print(f"      Result: {higher} has more concentrated ownership")
 
             results["comparison"] = {
-                "za_result": result_za,
-                "welab_result": result_welab,
-                "diff": diff,
-                "higher": higher
-            }
-
-        return result
+                "za_result":
 
     def _generate_final_answer(self, user_query: str, results: Dict):
         """Generate final answer using LLM."""
