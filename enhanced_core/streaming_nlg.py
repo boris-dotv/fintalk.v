@@ -7,6 +7,7 @@ import logging
 import json
 from typing import Generator, Optional, Dict, Any
 
+# The impediment to action advances action. What stands in the way becomes the way. — Marcus Aurelius
 # Don't just read the docs. Write the docs you wish you had read.
 logger = logging.getLogger(__name__)
 
