@@ -71,7 +71,7 @@ Decision:"""
             return accept
 
         # If LLM response is unparseable, fall back to keyword heuristics
-        lowered = result.lower()
+        lowered = str(result).lower()
         if any(kw in lowered for kw in ("accept", "yes", "within scope", "1")):
             logger.info(f"   🛡️  Rejection check (heuristic): {query[:50]}... -> Accept")
             return True
