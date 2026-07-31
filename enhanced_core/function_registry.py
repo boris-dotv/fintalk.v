@@ -166,14 +166,13 @@ class FinancialFunctionRegistry:
     def _get_company_id(self, company_name: str) -> Optional[int]:
         """获取公司ID，通过查询数据库进行模糊匹配"""
         if self.osworld:
-            safe_name = company_name.lower().replace("'", "''")
             # Use parameterized query to prevent SQL injection
             results = self.osworld.execute_sql(
                 "SELECT company_sort_id, name FROM companies "
                 "WHERE LOWER(name) LIKE ? "
                 "OR LOWER(name) LIKE ? "
                 "ORDER BY company_sort_id LIMIT 1",
-                (f"%{safe_name}%", f"%{safe_name.replace(' ', '%')}%")
+                (f"%{company_name.lower()}%", f"%{company_name.lower().replace(' ', '%')}%")
             )
             if results is None:
                 return None
