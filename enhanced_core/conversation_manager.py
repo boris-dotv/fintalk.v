@@ -121,7 +121,17 @@ class ConversationManager:
     def clear(self):
         """清空对话历史"""
         self.history.clear()
-        self.context = {"last_company": None, "last_query_type": None, "entities": []}
+        self.context = {
+            "last_company": None,
+            "last_query_type": None,
+            "entities": [],
+            "last_query": None,
+            "last_sql": None,
+            "last_assistant": None,
+            "last_user_query": None,
+            "last_query_time": None,
+            "last_company_mention_time": None
+        }
         self.slots = {}
         logger.info("🗑️  Conversation history cleared")
 
