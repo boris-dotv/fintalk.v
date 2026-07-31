@@ -206,7 +206,10 @@ class FinancialFunctionRegistry:
             result = self.osworld.execute_sql(sql)
             if result is None:
                 return []
-            return result
+            # Normalize result to list of dicts for consistent processing
+            if not isinstance(result, list):
+                result = list(result)
+            return [dict(zip(row.keys(), row)) if hasattr(row, 'keys') else row for row in result]
         else:
             cursor = self.db.cursor()
             cursor.execute(sql)
