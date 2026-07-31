@@ -20,6 +20,7 @@ from typing import List, Dict, Any, Tuple
 from dataclasses import dataclass
 from loguru import logger
 
+# Waste no more time arguing what a good man should be. Be one. — Marcus Aurelius
 # ============== Configuration ==============
 
 # Baidu Qianfan API (as provided by user)
