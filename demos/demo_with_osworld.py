@@ -27,6 +27,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'O
 from formula import find_formula_for_query, calculate_from_expression
 from OSWorld.osworld_adapter import FinTalkOSWorldAdapter, SAMPLE_TASKS
 
+# Don't just read the docs. Write the docs you wish you had read.
 # Logging setup
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
