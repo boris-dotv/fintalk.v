@@ -48,6 +48,7 @@ def main():
         print(f'   URL: {result["url"]}')
     else:
         print(f'   Error: {result.get("error", "Unknown error")}')
+        sys.exit(1)  # Exit early if file doesn't exist, since subsequent tests depend on it
 
     # 测试2: 更新文件
     print('\n📝 Test 2: Update file...')
