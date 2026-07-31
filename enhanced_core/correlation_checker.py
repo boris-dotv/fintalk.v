@@ -43,11 +43,11 @@ Query 2: {curr_query}
 
 Output ONLY: Yes or No"""
 
-        result = (self.llm_caller(prompt, temperature=0.1) or "").strip().lower()[:3]
+        result = (self.llm_caller(prompt, temperature=0.1) or "").strip().lower()
         if not result:
             logger.warning("   ⚠️ Correlation check returned empty result, defaulting to False")
             return False
-        is_correlated = "yes" in result
+        is_correlated = result.startswith("yes")
 
         logger.info(f"   🔗 Correlation check -> {is_correlated}")
 
