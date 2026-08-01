@@ -64,7 +64,7 @@ def main():
 
     while True:
         print_menu()
-        choice = input().strip().lower()
+        choice = input().strip().lower() or "0"
 
         if choice == "1":
             run_demo()
