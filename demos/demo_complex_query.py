@@ -123,6 +123,7 @@ def execute_sql(conn, sql: str) -> List[Dict]:
         return [dict(zip(columns, row)) for row in rows]
     except Exception as e:
         print(f"❌ SQL Error: {e}")
+        print(f"   SQL was: {sql}")
         return []
 
 
