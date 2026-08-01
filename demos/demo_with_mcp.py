@@ -158,6 +158,8 @@ def demo_with_mcp():
                     if not query:
                         query = "model context protocol"  # default query if none provided
                     result = mcp_client.call_tool("search_github", {"query": query, "language": "python"})
+                    # Log the search query for debugging
+                    print(f"🔍 Searching GitHub for: '{query}'")
 
                 elif 'create file' in user_input.lower():
                     # 提取文件名
