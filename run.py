@@ -65,6 +65,9 @@ def main():
     while True:
         print_menu()
         choice = input().strip().lower() or "0"
+        if not choice.isdigit() or int(choice) not in range(5):
+            print(f"\n❌ 无效选择: {choice}，请重新输入")
+            continue
 
         if choice == "1":
             run_demo()
