@@ -79,8 +79,9 @@ class ConversationManager:
         """更新上下文"""
         # 提取公司名
         companies = ["ZA Bank", "WeLab Bank", "Airstar Bank", "Livo Bank", "Mox Bank"]
+        query_lower = query.lower()
         for company in companies:
-            if company.lower() in query.lower():
+            if company.lower() in query_lower:
                 self.context["last_company"] = company
                 if company not in self.context["entities"]:
                     self.context["entities"].append(company)
