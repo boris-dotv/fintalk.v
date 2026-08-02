@@ -66,7 +66,7 @@ class QueryArbitrator:
 
         query_type, reasoning = type_map[result]
 
-        logger.info(f"   🎯 Arbitration: {query[:50]}... -> {query_type}")
+        logger.info(f"   🎯 Arbitration: {query[:50]!r}... -> {query_type}")
 
         return ArbitrationResult(
             query_type=query_type,
