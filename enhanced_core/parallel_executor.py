@@ -47,6 +47,7 @@ class ParallelExecutor:
     def execute_parallel(self,
                          tasks: Dict[str, Callable],
                          timeout: Optional[int] = 30) -> Dict[str, TaskResult]:
+        """Execute multiple tasks in parallel with timeout handling."""
         """
         并行执行多个任务
 
