@@ -239,7 +239,7 @@ Respond with ONLY valid JSON."""
                 results["company_id"] = query_result[0]["company_sort_id"]
 
             if "executive_count" in str(sql).lower():
-                results["executive_count"] = query_result[0].get("COUNT(*)", query_result[0].get("executive_count", 0))
+                results["executive_count"] = query_result[0].get("COUNT(*)", query_result[0].get("executive_count", 0)) if query_result else 0
 
             if "total_directors" in str(sql).lower() or "COUNT" in str(sql):
                 results["total_directors"] = query_result[0].get("COUNT(*)", query_result[0].get("total_directors", 0))
