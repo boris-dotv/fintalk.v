@@ -182,6 +182,10 @@ def main():
     """Main function to orchestrate the SFT dataset generation pipeline."""
     logger.info("--- Starting High-Complexity and Diverse SFT Dataset Generation Pipeline (v3 with Dynamic Prompts) ---")
     
+    if not DEEPSEEK_API_KEY:
+        logger.error("DEEPSEEK_API_KEY environment variable is not set. Exiting.")
+        return
+    
     embedding_model_instance = None
     # [Embedding Logic]
     # try:
