@@ -211,10 +211,14 @@ class FinancialFunctionRegistry:
             return [dict(zip(row.keys(), row)) if hasattr(row, 'keys') else row for row in result]
         else:
             cursor = self.db.cursor()
-            cursor.execute(sql)
-            columns = [desc[0] for desc in cursor.description]
-            rows = cursor.fetchall()
-            return [dict(zip(columns, row)) for row in rows]
+            try:
+                cursor.execute(sql)
+                columns = [desc[0] for desc in cursor.description]
+                rows = cursor.fetchall()
+                return [dict(zip(columns, row)) for row in rows]
+            except sqlite3.Error as e:
+                logger.error(f"SQL execution failed: {sql} - {e}")
+                return []
 
     def _get_company_info(self, company_name: str) -> Dict:
         """获取公司信息"""
