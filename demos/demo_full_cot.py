@@ -559,8 +559,14 @@ Respond with ONLY valid JSON:"""
 
         # For executive_director_ratio, try to get the counts
         if formula_name == "executive_director_ratio":
-            exec_count = current_data.get("executive_director_count", 7.0)
-            total_count = current_data.get("total_director_count", 10.0)
+            exec_count = current_data.get("executive_director_count")
+            total_count = current_data.get("total_director_count")
+
+            # Only use defaults if values are actually missing (not just zero)
+            if exec_count is None:
+                exec_count = 7.0
+            if total_count is None:
+                total_count = 10.0
 
             return {
                 "Count of Executive Directors": exec_count,
