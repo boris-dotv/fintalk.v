@@ -35,6 +35,8 @@ class QueryRewriter:
         Returns:
             改写后的query
         """
+        if not query:
+            return query
         if not history:
             return query
 
