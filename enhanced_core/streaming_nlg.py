@@ -112,36 +112,3 @@ class StreamingNLG:
         nlg_prompt = f"""# Role: Financial Data Analyst
 
 Based on the query result, provide a clear and professional answer.
-
-Query: {query}
-Result: {json.dumps(data, indent=2, default=str)}
-
-Provide a concise answer (under 100 words) that:
-1. Directly answers the question
-2. Includes key data points
-3. Is professional and friendly
-
-Answer:"""
-
-        payload = {
-            "model": "deepseek-chat",
-            "messages": [{"role": "user", "content": nlg_prompt}],
-            "temperature": 0.7,
-        }
-
-        try:
-            response = requests.post(
-                self.api_url,
-                headers=self.headers,
-                json=payload,
-                timeout=30
-            )
-            response.raise_for_status()
-            response_json = response.json()
-            if "choices" not in response_json or len(response_json["choices"]) == 0:
-                logger.error("NLG response missing choices")
-                return f"Based on the data, {query}"
-            return response_json["choices"][0]["message"]["content"]
-        except Exception as e:
-            logger.error(f"NLG generation error: {e}")
-            return f"Based on the data, {query}"
