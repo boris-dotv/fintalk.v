@@ -32,12 +32,12 @@ def _safe_eval_node(node: ast.AST, values: Dict[str, float]) -> float:
     if isinstance(node, ast.Expression):
         return _safe_eval_node(node.body, values)
     if isinstance(node, ast.Constant):
+        if isinstance(node.value, bool):
+            return float(node.value)
         if isinstance(node.value, (int, float)):
             return float(node.value)
         if isinstance(node.value, str):
             raise ValueError(f"Unsupported constant type: string literal '{node.value}'")
-        if isinstance(node.value, bool):
-            return float(node.value)
         if node.value is None:
             raise ValueError("Unsupported constant type: None")
         raise ValueError(f"Unsupported constant type: {type(node.value).__name__}")
