@@ -151,7 +151,8 @@ class FinTalkDatabase:
         for row in reader:
             # Pad or truncate row to match column count
             padded = row + [""] * (len(fields) - len(row))
-            batch.append(tuple(padded[: len(fields)]))
+            # Convert all values to strings and handle None
+            batch.append(tuple(str(v) if v is not None else "" for v in padded[: len(fields)]))
 
         try:
             self.conn.executemany(insert_sql, batch)
