@@ -60,6 +60,8 @@ class ParallelExecutor:
         if not tasks:
             logger.warning("No tasks to execute")
             return {}
+        if timeout is not None and timeout <= 0:
+            raise ValueError("timeout must be positive or None")
 
         start_time = time.time()
         logger.info(f"🚀 Starting parallel execution of {len(tasks)} tasks")
