@@ -510,6 +510,13 @@ class MCPClient:
         """GitHub仓库管理 - 完整的CRUD操作"""
         import base64
 
+        if not self.github_token:
+            return {
+                "status": "error",
+                "error": "Missing GitHub token",
+                "message": "请设置环境变量 GITHUB_TOKEN"
+            }
+
         action = params.get("action")
         owner = params.get("owner", "boris-dotv")
         repo = params.get("repo", "fintalk.ai")
