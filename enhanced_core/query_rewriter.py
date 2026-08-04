@@ -35,7 +35,7 @@ class QueryRewriter:
         Returns:
             改写后的query
         """
-        if not query:
+        if not query or not query.strip():
             return query
         if not history:
             return query
