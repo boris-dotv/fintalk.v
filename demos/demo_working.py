@@ -135,24 +135,6 @@ def call_worker_cls(user_query: str) -> Dict[str, Any]:
     """Call CLS Worker to classify user intent."""
     prompt = f"""Classify the user query into ONE of these intents:
 
-INTENTS:
-- DATA_RETRIEVAL: User wants specific information about a company/entity
-- COMPARISON: User wants to compare two or more entities
-- AGGREGATION: User wants a calculated value (count, sum, average)
-- DATA_RETRIEVAL_AMBIGUOUS: User asks for data but doesn't specify which entity
-- GENERAL_KNOWLEDGE: User asks a general financial question not about specific data
-- COMPOUND_REQUEST: User has multiple requests in one query
-
-User Query: "{user_query}"
-
-Respond with ONLY the intent name, nothing else."""
-
-    response = call_llm([{"role": "user", "content": prompt}], temperature=0.3)
-    intent = response.strip() if response else "DATA_RETRIEVAL"
-
-    logger.info(f"🏷️  CLS Result: {intent}")
-    return {"intent": intent}
-
 
 def call_worker_ke(user_query: str) -> Dict[str, Any]:
     """Call KE Worker to extract key entities."""
