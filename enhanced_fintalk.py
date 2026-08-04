@@ -250,6 +250,8 @@ class EnhancedFinTalkAI:
         logger.info(f"💬 Answer: {(answer[:100] if answer else 'No answer') + ('...' if answer and len(answer) > 100 else '')}")
         logger.info(f"💬 Answer Type: {type(answer).__name__}")
         logger.info(f"💬 Query Type: {arbitration.query_type}")
+        logger.info(f"💬 Answer Type: {type(answer).__name__}")
+        logger.info(f"💬 Query Type: {arbitration.query_type}")
 
         return result
 
