@@ -48,6 +48,8 @@ class QueryRewriter:
             logger.info(f"   ✏️  No rewrite needed: {query}")
             return query.strip() if query else query
 
+        # Ensure the rewritten query is stripped of whitespace
+        rewritten = rewritten.strip()
         logger.info(f"   ✏️  Rewrite: {query} -> {rewritten}")
         return rewritten
 
