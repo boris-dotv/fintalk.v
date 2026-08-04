@@ -95,6 +95,10 @@ class StreamingNLG:
         except Exception as e:
             logger.error(f"Unexpected streaming error: {e}", exc_info=True)
             yield f"[Error: Unexpected error: {str(e)}]"
+        finally:
+            # Ensure the response is closed to release the connection
+            if 'response' in locals() and response is not None:
+                response.close()
 
     def generate_answer(self, query: str, data: Dict[str, Any]) -> str:
         """
