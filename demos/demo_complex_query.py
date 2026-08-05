@@ -124,6 +124,7 @@ def execute_sql(conn, sql: str) -> List[Dict]:
     except Exception as e:
         print(f"❌ SQL Error: {e}")
         print(f"   SQL was: {sql}")
+        print(f"   Error type: {type(e).__name__}")
         return []
 
 
