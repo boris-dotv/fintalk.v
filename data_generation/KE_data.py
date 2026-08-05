@@ -244,6 +244,9 @@ def main():
                     logger.warning(f"Skipping malformed line: {e}")
                     continue
         logger.info(f"Loaded {len(sft_dataset)} existing data points.")
+        if len(sft_dataset) >= TARGET_DATASET_SIZE:
+            logger.info(f"Dataset already at or exceeds target size ({TARGET_DATASET_SIZE}). Exiting.")
+            return
     else:
         logger.info(f"No existing dataset found at {SFT_OUTPUT_FILE}. Starting fresh generation.")
 
