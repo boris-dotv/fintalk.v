@@ -56,7 +56,7 @@ class ConversationManager:
         logger.info("✅ ConversationManager initialized")
 
     def add_turn(self, user_query: str, assistant_answer: str,
-                query_type: str = "", metadata: Dict = None):
+                query_type: str = "", metadata: Optional[Dict[str, Any]] = None):
         """
         添加对话轮次
 
