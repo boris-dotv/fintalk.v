@@ -23,12 +23,9 @@ from loguru import logger
 # It is intentionally exposed and has usage limits. For production, please use your own key.
 DEEPSEEK_API_KEY = os.environ.get("DEEPSEEK_API_KEY", "")
 
-try:
-    client = OpenAI(api_key=DEEPSEEK_API_KEY, base_url="https://api.deepseek.com")
-    logger.info("OpenAI client initialized for DeepSeek API.")
-except Exception as e:
-    logger.error(f"Failed to initialize OpenAI client: {e}")
-    exit()
+if not DEEPSEEK_API_KEY:
+    logger.error("DEEPSEEK_API_KEY environment variable is not set. Please set it before running.")
+    exit(1)
 
 TARGET_DATASET_SIZE = 5000
 SFT_OUTPUT_FILE = "sft_classification_dataset.jsonl"
