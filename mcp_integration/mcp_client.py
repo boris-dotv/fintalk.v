@@ -509,6 +509,7 @@ class MCPClient:
     def _github_repo_manager(self, params: Dict[str, Any]) -> Dict[str, Any]:
         """GitHub仓库管理 - 完整的CRUD操作"""
         import base64
+        import requests as req  # local alias to avoid shadowing
 
         if not self.github_token:
             return {
