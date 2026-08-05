@@ -129,7 +129,9 @@ def demo_with_mcp():
                 for i, turn in enumerate(client.conversation_manager.history, 1):
                     print(f"\n轮次 {i}:")
                     print(f"  👤 User: {turn.user}")
-                    print(f"  🤖 Assistant: {turn.assistant[:100]}...")
+                    # Truncate assistant response to avoid overly long output
+                    assistant_preview = turn.assistant[:100] + "..." if len(turn.assistant) > 100 else turn.assistant
+                    print(f"  🤖 Assistant: {assistant_preview}")
                     print(f"  📋 Type: {turn.query_type}")
                 if not client.conversation_manager.history:
                     print("  (No conversation history yet.)")
