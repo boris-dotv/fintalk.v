@@ -83,6 +83,7 @@ def main():
             break
         else:
             print(f"\n❌ 无效选择: {choice}，请重新输入")
+            continue
 
 
 if __name__ == "__main__":
