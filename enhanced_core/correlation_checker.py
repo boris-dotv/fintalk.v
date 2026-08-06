@@ -47,7 +47,9 @@ Output ONLY: Yes or No"""
         if not result:
             logger.warning("   ⚠️ Correlation check returned empty result, defaulting to False")
             return False
-        is_correlated = result.startswith("yes")
+        # Handle cases where the LLM might return "Yes." or "Yes, they are correlated"
+        is_correlated = result.startswith("yes") or "yes" in result.split()[0].lower()
+        logger.info(f"   🔗 Correlation check -> {is_correlated}")
 
         logger.info(f"   🔗 Correlation check -> {is_correlated}")
 
