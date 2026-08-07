@@ -134,6 +134,12 @@ def setup_database(csv_dir: str) -> sqlite3.Connection:
 def call_worker_cls(user_query: str) -> Dict[str, Any]:
     """Call CLS Worker to classify user intent."""
     prompt = f"""Classify the user query into ONE of these intents:
+- company_info: Query about company details (employee size, website, etc.)
+- management_info: Query about management/executives
+- shareholder_info: Query about shareholders
+- comparison: Query comparing multiple companies
+- formula_calculation: Query requiring formula-based calculation
+- other: Anything else
 
 
 def call_worker_ke(user_query: str) -> Dict[str, Any]:
