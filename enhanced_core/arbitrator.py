@@ -43,6 +43,14 @@ class QueryArbitrator:
         Returns:
             ArbitrationResult
         """
+        if not query or not query.strip():
+            logger.warning("Empty query received, defaulting to 'invalid'")
+            return ArbitrationResult(
+                query_type="invalid",
+                confidence=1.0,
+                reasoning="Empty or whitespace-only query"
+            )
+            
         prompt = self._build_arbitration_prompt(query, history)
         result = self.llm_caller(prompt, temperature=0.1)
 
