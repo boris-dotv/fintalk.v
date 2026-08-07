@@ -51,6 +51,4 @@ Output ONLY: Yes or No"""
         is_correlated = result.startswith("yes") or "yes" in result.split()[0].lower()
         logger.info(f"   🔗 Correlation check -> {is_correlated}")
 
-        logger.info(f"   🔗 Correlation check -> {is_correlated}")
-
         return is_correlated
