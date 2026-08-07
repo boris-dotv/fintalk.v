@@ -255,6 +255,13 @@ def main():
         # if embedding_model_instance and sft_dataset:
         #     # Code to re-populate vector DB
         #     pass
+    else:
+        logger.info(f"No existing dataset found at {SFT_OUTPUT_FILE}. Starting fresh generation.")
+
+        # [Embedding Logic]
+        # if embedding_model_instance and sft_dataset:
+        #     # Code to re-populate vector DB
+        #     pass
 
     db_schema_summary = get_db_schema_summary()
 
