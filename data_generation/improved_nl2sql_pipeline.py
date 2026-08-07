@@ -111,6 +111,7 @@ def call_llm_api(prompt: str, temperature: float = 0.7) -> str:
 
 def validate_sql_syntax(sql: str) -> Tuple[bool, str]:
     """Validate SQL syntax using SQLite."""
+    conn = None
     try:
         # Create an in-memory database with the schema
         conn = sqlite3.connect(':memory:')
@@ -124,17 +125,14 @@ def validate_sql_syntax(sql: str) -> Tuple[bool, str]:
 
         # Try to execute the generated SQL (it will fail on empty data, but syntax is checked)
         cursor.execute(sql)
-        conn.close()
         return True, ""
     except sqlite3.Error as e:
         return False, str(e)
     except Exception as e:
         return False, f"Unexpected error: {e}"
     finally:
-        try:
+        if conn:
             conn.close()
-        except Exception:
-            pass
 
 
 def calculate_complexity_score(sql: str) -> float:
