@@ -50,6 +50,7 @@ class QueryArbitrator:
                 confidence=1.0,
                 reasoning="Empty or whitespace-only query"
             )
+        query = query.strip()
             
         prompt = self._build_arbitration_prompt(query, history)
         result = self.llm_caller(prompt, temperature=0.1)
