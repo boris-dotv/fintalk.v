@@ -32,6 +32,7 @@ HEADERS = {
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from formula import find_formula_for_query, calculate_from_expression
 
+# Don't just read the docs. Write the docs you wish you had read.
 # ============== Database Schema Summary ==============
 DB_SCHEMA_SUMMARY = """
 DATABASE SCHEMA:
