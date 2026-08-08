@@ -333,25 +333,12 @@ Keep it simple with 4-5 steps."""
         print(f"\n🤖 Orchestrator is calling LLM to synthesize answer...")
         print(f"   (This may take a few seconds...)")
 
+        # Safely get concentration values with fallback to 0
+        za_conc = results.get('za_concentration', 0) or 0
+        welab_conc = results.get('welab_concentration', 0) or 0
+        higher = results.get('comparison', {}).get('higher', 'Unknown') if results.get('comparison') else 'Unknown'
+
         synthesis_prompt = f"""Based on the analysis, provide a professional answer.
-
-Query: {user_query}
-
-Results:
-- ZA Bank Top 3 Concentration: {results.get('za_concentration', 0):.2f}%
-- WeLab Bank Top 3 Concentration: {results.get('welab_concentration', 0):.2f}%
-- Higher: {results.get('comparison', {}).get('higher', 'Unknown')}
-
-Shareholders:
-ZA Bank: {results.get('za_shareholders', [])}
-WeLab Bank: {results.get('welab_shareholders', [])}
-
-Provide a clear, professional answer with business implications."""
-
-        answer = call_llm(synthesis_prompt, temperature=0.7)
-
-        print(f"\n✅ Answer generated:")
-        print(f"\n🤖 {answer}")
 
     def _print_summary(self, results: Dict):
         """Print execution summary."""
