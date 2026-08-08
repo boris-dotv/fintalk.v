@@ -255,7 +255,16 @@ def main():
         # if embedding_model_instance and sft_dataset:
         #     # Code to re-populate vector DB
         #     pass
-SKIP
+
+    # Validate that loaded data points have the required structure
+    valid_dataset = []
+    for data in sft_dataset:
+        if "noisy_query" in data and "structured_output" in data:
+            valid_dataset.append(data)
+        else:
+            logger.warning(f"Skipping data point missing required keys: {data}")
+    sft_dataset = valid_dataset
+    logger.info(f"Validated dataset: {len(sft_dataset)} valid data points.")
 
     db_schema_summary = get_db_schema_summary()
 
