@@ -62,8 +62,6 @@ class ParallelExecutor:
             return {}
         if timeout is not None and timeout <= 0:
             raise ValueError("timeout must be positive or None")
-        if timeout is not None and timeout <= 0:
-            raise ValueError("timeout must be positive or None")
 
         start_time = time.time()
         logger.info(f"🚀 Starting parallel execution of {len(tasks)} tasks")
