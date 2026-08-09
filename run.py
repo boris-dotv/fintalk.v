@@ -69,6 +69,8 @@ def main():
             print(f"\n❌ 无效选择: {choice}，请重新输入")
             continue
 
+        choice = int(choice)
+
         if choice == "1":
             run_demo()
             break
