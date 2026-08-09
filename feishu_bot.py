@@ -257,28 +257,6 @@ def _fetch_recent_file_from_chat(chat_id: str) -> dict | None:
     return None
 
 
-def _get_tenant_token() -> str:
-    """Get tenant access token for API calls."""
-    import time as _time
-    now = _time.time()
-    if _token_cache["token"] and now < _token_cache["expires"]:
-        return _token_cache["token"]
-    resp = requests.post(
-        f"{FEISHU_BASE}/auth/v3/tenant_access_token/internal",
-        json={"app_id": APP_ID, "app_secret": APP_SECRET},
-        timeout=10,
-    )
-    resp.raise_for_status()
-    data = resp.json()
-    token = data.get("tenant_access_token", "")
-    if not token:
-        raise RuntimeError("Failed to get tenant access token")
-    _token_cache["token"] = token
-    _token_cache["expires"] = now + data.get("expire", 7200) - 60
-    return token
-
-_token_cache: dict[str, str | float] = {"token": "", "expires": 0}
-
 FEISHU_BASE = "https://open.feishu.cn/open-apis"
 
 
