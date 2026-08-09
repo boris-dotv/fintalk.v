@@ -29,6 +29,9 @@ def _safe_eval_node(node: ast.AST, values: Dict[str, float]) -> float:
     Only allows: numbers, variables, basic arithmetic (+, -, *, /), parentheses.
     Everything else (function calls, attribute access, etc.) raises ValueError.
     """
+    # Handle ast.Expression wrapper (e.g., from ast.parse with mode="eval")
+    if isinstance(node, ast.Expression):
+        return _safe_eval_node(node.body, values)
     if isinstance(node, ast.Expression):
         return _safe_eval_node(node.body, values)
     if isinstance(node, ast.Constant):
