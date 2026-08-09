@@ -70,6 +70,18 @@ def main():
             continue
 
         choice = int(choice)
+        if choice == 0:
+            print("\n👋 Goodbye!")
+            break
+        elif choice == 1:
+            run_demo()
+            break
+        elif choice == 2:
+            run_test()
+            break
+        elif choice == 3:
+            run_main()
+            break
 
         if choice == 1:
             run_demo()
