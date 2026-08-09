@@ -166,13 +166,22 @@ def calculate_complexity_score(sql: str) -> float:
 def check_duplicate(question: str, existing_questions: List[str]) -> bool:
     """Simple text-based duplicate check (can be enhanced with embeddings)."""
     question_lower = question.lower().strip()
+    # Normalize by removing punctuation and extra whitespace
+    question_normalized = re.sub(r'[^\w\s]', '', question_lower)
+    question_normalized = ' '.join(question_normalized.split())
+    
     for existing in existing_questions:
-        # Simple similarity check
-        if question_lower == existing.lower().strip():
+        existing_lower = existing.lower().strip()
+        # Normalize existing question similarly
+        existing_normalized = re.sub(r'[^\w\s]', '', existing_lower)
+        existing_normalized = ' '.join(existing_normalized.split())
+        
+        # Exact match after normalization
+        if question_normalized == existing_normalized:
             return True
         # Check for high overlap
-        words_q = set(question_lower.split())
-        words_e = set(existing.lower().split())
+        words_q = set(question_normalized.split())
+        words_e = set(existing_normalized.split())
         if words_q and words_e:
             overlap = len(words_q & words_e) / len(words_q | words_e)
             if overlap > 0.85:  # 85% similarity threshold
