@@ -118,6 +118,10 @@ class StreamingNLG:
             logger.warning(f"Invalid data for NLG: {data}")
             return "抱歉，查询结果为空或格式不正确。"
 
+        if not query or not query.strip():
+            logger.warning("Empty query provided to NLG")
+            return "抱歉，查询内容为空。"
+
         nlg_prompt = f"""# Role: Financial Data Analyst
 
 Based on the query result, provide a clear and professional answer.
