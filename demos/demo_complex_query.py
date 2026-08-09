@@ -215,6 +215,8 @@ def complex_query_demo(conn):
 
     result = calculate_from_expression(expression, values)
     print(f"   ✅ Calculation Result: {result:.4f} (or {result:.2%})")
+    if total_directors == 0:
+        print("   ⚠️  Warning: Total directors is 0, ratio may be undefined or misleading.")
 
     # Step 5: Generate final answer
     print(f"\n📍 Step 5: Generate natural language answer")
