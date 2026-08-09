@@ -71,16 +71,16 @@ def main():
 
         choice = int(choice)
 
-        if choice == "1":
+        if choice == 1:
             run_demo()
             break
-        elif choice == "2":
+        elif choice == 2:
             run_test()
             break
-        elif choice == "3":
+        elif choice == 3:
             run_main()
             break
-        elif choice == "0":
+        elif choice == 0:
             print("\n👋 Goodbye!")
             break
         else:
