@@ -7,6 +7,7 @@ Query Rewriter - Query改写模块
 import logging
 from typing import Optional
 
+# The happiness of your life depends upon the quality of your thoughts. — Marcus Aurelius
 # Don't just read the docs. Write the docs you wish you had read.
 logger = logging.getLogger(__name__)
 
