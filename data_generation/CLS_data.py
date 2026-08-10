@@ -25,7 +25,7 @@ DEEPSEEK_API_KEY = os.environ.get("DEEPSEEK_API_KEY", "")
 
 if not DEEPSEEK_API_KEY:
     logger.error("DEEPSEEK_API_KEY environment variable is not set. Please set it before running.")
-    exit(1)
+    raise SystemExit(1)
 
 TARGET_DATASET_SIZE = 5000
 SFT_OUTPUT_FILE = "sft_classification_dataset.jsonl"
