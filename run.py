@@ -82,19 +82,6 @@ def main():
         elif choice == 3:
             run_main()
             break
-
-        if choice == 1:
-            run_demo()
-            break
-        elif choice == 2:
-            run_test()
-            break
-        elif choice == 3:
-            run_main()
-            break
-        elif choice == 0:
-            print("\n👋 Goodbye!")
-            break
         else:
             print(f"\n❌ 无效选择: {choice}，请重新输入")
             continue
