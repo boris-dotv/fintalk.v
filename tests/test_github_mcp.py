@@ -70,6 +70,9 @@ print("Hello from MCP - Updated!")
     if result['status'] == 'success':
         print(f'   Updated: {result["path"]}')
         print(f'   URL: {result["url"]}')
+    else:
+        print(f'   Error: {result.get("error", "Unknown error")}')
+        sys.exit(1)  # Exit early if update fails, since subsequent tests depend on it
 
     # 测试3: 创建分支
     print('\n📝 Test 3: Create branch...')
