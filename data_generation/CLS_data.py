@@ -13,6 +13,9 @@ import time
 import random
 import numpy as np
 from openai import OpenAI, APIConnectionError, RateLimitError
+
+# Initialize the OpenAI client
+client = OpenAI(api_key=DEEPSEEK_API_KEY, base_url="https://api.deepseek.com")
 from typing import List, Dict, Any
 from loguru import logger
 
