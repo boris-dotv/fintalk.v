@@ -62,6 +62,8 @@ class ParallelExecutor:
             return {}
         if timeout is not None and timeout <= 0:
             raise ValueError("timeout must be positive or None")
+        if self.max_workers <= 0:
+            raise ValueError("max_workers must be positive")
 
         start_time = time.time()
         logger.info(f"🚀 Starting parallel execution of {len(tasks)} tasks")
