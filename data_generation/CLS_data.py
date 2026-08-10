@@ -30,6 +30,10 @@ if not DEEPSEEK_API_KEY:
     logger.error("DEEPSEEK_API_KEY environment variable is not set. Please set it before running.")
     raise SystemExit(1)
 
+# Validate the API key format to catch obvious misconfigurations early
+if DEEPSEEK_API_KEY and not DEEPSEEK_API_KEY.startswith("sk-"):
+    logger.warning("DEEPSEEK_API_KEY does not start with 'sk-'. Please verify the key is correct.")
+
 TARGET_DATASET_SIZE = 5000
 SFT_OUTPUT_FILE = "sft_classification_dataset.jsonl"
 
