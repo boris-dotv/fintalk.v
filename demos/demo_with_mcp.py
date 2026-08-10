@@ -110,6 +110,43 @@ def demo_with_mcp():
                     print("No MCP logs available.")
                 continue
 
+            if user_input.lower() == 'help':
+                print_section("📝 使用说明")
+                print("""
+支持的查询类型：
+
+【本地数据库查询】
+1. 🏢 公司信息
+   - "What is ZA Bank's employee size?"
+   - "Tell me about WeLab Bank"
+
+2. 📊 金融指标
+   - "Calculate executive_director_ratio for ZA Bank"
+   - "What's the shareholder concentration?"
+
+3. 🔍 数据比较
+   - "Compare ZA Bank and WeLab Bank"
+
+【MCP外部工具】
+4. 🔍 GitHub搜索
+   - "Search GitHub for model context protocol"
+   - "Find Python MCP implementations"
+
+5. 📝 GitHub仓库管理
+   - "Create a file test.py in my repo"
+   - "Get the content of enhanced_fintalk.py"
+
+【特殊命令】
+- 'mcp': 查看MCP日志摘要
+- 'mcp full': 查看完整MCP日志
+- 'tools': 列出所有可用工具
+- 'history': 查看对话历史
+- 'clear': 清空对话历史
+- 'help': 显示此帮助信息
+- 'quit' 或 'exit': 退出
+                """)
+                continue
+
             if user_input.lower() == 'tools':
                 print_section("🔧 可用工具")
 
