@@ -58,6 +58,7 @@ class StreamingNLG:
             "web_search": {"enable": False}
         }
 
+        response = None
         try:
             response = requests.post(
                 self.api_url,
@@ -97,7 +98,7 @@ class StreamingNLG:
             yield f"[Error: Unexpected error: {str(e)}]"
         finally:
             # Ensure the response is closed to release the connection
-            if 'response' in locals() and response is not None:
+            if response is not None:
                 response.close()
 
     def generate_answer(self, query: str, data: Dict[str, Any]) -> str:
