@@ -186,6 +186,14 @@ def main():
         logger.error("DEEPSEEK_API_KEY environment variable is not set. Exiting.")
         return
     
+    # Validate that the output file is writable before starting the generation loop
+    try:
+        with open(SFT_OUTPUT_FILE, "a", encoding="utf-8") as f:
+            pass
+    except OSError as e:
+        logger.error(f"Cannot write to output file {SFT_OUTPUT_FILE}: {e}")
+        return
+    
     embedding_model_instance = None
     # [Embedding Logic]
     # try:
