@@ -122,6 +122,12 @@ class ConversationManager:
             return self.history[-1].user
         return None
 
+    def get_last_assistant(self) -> Optional[str]:
+        """获取上一个助手回答"""
+        if self.history:
+            return self.history[-1].assistant
+        return None
+
     def clear(self):
         """清空对话历史"""
         self.history.clear()
