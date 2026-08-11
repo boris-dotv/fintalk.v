@@ -231,6 +231,9 @@ def main():
 
     # 1. Pick files
     files = pick_files()
+    if not files:
+        print("No files to review")
+        sys.exit(0)
 
     # 2. Build prompt & call AI
     prompt = build_prompt(files)
