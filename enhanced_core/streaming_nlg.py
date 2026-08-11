@@ -50,6 +50,11 @@ class StreamingNLG:
         """
         import requests
 
+        if not prompt or not prompt.strip():
+            logger.warning("Empty prompt provided to generate_streaming")
+            yield "[Error: Empty prompt]"
+            return
+
         payload = {
             "model": "deepseek-v3.2-think",
             "messages": [{"role": "user", "content": prompt}],
