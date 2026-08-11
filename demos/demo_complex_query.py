@@ -88,6 +88,9 @@ def call_llm(prompt: str, temperature: float = 0.3) -> str:
     except (KeyError, IndexError, json.JSONDecodeError) as e:
         print(f"❌ API Response Parse Error: {e}")
         return ""
+    except Exception as e:
+        print(f"❌ Unexpected API Error: {e}")
+        return ""
 
 
 def setup_database():
