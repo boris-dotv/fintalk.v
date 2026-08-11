@@ -86,6 +86,8 @@ class ConversationManager:
                 self.context["last_company"] = company
                 if company not in self.context["entities"]:
                     self.context["entities"].append(company)
+                self.context["last_company_mention_time"] = time.time()
+                break
 
     def get_history_text(self, n_turns: int = 3) -> str:
         """
