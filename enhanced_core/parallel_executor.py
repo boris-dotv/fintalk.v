@@ -161,6 +161,10 @@ class ParallelExecutor:
         """
         if not tasks:
             return {}
+        if timeout <= 0:
+            raise ValueError("timeout must be positive")
+        if self.max_workers <= 0:
+            raise ValueError("max_workers must be positive")
 
         logger.info(f"🚀 Starting parallel execution with callbacks ({len(tasks)} tasks)")
 
@@ -180,6 +184,19 @@ class ParallelExecutor:
                     results[task_name] = result
                 except Exception as e:
                     logger.error(f"Task '{task_name}' callback error: {e}")
+
+            # Cancel any remaining futures that didn't complete
+            for future in future_to_task:
+                if not future.done():
+                    future.cancel()
+
+        # Ensure all tasks have results
+        for task_name in tasks:
+            if task_name not in results:
+                results[task_name] = TaskResult(
+                    task_name=task_name,
+                    error="Task did not complete (possibly cancelled or timed out)"
+                )
 
         return results
 
