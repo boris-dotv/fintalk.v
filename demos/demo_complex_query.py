@@ -77,7 +77,11 @@ def call_llm(prompt: str, temperature: float = 0.3) -> str:
         if "choices" not in data or not data["choices"]:
             print(f"❌ API Response missing 'choices': {data}")
             return ""
-        return data["choices"][0]["message"]["content"]
+        content = data["choices"][0]["message"].get("content")
+        if content is None:
+            print(f"❌ API Response missing 'content' in message: {data}")
+            return ""
+        return content
     except requests.exceptions.RequestException as e:
         print(f"❌ API Error: {e}")
         return ""
