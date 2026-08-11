@@ -4,6 +4,6 @@ MCP Integration - Model Context Protocol集成模块
 """
 
 from .mcp_client import MCPClient, MCPLogger, MCPFunctionRegistry  # noqa: F401
-(no change needed)
 
 __all__ = ["MCPClient", "MCPLogger", "MCPFunctionRegistry"]
+__version__ = "0.1.0"
