@@ -227,6 +227,8 @@ class FinTalkDatabase:
         stripped = sql.strip()
         if not stripped.upper().startswith("SELECT"):
             raise ValueError("Only SELECT queries are allowed")
+        if ";" in stripped.rstrip(";"):
+            raise ValueError("Multiple statements are not allowed")
 
         cur = self.conn.execute(stripped)
         col_names = [d[0] for d in cur.description]
