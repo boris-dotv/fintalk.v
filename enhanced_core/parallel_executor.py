@@ -41,6 +41,8 @@ class ParallelExecutor:
         Args:
             max_workers: 最大并行任务数
         """
+        if max_workers <= 0:
+            raise ValueError("max_workers must be positive")
         self.max_workers = max_workers
         logger.info(f"✅ ParallelExecutor initialized (max_workers={max_workers})")
 
