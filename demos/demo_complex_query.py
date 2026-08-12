@@ -125,6 +125,10 @@ def execute_sql(conn, sql: str) -> List[Dict]:
     try:
         cursor = conn.cursor()
         cursor.execute(sql)
+        if cursor.description is None:
+            # Handle non-SELECT statements (e.g., INSERT, UPDATE, DELETE)
+            conn.commit()
+            return []
         columns = [desc[0] for desc in cursor.description]
         rows = cursor.fetchall()
         return [dict(zip(columns, row)) for row in rows]
