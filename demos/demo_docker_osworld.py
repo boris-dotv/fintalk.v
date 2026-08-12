@@ -76,6 +76,8 @@ class FinTalkDockerAgent:
         if self.env_info:
             print(f"   Container: {self.env_info['name']}")
             print(f"   Status: {self.env_info['status']}")
+        else:
+            print("   ⚠️  Docker unavailable - running in local SQLite mode")
 
     def process_query(self, user_query: str) -> Dict[str, Any]:
         """Process a user query with full orchestration."""
