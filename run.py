@@ -64,7 +64,7 @@ def main():
 
     while True:
         print_menu()
-        choice = input().strip().lower() or "0"
+        choice = (input().strip().lower() or "0") if sys.stdin.isatty() else "0"
         if not choice.isdigit() or int(choice) not in range(4):
             print(f"\n❌ 无效选择: {choice}，请重新输入")
             continue
