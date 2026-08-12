@@ -12,7 +12,7 @@ from .correlation_checker import CorrelationChecker
 from .function_registry import FinancialFunctionRegistry
 from .streaming_nlg import StreamingNLG
 from .conversation_manager import ConversationManager
-__version__ = "0.1.0"
+__version__ = "0.1.0"  # Package version for enhanced_core module
 
 __all__ = [
     "ParallelExecutor",
