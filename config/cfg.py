@@ -1,5 +1,6 @@
 import os
 
+# A rational person should cultivate indifference to things beyond their control. If you find yourself looping on a problem you cannot solve, you must actively step away.
 # Don't explain your philosophy. Embody it. — Epictetus
 PDF_TEXT_DIR = 'pdf_docs'
 ERROR_PDF_DIR = 'error_pdfs'
