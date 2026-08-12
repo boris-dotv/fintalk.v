@@ -180,7 +180,7 @@ Keep it simple with 4-5 steps."""
                 plan = json.loads(response[start:end])
                 print("✅ Plan created successfully!")
                 return plan
-        except:
+        except (json.JSONDecodeError, ValueError, KeyError):
             pass
 
         print("⚠️  Using fallback plan")
