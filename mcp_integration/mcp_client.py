@@ -715,6 +715,10 @@ class MCPClient:
             with open(self.logger.log_file, 'r', encoding='utf-8') as f:
                 lines = f.readlines()
 
+            # Handle empty file case
+            if not lines:
+                return f"Log file exists but is empty. Session: {summary['session_id']}"
+
             return f"""
 📋 MCP Session Summary:
   Session ID: {summary['session_id']}
