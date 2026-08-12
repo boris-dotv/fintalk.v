@@ -141,9 +141,6 @@ def call_worker_cls(user_query: str) -> Dict[str, Any]:
 - comparison: Query comparing multiple companies
 - formula_calculation: Query requiring formula-based calculation
 - other: Anything else
-
-
-def call_worker_ke(user_query: str) -> Dict[str, Any]:
     """Call KE Worker to extract key entities."""
     prompt = f"""Extract key entities from this user query.
 
