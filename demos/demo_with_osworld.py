@@ -135,6 +135,10 @@ DATABASE SCHEMA:
             time.sleep(0.3)  # Visibility
 
             step_result = self._execute_step(step, results, show_steps=show_steps)
+            if "error" in step_result:
+                logger.error(f"Step {i} failed: {step_result['error']}")
+                results["error"] = step_result["error"]
+                break  # Stop execution on error
             results.update(step_result)
 
         # Step 3: Generate final answer
