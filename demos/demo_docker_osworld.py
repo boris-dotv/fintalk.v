@@ -16,7 +16,7 @@ import sys
 import json
 import time
 import logging
-from typing import Dict, Any, List
+from typing import Dict, Any, List, Optional
 
 # Setup path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
