@@ -141,33 +141,27 @@ def call_worker_cls(user_query: str) -> Dict[str, Any]:
 - comparison: Query comparing multiple companies
 - formula_calculation: Query requiring formula-based calculation
 - other: Anything else
-    """Call KE Worker to extract key entities."""
-    prompt = f"""Extract key entities from this user query.
 
-Query: "{user_query}"
+User Query: "{user_query}"
 
-Extract and return as JSON:
-{{
-    "company_names": ["list of company names mentioned"],
-    "management_names": ["list of person names"],
-    "shareholder_names": ["list of shareholder names"],
-    "db_fields": ["list of database fields mentioned"],
-    "intent": "overall intent"
-}}
-
-Respond with ONLY valid JSON."""
+Respond with ONLY the intent name."""
 
     response = call_llm([{"role": "user", "content": prompt}], temperature=0.3)
 
-    try:
-        # Try to parse JSON from response
-        cleaned = re.sub(r'```json\s*|\s*```', '', response.strip())
-        result = json.loads(cleaned)
-        logger.info(f"🔑 KE Result: {json.dumps(result, ensure_ascii=False)}")
-        return result
-    except:
-        logger.warning(f"KE parsing failed, using fallback: {response[:100]}")
-        return {"company_names": [], "db_fields": [], "intent": "UNKNOWN"}
+    if response:
+        intent = response.strip().lower()
+        valid_intents = ["company_info", "management_info", "shareholder_info", "comparison", "formula_calculation", "other"]
+        if intent in valid_intents:
+            logger.info(f"🔑 CLS Result: {intent}")
+            return {"intent": intent}
+    
+    logger.warning(f"CLS parsing failed, using fallback: {response[:100] if response else 'None'}")
+    return {"intent": "other"}
+
+
+def call_worker_ke(user_query: str) -> Dict[str, Any]:
+    """Call KE Worker to extract key entities."""
+    prompt = f"""Extract key entities from this user query.
 
 
 def call_worker_nl2sql(user_query: str, schema_context: str = "") -> Dict[str, Any]:
