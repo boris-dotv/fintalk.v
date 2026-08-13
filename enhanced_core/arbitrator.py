@@ -91,6 +91,15 @@ Classify the user's query type:
 
 ## A - Task-oriented
 Data retrieval, calculation, comparison.
+
+    def _build_arbitration_prompt(self, query: str, history: str) -> str:
+        """构建仲裁prompt"""
+        return f"""# Role: Financial Query Arbitration Expert
+
+Classify the user's query type:
+
+## A - Task-oriented
+Data retrieval, calculation, comparison.
 Examples: "What is ZA Bank's employee size?", "Calculate executive_director_ratio"
 
 ## B - Knowledge
