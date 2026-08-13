@@ -93,6 +93,7 @@ class StreamingNLG:
                                 yield content
 
                     except json.JSONDecodeError:
+                        logger.debug(f"Skipping non-JSON line: {data_str[:50]}...")
                         continue
 
         except requests.exceptions.RequestException as e:
