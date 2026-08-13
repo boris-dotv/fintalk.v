@@ -81,3 +81,4 @@ Decision:"""
 
         logger.warning(f"   🛡️  Rejection check unparseable, defaulting to accept: {query[:50]}...")
         return True  # 默认接受（安全默认，避免误拒）
+        # Note: Consider logging the raw LLM output for debugging unparseable responses
