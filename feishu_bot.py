@@ -255,6 +255,8 @@ def _fetch_recent_file_from_chat(chat_id: str) -> dict | None:
                     }
     except requests.RequestException as e:
         logger.error(f"Fetch recent file HTTP error: {e}")
+    except json.JSONDecodeError as e:
+        logger.error(f"Fetch recent file JSON parse error: {e}")
     except Exception as e:
         logger.error(f"Fetch recent file error: {e}")
     return None
