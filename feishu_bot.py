@@ -237,6 +237,7 @@ def _fetch_recent_file_from_chat(chat_id: str) -> dict | None:
                 "sort_type": "ByCreateTimeDesc",
             },
         )
+        resp.raise_for_status()
         data = resp.json()
         if data.get("code") != 0:
             logger.error(f"Fetch messages failed: {data}")
@@ -252,6 +253,8 @@ def _fetch_recent_file_from_chat(chat_id: str) -> dict | None:
                         "file_key": content.get("file_key"),
                         "file_name": filename,
                     }
+    except requests.RequestException as e:
+        logger.error(f"Fetch recent file HTTP error: {e}")
     except Exception as e:
         logger.error(f"Fetch recent file error: {e}")
     return None
