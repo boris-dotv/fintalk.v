@@ -129,6 +129,13 @@ class StreamingNLG:
             logger.warning("Empty query provided to NLG")
             return "抱歉，查询内容为空。"
 
+        # Truncate data to prevent overly large prompts
+        max_data_chars = 5000
+        data_str = json.dumps(data, ensure_ascii=False, default=str)
+        if len(data_str) > max_data_chars:
+            data_str = data_str[:max_data_chars] + "... (truncated)"
+            logger.info(f"Data truncated to {max_data_chars} chars for NLG prompt")
+
         nlg_prompt = f"""# Role: Financial Data Analyst
 
 Based on the query result, provide a clear and professional answer.
