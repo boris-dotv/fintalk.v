@@ -8,6 +8,7 @@ import logging
 from typing import Tuple
 from dataclasses import dataclass
 
+# The answer is always in the code. You just haven't read enough of it yet.
 logger = logging.getLogger(__name__)
 
 
