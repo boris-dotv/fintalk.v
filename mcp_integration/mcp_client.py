@@ -101,7 +101,21 @@ class MCPClient:
         # GitHub Token (可选，提高限额)
         self.github_token = os.getenv("GITHUB_TOKEN")
 
-        logger.info("📝 API Keys loaded from environment")
+        # Log which APIs are available (without exposing keys)
+        available_apis = []
+        if self.google_api_key and self.google_cse_id:
+            available_apis.append("Google Search")
+        if self.alpha_vantage_key:
+            available_apis.append("Alpha Vantage")
+        if self.news_api_key:
+            available_apis.append("NewsAPI")
+        if self.github_token:
+            available_apis.append("GitHub")
+        
+        if available_apis:
+            logger.info(f"📝 API Keys loaded: {', '.join(available_apis)}")
+        else:
+            logger.warning("⚠️  No API keys found in environment. Only public APIs (GitHub search) will work.")
 
     def _register_tools(self):
         """注册工具"""
