@@ -92,6 +92,11 @@ class ConversationManager:
                 self.context["last_user_query"] = query
                 self.context["last_query_time"] = time.time()
                 break
+        else:
+            # No company found, still update last_query fields
+            self.context["last_query"] = query
+            self.context["last_user_query"] = query
+            self.context["last_query_time"] = time.time()
 
     def get_history_text(self, n_turns: int = 3) -> str:
         """
