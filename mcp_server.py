@@ -126,6 +126,11 @@ class FinTalkDatabase:
             logger.error(f"Unexpected error reading {filepath}: {e}")
             return 0
 
+        # Validate table name to prevent SQL injection
+        if not re.match(r'^[a-zA-Z_][a-zA-Z0-9_]*$', table_name):
+            logger.error(f"Invalid table name: {table_name}")
+            return 0
+
         # Deduplicate column names (e.g. company.csv has two "digital_bank_license")
         seen: dict[str, int] = {}
         fields = []
