@@ -575,8 +575,6 @@ Respond with ONLY valid JSON:"""
 
         # Return empty dict for unknown formulas instead of hardcoded defaults
         return {}
-        # Return empty dict for unknown formulas instead of hardcoded defaults
-        return {}
 
     def _synthesize_answer(self, user_query: str, execution_results: List[Dict]) -> str:
         """Synthesize final answer from execution results."""
