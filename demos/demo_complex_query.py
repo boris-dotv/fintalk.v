@@ -114,6 +114,9 @@ def setup_database():
             df = pd.read_csv(file_path, encoding='utf-8', encoding_errors='ignore')
         except UnicodeDecodeError:
             df = pd.read_csv(file_path, encoding='latin-1')
+        except Exception as e:
+            print(f"❌ Error loading {file_path}: {e}")
+            sys.exit(1)
         df.to_sql(table_name, conn, if_exists='replace', index=False)
         print(f"✅ Loaded {len(df)} rows into '{table_name}'")
 
