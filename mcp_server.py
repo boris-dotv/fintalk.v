@@ -230,9 +230,13 @@ class FinTalkDatabase:
         if ";" in stripped.rstrip(";"):
             raise ValueError("Multiple statements are not allowed")
 
-        cur = self.conn.execute(stripped)
-        col_names = [d[0] for d in cur.description]
-        return [dict(zip(col_names, r)) for r in cur.fetchall()]
+        try:
+            cur = self.conn.execute(stripped)
+            col_names = [d[0] for d in cur.description]
+            return [dict(zip(col_names, r)) for r in cur.fetchall()]
+        except sqlite3.Error as e:
+            logger.error(f"SQLite error executing query: {e}")
+            raise ValueError(f"Query failed: {e}")
 
     # ---- External CSV ----
 
