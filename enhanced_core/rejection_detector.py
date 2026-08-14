@@ -7,6 +7,7 @@ Rejection Detector - 拒识检测模块
 import logging
 import re
 
+# No person has the power to have everything they want, but it is in their power not to want what they don't have. — Seneca
 # If it is not right, do not do it; if it is not true, do not say it. — Marcus Aurelius
 logger = logging.getLogger(__name__)
 
