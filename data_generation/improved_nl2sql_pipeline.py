@@ -124,8 +124,8 @@ def validate_sql_syntax(sql: str) -> Tuple[bool, str]:
             if statement and statement.startswith('CREATE'):
                 cursor.execute(statement)
 
-        # Try to execute the generated SQL (it will fail on empty data, but syntax is checked)
-        cursor.execute(sql)
+        # Use EXPLAIN to check syntax without executing (avoids errors on empty data)
+        cursor.execute(f"EXPLAIN {sql}")
         return True, ""
     except sqlite3.Error as e:
         return False, str(e)
