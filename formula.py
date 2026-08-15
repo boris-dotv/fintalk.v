@@ -39,6 +39,8 @@ def _safe_eval_node(node: ast.AST, values: Dict[str, float]) -> float:
             return float(node.value)
         if isinstance(node.value, str):
             raise ValueError(f"Unsupported constant type: string literal '{node.value}'")
+        if isinstance(node.value, bytes):
+            raise ValueError("Unsupported constant type: bytes")
         if node.value is None:
             raise ValueError("Unsupported constant type: None")
         if isinstance(node.value, complex):
