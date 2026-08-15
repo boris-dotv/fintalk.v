@@ -190,6 +190,10 @@ def complex_query_demo(conn):
     result_2 = execute_sql(conn, sql_2)
     print(f"   Result: {result_2}")
 
+    if not result_2:
+        print("   ❌ Failed to count executive directors!")
+        return
+
     executive_count = result_2[0]['executive_count']
     print(f"   ✅ Executive Directors count: {executive_count}")
 
