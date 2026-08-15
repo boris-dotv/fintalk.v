@@ -8,6 +8,7 @@ def main() -> None:  # pragma: no cover
     print("Hello from MCP - Updated!")
     print("Test completed successfully.")
     print("All checks passed.")
+    print("This is a test of the emergency broadcast system.")
 
 if __name__ == "__main__":
     main()
