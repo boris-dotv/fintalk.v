@@ -30,6 +30,10 @@ if not DEEPSEEK_API_KEY:
     logger.error("DEEPSEEK_API_KEY environment variable is not set. Please set it before running.")
     raise SystemExit(1)
 
+# The API key is used before it's defined in the current code (client initialization happens above).
+# Move the client initialization after the API key validation to ensure the key is available.
+client = OpenAI(api_key=DEEPSEEK_API_KEY, base_url="https://api.deepseek.com")
+
 # Validate the API key format to catch obvious misconfigurations early
 if DEEPSEEK_API_KEY and not DEEPSEEK_API_KEY.startswith("sk-"):
     logger.warning("DEEPSEEK_API_KEY does not start with 'sk-'. Please verify the key is correct.")
