@@ -66,6 +66,8 @@ class ParallelExecutor:
             raise ValueError("timeout must be positive or None")
         if self.max_workers <= 0:
             raise ValueError("max_workers must be positive")
+        if not all(callable(func) for func in tasks.values()):
+            raise ValueError("All task values must be callable")
 
         start_time = time.time()
         logger.info(f"🚀 Starting parallel execution of {len(tasks)} tasks")
