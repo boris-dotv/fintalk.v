@@ -336,8 +336,8 @@ def main():
             logger.error(f"Network or Rate Limit Error: {e}. Retrying in 15 seconds...")
             time.sleep(15)
             # Add exponential backoff for repeated failures
-            consecutive_failures = getattr(self, '_consecutive_failures', 0) + 1
-            self._consecutive_failures = consecutive_failures
+            consecutive_failures = getattr(main, '_consecutive_failures', 0) + 1
+            main._consecutive_failures = consecutive_failures
             if consecutive_failures > 3:
                 time.sleep(60)  # Longer wait after repeated failures
         except json.JSONDecodeError:
