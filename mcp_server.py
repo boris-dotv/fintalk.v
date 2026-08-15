@@ -242,6 +242,9 @@ class FinTalkDatabase:
         except sqlite3.Error as e:
             logger.error(f"SQLite error executing query: {e}")
             raise ValueError(f"Query failed: {e}")
+        except Exception as e:
+            logger.error(f"Unexpected error executing query: {e}")
+            raise ValueError(f"Unexpected query error: {e}")
 
     # ---- External CSV ----
 
