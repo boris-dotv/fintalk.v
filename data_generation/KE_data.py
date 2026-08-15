@@ -335,6 +335,11 @@ def main():
         except (APIConnectionError, RateLimitError) as e:
             logger.error(f"Network or Rate Limit Error: {e}. Retrying in 15 seconds...")
             time.sleep(15)
+            # Add exponential backoff for repeated failures
+            consecutive_failures = getattr(self, '_consecutive_failures', 0) + 1
+            self._consecutive_failures = consecutive_failures
+            if consecutive_failures > 3:
+                time.sleep(60)  # Longer wait after repeated failures
         except json.JSONDecodeError:
             logger.error(f"Failed to decode JSON from API response. Response was: \n{response_content}")
             time.sleep(5)
