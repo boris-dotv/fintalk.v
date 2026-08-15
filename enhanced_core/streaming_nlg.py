@@ -54,6 +54,11 @@ class StreamingNLG:
             logger.warning("Empty prompt provided to generate_streaming")
             yield "[Error: Empty prompt]"
             return
+        # Add a type check for prompt to ensure it's a string
+        if not isinstance(prompt, str):
+            logger.warning(f"Non-string prompt provided: {type(prompt)}")
+            yield "[Error: Invalid prompt type]"
+            return
 
         payload = {
             "model": "deepseek-v3.2-think",
