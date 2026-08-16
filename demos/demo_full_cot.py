@@ -93,7 +93,7 @@ def setup_database():
         if os.path.exists(file_path):
             try:
                 df = pd.read_csv(file_path, encoding='utf-8', encoding_errors='ignore')
-            except:
+            except Exception:
                 df = pd.read_csv(file_path, encoding='latin-1')
             df.to_sql(table_name, conn, if_exists='replace', index=False)
 
