@@ -84,16 +84,14 @@ def fallback_commit():
     # Insert after a blank line following imports, if possible
     if insert_at < len(lines) and lines[insert_at].strip() == "":
         insert_at += 1
-    # Ensure insert_at doesn't exceed the number of lines
-    insert_at = min(insert_at, len(lines))
-    # Ensure we don't insert at the very end (after last line) to avoid extra blank line at EOF
+    # Ensure insert_at is within valid bounds [0, len(lines)]
+    insert_at = max(0, min(insert_at, len(lines)))
+    # Avoid inserting at the very end (after last line) to prevent extra blank line at EOF
     if insert_at == len(lines) and len(lines) > 0:
         insert_at = len(lines) - 1
-    # Ensure we don't insert before the first line (if file is empty or only has one line)
+    # Avoid inserting before the first line (if file is empty or only has one line)
     if insert_at == 0 and len(lines) > 0:
         insert_at = 1
-    # Ensure insert_at is not negative
-    insert_at = max(insert_at, 0)
 
     lines.insert(insert_at, comment_line.rstrip())
     new_content = "\n".join(lines)
