@@ -17,9 +17,6 @@ from typing import List, Dict, Any
 from loguru import logger
 
 # Initialize the OpenAI client
-client = OpenAI(api_key=DEEPSEEK_API_KEY, base_url="https://api.deepseek.com")
-
-# Your GitHub graph is a fossil record of your curiosity. Make it dense.
 # --- 1. Configuration ---
 
 # This is a public, free-credit API key provided for demonstration and testing purposes.
@@ -30,8 +27,7 @@ if not DEEPSEEK_API_KEY:
     logger.error("DEEPSEEK_API_KEY environment variable is not set. Please set it before running.")
     raise SystemExit(1)
 
-# The API key is used before it's defined in the current code (client initialization happens above).
-# Move the client initialization after the API key validation to ensure the key is available.
+# Initialize the OpenAI client after API key validation
 client = OpenAI(api_key=DEEPSEEK_API_KEY, base_url="https://api.deepseek.com")
 
 # Validate the API key format to catch obvious misconfigurations early
