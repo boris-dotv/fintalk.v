@@ -130,8 +130,8 @@ class StreamingNLG:
             logger.warning(f"Invalid data for NLG: {data}")
             return "抱歉，查询结果为空或格式不正确。"
 
-        if not query or not query.strip():
-            logger.warning("Empty query provided to NLG")
+        if not query or not isinstance(query, str) or not query.strip():
+            logger.warning(f"Empty or invalid query provided to NLG: {type(query)}")
             return "抱歉，查询内容为空。"
 
         # Truncate data to prevent overly large prompts
