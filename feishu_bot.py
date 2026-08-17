@@ -236,6 +236,7 @@ def _fetch_recent_file_from_chat(chat_id: str) -> dict | None:
                 "page_size": 20,
                 "sort_type": "ByCreateTimeDesc",
             },
+            timeout=10,
         )
         resp.raise_for_status()
         data = resp.json()
