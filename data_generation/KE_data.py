@@ -334,7 +334,6 @@ def main():
 
         except (APIConnectionError, RateLimitError) as e:
             logger.error(f"Network or Rate Limit Error: {e}. Retrying in 15 seconds...")
-            time.sleep(15)
             # Add exponential backoff for repeated failures
             consecutive_failures = getattr(main, '_consecutive_failures', 0) + 1
             main._consecutive_failures = consecutive_failures
