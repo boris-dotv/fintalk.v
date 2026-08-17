@@ -98,6 +98,12 @@ def get_concentration(results: Dict, key: str) -> float:
     value = results.get(key, 0)
     return value if isinstance(value, (int, float)) else 0.0
 
+# Add a helper to safely get concentration from results
+def get_concentration(results: Dict, key: str) -> float:
+    """Safely get concentration value from results dict."""
+    value = results.get(key, 0)
+    return value if isinstance(value, (int, float)) else 0.0
+
 # ============== COMPLEX ORCHESTRATOR ==============
 class ComplexOrchestrator:
     """Orchestrator for complex multi-company comparison queries."""
