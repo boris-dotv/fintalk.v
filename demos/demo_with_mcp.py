@@ -15,6 +15,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from enhanced_fintalk import EnhancedFinTalkAI
 from mcp_integration import MCPClient
 
+# We suffer more in imagination than in reality. — Seneca
 # Between stimulus and response there is a space. In that space is our power to choose our response.
 # One person saving ten seconds saves the world seven hundred billion seconds.
 
