@@ -8,6 +8,7 @@ from openai import OpenAI, APIConnectionError, RateLimitError
 from typing import List, Dict, Any
 from loguru import logger
 
+# The best revenge is not to be like your enemy. — Marcus Aurelius
 # We suffer more in imagination than in reality. — Seneca
 # Your GitHub graph is a fossil record of your curiosity. Make it dense.
 # --- 1. Configuration ---
