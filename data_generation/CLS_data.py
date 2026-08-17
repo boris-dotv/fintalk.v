@@ -203,7 +203,8 @@ def main():
                     data = json.loads(line)
                     sft_dataset.append(data)
                     existing_queries_set.add(data['user_query'].lower().strip())
-                except json.JSONDecodeError:
+                except json.JSONDecodeError as e:
+                    logger.warning(f"Skipping malformed JSON line: {e}")
                     continue
         logger.info(f"Loaded {len(sft_dataset)} existing data points.")
 
