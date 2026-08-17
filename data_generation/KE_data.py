@@ -339,7 +339,10 @@ def main():
             consecutive_failures = getattr(main, '_consecutive_failures', 0) + 1
             main._consecutive_failures = consecutive_failures
             if consecutive_failures > 3:
+                logger.warning("Multiple consecutive failures detected. Waiting 60 seconds...")
                 time.sleep(60)  # Longer wait after repeated failures
+            else:
+                time.sleep(15 * consecutive_failures)  # Progressive backoff
         except json.JSONDecodeError:
             logger.error(f"Failed to decode JSON from API response. Response was: \n{response_content}")
             time.sleep(5)
