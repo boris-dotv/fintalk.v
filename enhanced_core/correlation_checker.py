@@ -52,6 +52,10 @@ Output ONLY: Yes or No"""
         # Add a more robust check for "no" responses to avoid false positives
         if not is_correlated and result.startswith("no"):
             is_correlated = False
+        # Handle edge case where LLM returns something unexpected (e.g., "Maybe", "I think so")
+        elif not is_correlated and not result.startswith("no"):
+            logger.warning(f"   ⚠️ Unexpected correlation response: '{result}', defaulting to False")
+            is_correlated = False
         logger.info(f"   🔗 Correlation check -> {is_correlated}")
 
         return is_correlated
