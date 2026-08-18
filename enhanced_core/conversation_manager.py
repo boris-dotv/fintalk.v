@@ -78,25 +78,23 @@ class ConversationManager:
 
     def _update_context(self, query: str):
         """更新上下文"""
-        # 提取公司名
+        # Extract company name (case-insensitive)
         companies = ["ZA Bank", "WeLab Bank", "Airstar Bank", "Livo Bank", "Mox Bank"]
         query_lower = query.lower()
+        found_company = False
         for company in companies:
             if company.lower() in query_lower:
                 self.context["last_company"] = company
                 if company not in self.context["entities"]:
                     self.context["entities"].append(company)
                 self.context["last_company_mention_time"] = time.time()
-                # Also update last_query context fields
-                self.context["last_query"] = query
-                self.context["last_user_query"] = query
-                self.context["last_query_time"] = time.time()
+                found_company = True
                 break
-        else:
-            # No company found, still update last_query fields
-            self.context["last_query"] = query
-            self.context["last_user_query"] = query
-            self.context["last_query_time"] = time.time()
+        
+        # Always update last_query fields (avoid duplicate code)
+        self.context["last_query"] = query
+        self.context["last_user_query"] = query
+        self.context["last_query_time"] = time.time()
 
     def get_history_text(self, n_turns: int = 3) -> str:
         """
