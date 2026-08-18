@@ -65,6 +65,8 @@ class QueryArbitrator:
             if result not in ["A", "B", "C", "D"]:
                 logger.warning(f"Unexpected arbitration result '{result}', defaulting to 'A'")
                 result = "A"
+            else:
+                logger.debug(f"Valid arbitration result: {result}")
         logger.info(f"Arbitration result: {result}")
 
         type_map = {
