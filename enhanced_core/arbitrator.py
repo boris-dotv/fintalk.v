@@ -67,6 +67,8 @@ class QueryArbitrator:
                 result = "A"
             else:
                 logger.debug(f"Valid arbitration result: {result}")
+        # Log the raw response for debugging purposes
+        logger.debug(f"Raw LLM response: {result}")
         logger.info(f"Arbitration result: {result}")
 
         type_map = {
