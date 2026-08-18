@@ -176,6 +176,9 @@ Here are some POSITIVE examples to inspire you. Do NOT copy their patterns direc
 **SPECIAL DIVERSITY HINT FOR THIS GENERATION**: {diversity_instruction}
 
 Now, following all instructions and the special diversity hint, generate one new, realistic, and unique user query and assign it the correct intent class.
+
+**IMPORTANT**: Ensure the generated query is NOT a duplicate of any of the following existing queries:
+{negative_feedback_str if negative_feedback_str else "No existing queries to avoid."}
 """
 
 # --- 4. Main Generation Pipeline ---
