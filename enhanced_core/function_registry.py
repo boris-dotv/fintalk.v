@@ -165,6 +165,10 @@ class FinancialFunctionRegistry:
 
     def _get_company_id(self, company_name: str) -> Optional[int]:
         """获取公司ID，通过查询数据库进行模糊匹配"""
+        if not company_name or not company_name.strip():
+            logger.warning("   ⚠️ Empty company name provided")
+            return None
+
         if self.osworld:
             # Use parameterized query to prevent SQL injection
             results = self.osworld.execute_sql(
