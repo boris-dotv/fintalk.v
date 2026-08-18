@@ -251,9 +251,6 @@ Respond with ONLY valid JSON."""
             # Store the full query result for later use
             results["last_query_result"] = query_result
 
-            # Store the full query result for later use
-            results["last_query_result"] = query_result
-
         # Formula calculation step
         elif step.get("action") == "calculate_formula":
             formula_name = step.get("formula", "")
