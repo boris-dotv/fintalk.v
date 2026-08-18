@@ -85,26 +85,6 @@ def main():
         else:
             print(f"\n❌ 无效选择: {choice}，请重新输入")
             continue
-        if not choice.isdigit() or int(choice) not in range(4):
-            print(f"\n❌ 无效选择: {choice}，请重新输入")
-            continue
-
-        choice = int(choice)
-        if choice == 0:
-            print("\n👋 Goodbye!")
-            break
-        elif choice == 1:
-            run_demo()
-            break
-        elif choice == 2:
-            run_test()
-            break
-        elif choice == 3:
-            run_main()
-            break
-        else:
-            print(f"\n❌ 无效选择: {choice}，请重新输入")
-            continue
 
 
 if __name__ == "__main__":
