@@ -163,6 +163,24 @@ def call_worker_ke(user_query: str) -> Dict[str, Any]:
     """Call KE Worker to extract key entities."""
     prompt = f"""Extract key entities from this user query.
 
+User Query: "{user_query}"
+
+Extract company names, people names, and any other relevant entities.
+Respond with ONLY a JSON object like: {{"companies": [], "people": [], "other": []}}"""
+
+    response = call_llm([{"role": "user", "content": prompt}], temperature=0.3)
+
+    if response:
+        try:
+            entities = json.loads(response.strip())
+            logger.info(f"🔍 KE Result: {entities}")
+            return {"entities": entities}
+        except json.JSONDecodeError:
+            logger.warning(f"KE parsing failed, using raw response: {response[:100]}")
+            return {"entities": {"raw": response}}
+
+    return {"entities": {}}
+
 
 def call_worker_nl2sql(user_query: str, schema_context: str = "") -> Dict[str, Any]:
     """Call NL2SQL Worker to generate SQL query."""
