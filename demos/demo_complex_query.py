@@ -140,6 +140,9 @@ def execute_sql(conn, sql: str) -> List[Dict]:
         print(f"   SQL was: {sql}")
         print(f"   Error type: {type(e).__name__}")
         print(f"   Error details: {str(e)}")
+        # Log the error for debugging while keeping the demo running
+        import logging
+        logging.getLogger(__name__).error(f"SQL execution failed: {e}", exc_info=True)
         return []
 
 
