@@ -44,7 +44,10 @@ def call_llm(prompt: str, temperature: float = 0.3, timeout: int = 30) -> str:
     }
     try:
         response = requests.post(API_URL, headers=HEADERS, json=payload, timeout=timeout)
+        response.raise_for_status()  # Add this to catch HTTP errors
         return response.json()["choices"][0]["message"]["content"]
+    except requests.exceptions.Timeout:
+        return "ERROR: Timeout - API took too long to respond"
     except Exception as e:
         return f"ERROR: {str(e)}"
 
