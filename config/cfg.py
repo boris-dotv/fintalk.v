@@ -10,6 +10,9 @@ KEYWORDS_PTUNING_PRE_SEQ_LEN = 256
 NL2SQL_PTUNING_PRE_SEQ_LEN = 128
 NL2SQL_PTUNING_MAX_LENGTH = 2200
 BASE_DIR = os.environ.get('FINANCIAL_AI_BASE_DIR', '/root/autodl-tmp/.v_scratchs/llm/20_financial_AI_expert').rstrip('/') + '/'
+# Ensure BASE_DIR ends with exactly one slash (handles empty env var edge case)
+if not BASE_DIR.endswith('/'):
+    BASE_DIR += '/'
 DATA_PATH = os.path.join(BASE_DIR, "data/")
 NUM_PROCESSES = min(64, max(1, os.cpu_count() or 1))  # Cap at 64 to avoid resource exhaustion; fallback to 1 if cpu_count() returns None
 CLASSIFY_CHECKPOINT_PATH = BASE_DIR + "ptuning/CLASSIFY_PTUNING/output/Fin-Train-chatglm2-6b-pt-512-2e-2/checkpoint-400"
