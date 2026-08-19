@@ -195,6 +195,7 @@ Return JSON:
 
             if query_result is None:
                 print(f"   ❌ Query failed")
+                logger.error(f"SQL execution failed: {sql}")
                 return {"error": "Query failed"}
 
             print(f"   ✅ Result: {len(query_result)} rows")
