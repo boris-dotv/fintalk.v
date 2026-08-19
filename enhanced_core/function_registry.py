@@ -193,7 +193,8 @@ class FinancialFunctionRegistry:
                 "ORDER BY company_sort_id LIMIT 1",
                 (f"%{company_name.lower()}%", f"%{company_name.lower().replace(' ', '%')}%")
             )
-            results = [dict(zip(["company_sort_id", "name"], row)) for row in cursor.fetchall()]
+            rows = cursor.fetchall()
+            results = [dict(zip(["company_sort_id", "name"], row)) for row in rows]
         else:
             return None
 
