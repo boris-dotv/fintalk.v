@@ -185,8 +185,11 @@ def check_duplicate(question: str, existing_questions: List[str]) -> bool:
         words_q = set(question_normalized.split())
         words_e = set(existing_normalized.split())
         if words_q and words_e:
+            # Use Jaccard similarity with a lower threshold for short questions
             overlap = len(words_q & words_e) / len(words_q | words_e)
-            if overlap > 0.85:  # 85% similarity threshold
+            # For short questions (fewer than 5 words), require higher similarity
+            threshold = 0.95 if len(words_q) < 5 else 0.85
+            if overlap > threshold:
                 return True
     return False
 
