@@ -151,6 +151,7 @@ class ConversationManager:
         }
         self.slots = {}
         logger.info("🗑️  Conversation history cleared")
+        return self
 
     def get_stats(self) -> Dict[str, Any]:
         """获取对话统计"""
