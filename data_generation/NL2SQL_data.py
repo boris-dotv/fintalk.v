@@ -277,6 +277,12 @@ def main():
                     time.sleep(1)
                     continue
                 
+                # Validate question is not empty
+                if not question:
+                    logger.warning("Generated question is empty. Skipping.")
+                    time.sleep(1)
+                    continue
+                
                 is_duplicate = False
                 # Default to text-based deduplication
                 if question.lower() in existing_questions_set:
