@@ -198,26 +198,6 @@ def quality_score_sample(question: str, sql: str) -> float:
     """Use LLM to score the quality of the question-SQL pair."""
     prompt = f"""Rate the quality of this NL2SQL pair on a scale of 0-1:
 
-Question: {question}
-SQL: {sql}
-
-Consider:
-1. Does the SQL correctly answer the question?
-2. Is the question clear and natural?
-3. Is the SQL properly formatted?
-
-Respond with ONLY a number between 0 and 1 (e.g., 0.85)"""
-
-    try:
-        response = call_llm_api(prompt, temperature=0.3)
-        # Extract number from response
-        match = re.search(r'0?\.\d+|1\.0|0|1', response)
-        if match:
-            return float(match.group())
-    except:
-        pass
-    return 0.5  # Default score if API fails
-
 
 def generate_dynamic_prompt(recent_examples: List[DataSample], iteration: int) -> str:
     """Generate a dynamic prompt with negative feedback for diversity."""
