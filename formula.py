@@ -161,6 +161,11 @@ def calculate_from_expression(expression: str, values: Dict[str, float]) -> floa
         logger.warning(f"Expression still contains variable-like tokens after substitution. Expression: '{expression}'")
         return float('nan')
 
+    # Check for division by zero in the expression before evaluation
+    if re.search(r'/\s*0(?:\.0+)?\b', expression):
+        logger.warning(f"Expression contains division by zero: '{expression}'. Returning Not-a-Number.")
+        return float('nan')
+
     try:
         tree = ast.parse(expression, mode="eval")
         result = _safe_eval_node(tree, local_values)
