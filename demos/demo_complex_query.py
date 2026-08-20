@@ -216,6 +216,10 @@ def complex_query_demo(conn):
     result_3 = execute_sql(conn, sql_3)
     print(f"   Result: {result_3}")
 
+    if not result_3:
+        print("   ❌ Failed to count total directors!")
+        return
+
     total_directors = result_3[0]['total_directors']
     print(f"   ✅ Total Directors count: {total_directors}")
 
