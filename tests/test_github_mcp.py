@@ -9,7 +9,7 @@ import sys
 from dotenv import load_dotenv, find_dotenv
 
 # 加载环境变量
-load_dotenv()
+load_dotenv(find_dotenv())
 
 # Setup path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
