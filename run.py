@@ -68,9 +68,6 @@ def main():
         if not choice.isdigit() or int(choice) not in range(4):
             print(f"\n❌ 无效选择: {choice}，请重新输入")
             continue
-        if not choice.isdigit() or int(choice) not in range(4):
-            print(f"\n❌ 无效选择: {choice}，请重新输入")
-            continue
 
         choice = int(choice)
         if choice == 0:
