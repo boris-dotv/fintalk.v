@@ -256,6 +256,11 @@ Respond with ONLY valid JSON."""
                 results["total_directors"] = 1
                 logger.warning("Total directors count was 0, defaulting to 1 to avoid division by zero")
 
+            # Validate SQL result structure to catch malformed data early
+            if query_result and not isinstance(query_result[0], dict):
+                logger.warning(f"SQL result row is not a dict: {type(query_result[0])}")
+                return {"error": "Unexpected SQL result format"}
+
         # Formula calculation step
         elif step.get("action") == "calculate_formula":
             formula_name = step.get("formula", "")
