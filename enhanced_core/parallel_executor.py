@@ -150,7 +150,7 @@ class ParallelExecutor:
                                          tasks: Dict[str, Callable],
                                          on_complete: Optional[Callable] = None,
                                          on_error: Optional[Callable] = None,
-                                         timeout: int = 30) -> Dict[str, TaskResult]:
+                                         timeout: Optional[float] = 30.0) -> Dict[str, TaskResult]:
         """
         带回调的并行执行
 
