@@ -16,6 +16,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from mcp_integration import MCPClient
 
+# The goal is not to be impressive. The goal is to say something the reader didn't know they needed to hear.
 # One person saving ten seconds saves the world seven hundred billion seconds.
 
 def main():
