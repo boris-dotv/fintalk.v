@@ -568,6 +568,11 @@ Respond with ONLY valid JSON:"""
             if total_count is None:
                 total_count = 10.0
 
+            # Validate that total_count is not zero to avoid division by zero
+            if total_count == 0:
+                print("   ⚠️ Warning: Total director count is 0, using default value of 10.0")
+                total_count = 10.0
+
             return {
                 "Count of Executive Directors": exec_count,
                 "Total Count of Directors": total_count
