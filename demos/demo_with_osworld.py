@@ -251,6 +251,11 @@ Respond with ONLY valid JSON."""
             # Store the full query result for later use
             results["last_query_result"] = query_result
 
+            # Add a guard to prevent division by zero in formula calculations
+            if results.get("total_directors", 0) == 0:
+                results["total_directors"] = 1
+                logger.warning("Total directors count was 0, defaulting to 1 to avoid division by zero")
+
         # Formula calculation step
         elif step.get("action") == "calculate_formula":
             formula_name = step.get("formula", "")
