@@ -27,7 +27,11 @@ from loguru import logger
 
 # Baidu Qianfan API (as provided by user)
 API_URL = "https://qianfan.baidubce.com/v2/chat/completions"
-API_KEY = os.environ["QIANFAN_API_KEY"]
+API_KEY = os.environ.get("QIANFAN_API_KEY", "")
+
+if not API_KEY:
+    logger.error("QIANFAN_API_KEY environment variable not set")
+    raise ValueError("QIANFAN_API_KEY environment variable not set")
 HEADERS = {
     "Content-Type": "application/json",
     "Authorization": f"Bearer {API_KEY}"
