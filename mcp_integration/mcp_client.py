@@ -574,7 +574,7 @@ class MCPClient:
                 message = params.get("message", f"Create {path}")
 
                 if not path or content is None:
-                    return {"status":
+                    return {"status": "error", "error": "Missing 'path' or 'content' parameter"}
 
     def get_logs_summary(self) -> str:
         """获取日志摘要"""
