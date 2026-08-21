@@ -9,6 +9,7 @@ def main() -> None:  # pragma: no cover
     print("Test completed successfully.")
     print("All checks passed.")
     print("This is a test of the emergency broadcast system.")
+    print("This line was added to test the review process.")
 
 if __name__ == "__main__":
     main()
