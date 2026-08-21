@@ -576,6 +576,12 @@ class MCPClient:
                 if not path or content is None:
                     return {"status": "error", "error": "Missing 'path' or 'content' parameter"}
 
+                # Check if file already exists
+                check_url = f"https://api.github.com/repos/{owner}/{repo}/contents/{path}"
+                check_response = requests.get(check_url, headers=headers, timeout=10)
+                if check_response.status_code == 200:
+                    return {"status": "error", "error": f"File already exists at {path}. Use 'update_file' action instead."}
+
     def get_logs_summary(self) -> str:
         """获取日志摘要"""
         summary = self.logger.get_summary()
