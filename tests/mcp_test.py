@@ -14,4 +14,5 @@ def main() -> None:  # pragma: no cover
 if __name__ == "__main__":
     main()
 # Luck is what happens when preparation meets opportunity. — Seneca
+# A gem cannot be polished without friction, nor a man perfected without trials. — Seneca
 # Sometimes even to live is an act of courage. — Seneca
