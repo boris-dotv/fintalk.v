@@ -54,6 +54,19 @@ class QueryRewriter:
         logger.info(f"   ✏️  Rewrite: {query} -> {rewritten}")
         return rewritten
 
+    def _is_bad_rewrite(self, original: str, rewritten: str) -> bool:
+        """Check if the rewrite is worse than the original query."""
+        # If the rewrite is empty or just whitespace, it's bad
+        if not rewritten or not rewritten.strip():
+            return True
+        # If the rewrite is too short (e.g., just a pronoun), it's likely bad
+        if len(rewritten.strip()) < 3:
+            return True
+        # If the rewrite is identical to the original, no need to rewrite
+        if rewritten.strip() == original.strip():
+            return True
+        return False
+
     def _build_rewrite_prompt(self, query: str, history: str) -> str:
         """构建改写prompt"""
         return f"""# Role: Financial Query Rewrite Expert
