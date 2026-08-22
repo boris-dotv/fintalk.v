@@ -432,9 +432,10 @@ Respond with ONLY valid JSON:"""
         # Enhance step_input with context from previous steps
         enhanced_input = step_input
         if "company_id" in current_data:
-            enhanced_input = step_input.replace("the company mentioned", f"company with company_sort_id = {current_data['company_id']}")
-            enhanced_input = enhanced_input.replace("this company", f"company with company_sort_id = {current_data['company_id']}")
-            enhanced_input = enhanced_input.replace("ZA Bank", f"company with company_sort_id = {current_data['company_id']}")
+            company_id = current_data['company_id']
+            enhanced_input = step_input.replace("the company mentioned", f"company with company_sort_id = {company_id}")
+            enhanced_input = enhanced_input.replace("this company", f"company with company_sort_id = {company_id}")
+            enhanced_input = enhanced_input.replace("ZA Bank", f"company with company_sort_id = {company_id}")
         if enhanced_input != step_input:
             print(f"\n   📎 Enhanced input with context: {enhanced_input}")
 
