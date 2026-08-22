@@ -188,6 +188,17 @@ class FinTalkDatabase:
         for known, cid in self.company_map.items():
             if key in known or known in key:
                 return cid
+        # Also try matching against company names in the database directly
+        try:
+            cur = self.conn.execute(
+                "SELECT company_sort_id FROM companies WHERE LOWER(name) LIKE ?",
+                (f"%{key}%",),
+            )
+            row = cur.fetchone()
+            if row:
+                return int(row[0])
+        except Exception:
+            pass
         return None
 
     # ---- Introspection ----
