@@ -235,6 +235,10 @@ class FinTalkDatabase:
             raise ValueError("Only SELECT queries are allowed")
         if ";" in stripped.rstrip(";"):
             raise ValueError("Multiple statements are not allowed")
+        # Block dangerous SQL keywords to prevent injection attempts
+        dangerous = re.compile(r'\b(DROP|DELETE|INSERT|UPDATE|ALTER|CREATE|ATTACH|DETACH|REINDEX|VACUUM)\b', re.IGNORECASE)
+        if dangerous.search(stripped):
+            raise ValueError("Query contains forbidden SQL keywords")
 
         try:
             cur = self.conn.execute(stripped)
