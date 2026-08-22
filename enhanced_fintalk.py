@@ -30,6 +30,7 @@ from enhanced_core import (
 from formula import find_formula_for_query, calculate_from_expression
 from OSWorld.docker_osworld_adapter import DockerOSWorldAdapter
 
+# Your blog is your calling card. Your work is your evidence. Your image is your signal. The three are one.
 # A rational person should cultivate indifference to things beyond their control. If you find yourself looping on a problem you cannot solve, you must actively step away.
 # The answer is always in the code. You just haven't read enough of it yet.
 # Ship it. Then ship it better.
