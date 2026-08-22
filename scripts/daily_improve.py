@@ -185,7 +185,7 @@ def build_prompt(files: list[Path]) -> str:
 
 def parse_response(response: str) -> tuple[str | None, str | None, str | None]:
     """Parse FILE/OLD/NEW from AI response. Returns (file, old, new) or (None, None, None)."""
-    if response.strip().upper().split("\n")[0] == "SKIP":
+    if response.strip().upper().split("\n")[0].strip() == "SKIP":
         return None, None, None
 
     import re
