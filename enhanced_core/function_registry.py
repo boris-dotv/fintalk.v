@@ -169,6 +169,11 @@ class FinancialFunctionRegistry:
             logger.warning("   ⚠️ Empty company name provided")
             return None
 
+        # Normalize the search term once
+        search_term = company_name.lower().strip()
+        search_pattern = f"%{search_term}%"
+        search_pattern_spaced = f"%{search_term.replace(' ', '%')}%"
+
         if self.osworld:
             # Use parameterized query to prevent SQL injection
             results = self.osworld.execute_sql(
@@ -176,7 +181,7 @@ class FinancialFunctionRegistry:
                 "WHERE LOWER(name) LIKE ? "
                 "OR LOWER(name) LIKE ? "
                 "ORDER BY company_sort_id LIMIT 1",
-                (f"%{company_name.lower()}%", f"%{company_name.lower().replace(' ', '%')}%")
+                (search_pattern, search_pattern_spaced)
             )
             if results is None:
                 return None
@@ -191,7 +196,7 @@ class FinancialFunctionRegistry:
                 "SELECT company_sort_id, name FROM companies "
                 "WHERE LOWER(name) LIKE ? OR LOWER(name) LIKE ? "
                 "ORDER BY company_sort_id LIMIT 1",
-                (f"%{company_name.lower()}%", f"%{company_name.lower().replace(' ', '%')}%")
+                (search_pattern, search_pattern_spaced)
             )
             rows = cursor.fetchall()
             results = [dict(zip(["company_sort_id", "name"], row)) for row in rows]
