@@ -183,14 +183,7 @@ def build_prompt(files: list[Path]) -> str:
     return "\n\n".join(parts)
 
 
-def parse_response(response: str) -> tuple[str | None, str | None, str | None]:
-    """Parse FILE/OLD/NEW from AI response. Returns (file, old, new) or (None, None, None)."""
-    if response.strip().upper().split("\n")[0].strip() == "SKIP":
-        return None, None, None
-
-    import re
-    file_match = re.search(r"FILE:\s*(.+)", response)
-    old_match = re.search(r"OLD:\s*\n?(.*?)(?=\nNEW:|\Z)", response, re.DOTALL)
+|\Z)", response, re.DOTALL)
     new_match = re.search(r"NEW:\s*\n?(.*?)(?=\n\w+:|\Z)", response, re.DOTALL)
 
     if not (file_match and old_match and new_match):
