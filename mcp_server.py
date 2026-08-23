@@ -199,6 +199,7 @@ class FinTalkDatabase:
                 return int(row[0])
         except Exception:
             pass
+        logger.warning(f"Company not found: {company_name}")
         return None
 
     # ---- Introspection ----
