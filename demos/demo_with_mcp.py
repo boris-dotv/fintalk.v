@@ -174,6 +174,8 @@ def demo_with_mcp():
                     print(f"  📋 Type: {turn.query_type}")
                 if not client.conversation_manager.history:
                     print("  (No conversation history yet.)")
+                else:
+                    print(f"\n  📊 Total turns: {len(client.conversation_manager.history)}")
                 continue
 
             if user_input.lower() == 'clear':
