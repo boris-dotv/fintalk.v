@@ -261,6 +261,29 @@ def _fetch_recent_file_from_chat(chat_id: str) -> dict | None:
     except Exception as e:
         logger.error(f"Fetch recent file error: {e}")
     return None
+        resp.raise_for_status()
+        data = resp.json()
+        if data.get("code") != 0:
+            logger.error(f"Fetch messages failed: {data}")
+            return None
+
+        for item in data.get("data", {}).get("items", []):
+            if item.get("msg_type") == "file":
+                content = json.loads(item.get("body", {}).get("content", "{}"))
+                filename = content.get("file_name", "")
+                if filename.lower().endswith(".csv"):
+                    return {
+                        "message_id": item.get("message_id"),
+                        "file_key": content.get("file_key"),
+                        "file_name": filename,
+                    }
+    except requests.RequestException as e:
+        logger.error(f"Fetch recent file HTTP error: {e}")
+    except json.JSONDecodeError as e:
+        logger.error(f"Fetch recent file JSON parse error: {e}")
+    except Exception as e:
+        logger.error(f"Fetch recent file error: {e}")
+    return None
 
 
 FEISHU_BASE = "https://open.feishu.cn/open-apis"
