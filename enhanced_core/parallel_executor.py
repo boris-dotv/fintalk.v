@@ -64,6 +64,8 @@ class ParallelExecutor:
             return {}
         if timeout is not None and timeout <= 0:
             raise ValueError("timeout must be positive or None")
+        if timeout is not None and timeout < 1:
+            logger.warning(f"Very short timeout ({timeout}s) may cause all tasks to fail")
         if self.max_workers <= 0:
             raise ValueError("max_workers must be positive")
         if not all(callable(func) for func in tasks.values()):
