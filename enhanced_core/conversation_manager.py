@@ -95,6 +95,10 @@ class ConversationManager:
         self.context["last_query"] = query
         self.context["last_user_query"] = query
         self.context["last_query_time"] = time.time()
+        
+        # Update last_query_type from the most recent turn if available
+        if self.history and self.history[-1].query_type:
+            self.context["last_query_type"] = self.history[-1].query_type
 
     def get_history_text(self, n_turns: int = 3) -> str:
         """
