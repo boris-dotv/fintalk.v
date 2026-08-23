@@ -149,7 +149,9 @@ def calculate_from_expression(expression: str, values: Dict[str, float]) -> floa
     local_values = values.copy()
 
     # Sort keys by length, descending, to prevent partial replacements (e.g., "A" in "AB")
+    # Also escape special regex characters in variable names to prevent regex injection
     sorted_vars = sorted(local_values.keys(), key=len, reverse=True)
+    escaped_vars = {var: re.escape(var) for var in sorted_vars}
 
     # Replace variable names in the expression with their numerical values
     # Use word boundaries to avoid replacing substrings (e.g., "A" in "AB")
