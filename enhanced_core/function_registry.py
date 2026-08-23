@@ -239,6 +239,9 @@ class FinancialFunctionRegistry:
         result = self._execute_sql(
             f"SELECT * FROM companies WHERE company_sort_id = {company_id}"
         )
+        if not result:
+            return {"error": f"No data for {company_name}"}
+        return {"company": company_name, "info": result[0], "status": "success"}
 
         if result:
             return {"company": company_name, "info": result[0], "status": "success"}
