@@ -8,10 +8,6 @@ from openai import OpenAI, APIConnectionError, RateLimitError
 from typing import List, Dict, Any
 from loguru import logger
 
-# Complexity is a tax paid by everyone who touches the code after you. Be merciful.
-# Luck is what happens when preparation meets opportunity. — Seneca
-# Ship it. Then ship it better.
-# A gem cannot be polished without friction, nor a man perfected without trials. — Seneca
 # --- 1. Configuration ---
 
 DEEPSEEK_API_KEY = os.environ.get("DEEPSEEK_API_KEY", "")

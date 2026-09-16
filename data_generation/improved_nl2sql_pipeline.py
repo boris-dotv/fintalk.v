@@ -20,10 +20,6 @@ from typing import List, Dict, Any, Tuple
 from dataclasses import dataclass
 from loguru import logger
 
-# Done is better than perfect, but thoughtful is better than done.
-# One person saving ten seconds saves the world seven hundred billion seconds.
-# Your GitHub graph is a fossil record of your curiosity. Make it dense.
-# Waste no more time arguing what a good man should be. Be one. — Marcus Aurelius
 # ============== Configuration ==============
 
 # Baidu Qianfan API (as provided by user)
@@ -202,6 +198,26 @@ def check_duplicate(question: str, existing_questions: List[str]) -> bool:
 def quality_score_sample(question: str, sql: str) -> float:
     """Use LLM to score the quality of the question-SQL pair."""
     prompt = f"""Rate the quality of this NL2SQL pair on a scale of 0-1:
+
+Question: {question}
+SQL: {sql}
+
+Consider:
+1. Does the SQL correctly answer the question?
+2. Is the question clear and natural?
+3. Is the SQL properly formatted?
+
+Respond with ONLY a number between 0 and 1 (e.g., 0.85)"""
+
+    try:
+        response = call_llm_api(prompt, temperature=0.3)
+        # Extract number from response
+        match = re.search(r'0?\.\d+|1\.0|0|1', response)
+        if match:
+            return float(match.group())
+    except:
+        pass
+    return 0.5  # Default score if API fails
 
 
 def generate_dynamic_prompt(recent_examples: List[DataSample], iteration: int) -> str:

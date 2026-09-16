@@ -8,7 +8,6 @@ import logging
 from typing import Tuple
 from dataclasses import dataclass
 
-# The answer is always in the code. You just haven't read enough of it yet.
 logger = logging.getLogger(__name__)
 
 
@@ -65,10 +64,6 @@ class QueryArbitrator:
             if result not in ["A", "B", "C", "D"]:
                 logger.warning(f"Unexpected arbitration result '{result}', defaulting to 'A'")
                 result = "A"
-            else:
-                logger.debug(f"Valid arbitration result: {result}")
-        # Log the raw response for debugging purposes
-        logger.debug(f"Raw LLM response: {result}")
         logger.info(f"Arbitration result: {result}")
 
         type_map = {
@@ -96,3 +91,21 @@ Classify the user's query type:
 
 ## A - Task-oriented
 Data retrieval, calculation, comparison.
+Examples: "What is ZA Bank's employee size?", "Calculate executive_director_ratio"
+
+## B - Knowledge
+Explain concepts or how-to.
+Examples: "How is executive_director_ratio calculated?", "What does concentration mean?"
+
+## C - Small Talk
+Greetings, thanks, casual conversation.
+Examples: "Hello", "Thank you", "How are you?"
+
+## D - Invalid
+Nonsense or incomplete input.
+
+Context: {history if history else "No history"}
+
+Query: {query}
+
+Output ONLY the letter (A/B/C/D):"""

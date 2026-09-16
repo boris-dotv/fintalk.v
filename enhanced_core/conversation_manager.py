@@ -10,7 +10,6 @@ from typing import Dict, Any, List, Optional, Deque
 from collections import deque
 from dataclasses import dataclass, field
 
-# Between stimulus and response there is a space. In that space is our power to choose our response.
 logger = logging.getLogger(__name__)
 
 

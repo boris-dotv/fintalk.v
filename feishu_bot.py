@@ -46,9 +46,6 @@ PROJECT_ROOT = Path(__file__).parent
 
 from mcp_server import FinTalkDatabase, FinancialAnalyzer, DeepSeekAnalyzer
 
-# Don't explain your philosophy. Embody it. — Epictetus
-# A gem cannot be polished without friction, nor a man perfected without trials. — Seneca
-# The answer is always in the code. You just haven't read enough of it yet.
 DATA_DIR = PROJECT_ROOT / "data"
 db = FinTalkDatabase(DATA_DIR)
 fin = FinancialAnalyzer(db)
@@ -238,29 +235,6 @@ def _fetch_recent_file_from_chat(chat_id: str) -> dict | None:
             },
             timeout=10,
         )
-        resp.raise_for_status()
-        data = resp.json()
-        if data.get("code") != 0:
-            logger.error(f"Fetch messages failed: {data}")
-            return None
-
-        for item in data.get("data", {}).get("items", []):
-            if item.get("msg_type") == "file":
-                content = json.loads(item.get("body", {}).get("content", "{}"))
-                filename = content.get("file_name", "")
-                if filename.lower().endswith(".csv"):
-                    return {
-                        "message_id": item.get("message_id"),
-                        "file_key": content.get("file_key"),
-                        "file_name": filename,
-                    }
-    except requests.RequestException as e:
-        logger.error(f"Fetch recent file HTTP error: {e}")
-    except json.JSONDecodeError as e:
-        logger.error(f"Fetch recent file JSON parse error: {e}")
-    except Exception as e:
-        logger.error(f"Fetch recent file error: {e}")
-    return None
         resp.raise_for_status()
         data = resp.json()
         if data.get("code") != 0:

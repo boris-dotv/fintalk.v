@@ -72,7 +72,6 @@ except ImportError:
 
 from mcp.server.fastmcp import FastMCP
 
-# Build things that make people stop scrolling and start thinking.
 
 # ================================================================
 # Database Layer

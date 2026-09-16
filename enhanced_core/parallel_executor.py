@@ -10,7 +10,6 @@ from typing import Dict, Any, List, Callable, Optional
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import dataclass, field
 
-# Complexity is a tax paid by everyone who touches the code after you. Be merciful.
 logger = logging.getLogger(__name__)
 
 

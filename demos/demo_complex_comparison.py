@@ -25,7 +25,6 @@ from datetime import datetime
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from formula import find_formula_for_query, calculate_from_expression
 
-# The impediment to action advances action. What stands in the way becomes the way. — Marcus Aurelius
 # API Configuration
 API_URL = "https://qianfan.baidubce.com/v2/chat/completions"
 API_KEY = os.environ["QIANFAN_API_KEY"]
@@ -44,13 +43,7 @@ def call_llm(prompt: str, temperature: float = 0.3, timeout: int = 30) -> str:
     }
     try:
         response = requests.post(API_URL, headers=HEADERS, json=payload, timeout=timeout)
-        response.raise_for_status()
-        data = response.json()
-        if "choices" not in data or not data["choices"]:
-            return "ERROR: No choices in API response"
-        return data["choices"][0]["message"]["content"]
-    except requests.exceptions.Timeout:
-        return "ERROR: Timeout - API took too long to respond"
+        return response.json()["choices"][0]["message"]["content"]
     except Exception as e:
         return f"ERROR: {str(e)}"
 
@@ -97,12 +90,6 @@ def parse_percentage(perc_str: str) -> float:
         return float(str(perc_str).replace('%', '').strip())
     except (ValueError, TypeError):
         return 0.0
-
-# Add a helper to safely get concentration from results
-def get_concentration(results: Dict, key: str) -> float:
-    """Safely get concentration value from results dict."""
-    value = results.get(key, 0)
-    return value if isinstance(value, (int, float)) else 0.0
 
 # ============== COMPLEX ORCHESTRATOR ==============
 class ComplexOrchestrator:
@@ -186,7 +173,7 @@ Keep it simple with 4-5 steps."""
                 plan = json.loads(response[start:end])
                 print("✅ Plan created successfully!")
                 return plan
-        except (json.JSONDecodeError, ValueError, KeyError):
+        except:
             pass
 
         print("⚠️  Using fallback plan")
@@ -328,7 +315,13 @@ Keep it simple with 4-5 steps."""
             print(f"      Result: {higher} has more concentrated ownership")
 
             results["comparison"] = {
-                "za_result":
+                "za_result": result_za,
+                "welab_result": result_welab,
+                "diff": diff,
+                "higher": higher
+            }
+
+        return result
 
     def _generate_final_answer(self, user_query: str, results: Dict):
         """Generate final answer using LLM."""
@@ -340,12 +333,25 @@ Keep it simple with 4-5 steps."""
         print(f"\n🤖 Orchestrator is calling LLM to synthesize answer...")
         print(f"   (This may take a few seconds...)")
 
-        # Safely get concentration values with fallback to 0
-        za_conc = results.get('za_concentration', 0) or 0
-        welab_conc = results.get('welab_concentration', 0) or 0
-        higher = results.get('comparison', {}).get('higher', 'Unknown') if results.get('comparison') else 'Unknown'
-
         synthesis_prompt = f"""Based on the analysis, provide a professional answer.
+
+Query: {user_query}
+
+Results:
+- ZA Bank Top 3 Concentration: {results.get('za_concentration', 0):.2f}%
+- WeLab Bank Top 3 Concentration: {results.get('welab_concentration', 0):.2f}%
+- Higher: {results.get('comparison', {}).get('higher', 'Unknown')}
+
+Shareholders:
+ZA Bank: {results.get('za_shareholders', [])}
+WeLab Bank: {results.get('welab_shareholders', [])}
+
+Provide a clear, professional answer with business implications."""
+
+        answer = call_llm(synthesis_prompt, temperature=0.7)
+
+        print(f"\n✅ Answer generated:")
+        print(f"\n🤖 {answer}")
 
     def _print_summary(self, results: Dict):
         """Print execution summary."""

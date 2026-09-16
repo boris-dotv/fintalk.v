@@ -7,8 +7,6 @@ Query Rewriter - Query改写模块
 import logging
 from typing import Optional
 
-# The happiness of your life depends upon the quality of your thoughts. — Marcus Aurelius
-# Don't just read the docs. Write the docs you wish you had read.
 logger = logging.getLogger(__name__)
 
 
@@ -55,16 +53,15 @@ class QueryRewriter:
         return rewritten
 
     def _is_bad_rewrite(self, original: str, rewritten: str) -> bool:
-        """Check if the rewrite is worse than the original query."""
-        # If the rewrite is empty or just whitespace, it's bad
-        if not rewritten or not rewritten.strip():
+        """检查是否是错误的改写"""
+        if not rewritten:
             return True
-        # If the rewrite is too short (e.g., just a pronoun), it's likely bad
-        if len(rewritten.strip()) < 3:
+
+        # 检查字符重叠度
+        overlap = len(set(rewritten).intersection(original))
+        if overlap < len(original) / 4:
             return True
-        # If the rewrite is identical to the original, no need to rewrite
-        if rewritten.strip() == original.strip():
-            return True
+
         return False
 
     def _build_rewrite_prompt(self, query: str, history: str) -> str:
@@ -80,3 +77,27 @@ Rewrite the user's query based on conversation history.
 4. Output ONLY the rewritten query
 
 ## Examples:
+History:
+User: What is ZA Bank's employee size?
+Assistant: ZA Bank has 501-1,000 employees.
+User: How about WeLab?
+Output: What is WeLab Bank's employee size?
+
+Conversation History:
+{history}
+
+Current Query: {query}
+
+Rewritten Query:"""
+
+    def _is_bad_rewrite(self, original: str, rewritten: str) -> bool:
+        """检查是否是错误的改写"""
+        if not rewritten:
+            return True
+
+        # 检查字符重叠度
+        overlap = len(set(rewritten).intersection(original))
+        if overlap < len(original) / 4:
+            return True
+
+        return False

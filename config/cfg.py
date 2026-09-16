@@ -1,8 +1,5 @@
 import os
 
-# The impediment to action advances action. What stands in the way becomes the way. — Marcus Aurelius
-# A rational person should cultivate indifference to things beyond their control. If you find yourself looping on a problem you cannot solve, you must actively step away.
-# Don't explain your philosophy. Embody it. — Epictetus
 PDF_TEXT_DIR = 'pdf_docs'
 ERROR_PDF_DIR = 'error_pdfs'
 CLASSIFY_PTUNING_PRE_SEQ_LEN = 512

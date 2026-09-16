@@ -30,11 +30,6 @@ from enhanced_core import (
 from formula import find_formula_for_query, calculate_from_expression
 from OSWorld.docker_osworld_adapter import DockerOSWorldAdapter
 
-# Your blog is your calling card. Your work is your evidence. Your image is your signal. The three are one.
-# A rational person should cultivate indifference to things beyond their control. If you find yourself looping on a problem you cannot solve, you must actively step away.
-# The answer is always in the code. You just haven't read enough of it yet.
-# Ship it. Then ship it better.
-# No person has the power to have everything they want, but it is in their power not to want what they don't have. — Seneca
 # Logging
 logging.basicConfig(
     level=logging.INFO,
@@ -250,8 +245,7 @@ class EnhancedFinTalkAI:
         }
 
         logger.info(f"\n✅ Completed in {result['execution_time']:.2f}s")
-        logger.info(f"💬 Answer: {(answer[:100] + '...' if answer and len(answer) > 100 else (answer if answer else 'No answer'))}")
-        logger.info(f"💬 Answer Type: {type(answer).__name__}")
+        logger.info(f"💬 Answer: {(answer[:100] if answer else 'No answer') + ('...' if answer and len(answer) > 100 else '')}")
         logger.info(f"💬 Query Type: {arbitration.query_type}")
 
         return result
@@ -366,8 +360,13 @@ If no function matches, return {{"function_name": "none"}}"""
             return self.nlg.generate_answer(query, func_result)
         else:
             logger.error(f"General query function execution error: {func_result['error']}")
-            return f"抱歉，{func_result['error']}"
-SKIP
+            return func_result["error"]
+
+        if "error" not in func_result:
+            return self.nlg.generate_answer(query, func_result)
+        else:
+            logger.error(f"General query function execution error: {func_result['error']}")
+            return func_result["error"]
 
     def close(self):
         """清理资源"""
