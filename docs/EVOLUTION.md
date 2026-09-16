@@ -12,3 +12,9 @@ Newest entries are at the bottom.
 - **Blocked by:** rejected by gate: tests/test_rejection_detector.py failed: ---------------------------------------------------------------------- | Ran 11 tests in 0.001s | FAILED (failures=1)
 - **Next:** Add tests for enhanced_core/conversation_manager.py pure helpers; Add tests for formula.py ratio calculations with edge cases (zero denominators); Harden rejection_detector: log at debug level for successful parses to reduce noise
 
+## 2026-09-16 03:43 UTC — Add unit tests for ConversationManager pure logic
+- **Type:** tests
+- **Files:** tests/test_conversation_manager.py
+- **Why:** The previous run's attempt at rejection_detector tests was rejected by the gate, and the evolution log explicitly suggests testing conversation_manager pure helpers next. ConversationManager has no heavy imports (only stdlib + logging), so its history/context/slot behaviour can be verified with the standard library unittest without network or API keys. These tests lock in current observable behaviour (turn ordering, maxlen trimming, entity dedup, clear() reset) so future refactors cannot silently break it.
+- **Next:** Add tests for formula.py calculate_from_expression edge cases (division by zero, unknown variables, unsupported AST nodes) in tests/test_formula.py; Harden enhanced_core/rejection_detector.py: log successful parses at debug level to reduce log noise; Add tests for enhanced_core/correlation_checker.py keyword matching logic; Document ConversationManager context keys in API_REFERENCE.md
+
