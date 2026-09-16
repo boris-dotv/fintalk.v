@@ -1,4 +1,4 @@
-name: Daily AI Improvement
+name: Self-Evolution
 
 on:
   schedule:
@@ -6,9 +6,14 @@ on:
     - cron: "0 */2 * * *"
   workflow_dispatch:  # manual trigger from GitHub UI
 
+concurrency:
+  group: self-evolution
+  cancel-in-progress: false
+
 jobs:
-  improve:
+  evolve:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     permissions:
       contents: write  # needed to push
 
@@ -21,7 +26,11 @@ jobs:
         with:
           python-version: "3.11"
 
-      - name: Run daily improvement
+      - name: Install light test dependencies
+        # Only what pure-logic unit tests need; the full requirements.txt is far too heavy for CI.
+        run: pip install -q loguru requests python-dotenv pyyaml
+
+      - name: Run self-evolution step
         run: python scripts/daily_improve.py
         env:
           DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
