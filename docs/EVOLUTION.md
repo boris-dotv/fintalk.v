@@ -29,3 +29,9 @@ Newest entries are at the bottom.
 - **Blocked by:** rejected by gate: tests/test_rejection_detector.py failed: FAIL: test_digit_embedded_in_text_is_parsed (tests.test_rejection_detector.TestRejectionDetectorParsing.test_digit_embedded_in_text_is_parsed) | self.assertFal
 - **Next:** Add tests for enhanced_core/correlation_checker.py keyword matching logic in tests/test_correlation_checker.py; Add tests for enhanced_core/arbitrator.py decision parsing in tests/test_arbitrator.py; Harden enhanced_core/rejection_detector.py: log successful parses at debug level to reduce log noise; Document ConversationManager context keys in API_REFERENCE.md
 
+## 2026-09-16 19:16 UTC — Add unit tests for CorrelationChecker and QueryArbitrator
+- **Type:** tests
+- **Files:** tests/test_correlation_checker.py, tests/test_arbitrator.py
+- **Why:** The evolution log repeatedly lists tests for enhanced_core/correlation_checker.py and enhanced_core/arbitrator.py as next ideas, and both modules are pure stdlib (logging + dataclasses) with an injected llm_caller, so they can be tested without network or heavy deps. These tests lock in the observable parsing contract (empty input short-circuits, 'yes'/'no' prefix matching, unexpected responses default to False, arbitration letter mapping and fallback to 'A' on bad/None output) so future refactors cannot silently change behaviour.
+- **Next:** Harden enhanced_core/rejection_detector.py: log successful parses at debug level to reduce log noise; Add tests for enhanced_core/rejection_detector.py parsing (note: previous attempts failed on the digit-embedded-in-text case; verify regex \b([01])\b behaviour before asserting); Document ConversationManager context keys in API_REFERENCE.md; Add tests for enhanced_core/query_rewriter.py prompt construction in tests/test_query_rewriter.py
+
