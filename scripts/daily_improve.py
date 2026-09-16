@@ -460,10 +460,15 @@ def run_gate(changed: list[str]) -> None:
             r = sh(sys.executable, "-m", "unittest", "-v", t, check=False, timeout=TEST_TIMEOUT_S)
         except subprocess.TimeoutExpired:
             raise Rejected(f"{t}: tests timed out after {TEST_TIMEOUT_S}s")
-        tail = [ln for ln in (r.stderr or r.stdout).strip().splitlines() if ln.strip()][-6:]
-        print(f"[gate] unittest {t} -> rc={r.returncode}\n  " + "\n  ".join(tail))
+        out = (r.stderr or "") + (r.stdout or "")
+        lines = [ln for ln in out.strip().splitlines() if ln.strip()]
+        print(f"[gate] unittest {t} -> rc={r.returncode}\n  " + "\n  ".join(lines[-6:]))
         if r.returncode != 0:
-            raise Rejected(f"{t} failed: " + " | ".join(tail[-3:]))
+            # Surface the actual failing tests and assertions so the next run can learn from them.
+            detail = [ln.strip() for ln in lines
+                      if re.match(r"^(FAIL|ERROR):", ln) or "Error" in ln or "assert" in ln.lower()]
+            detail = [d for d in detail if not d.startswith("-")][:4] or lines[-2:]
+            raise Rejected(f"{t} failed: " + " | ".join(detail))
 
     if sh("git", "status", "--porcelain", check=False).stdout.strip() == "":
         raise Rejected("no effective change after applying plan")
