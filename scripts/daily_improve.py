@@ -122,6 +122,7 @@ PYTHON_FILES = [
     if ".git" not in p.parts
     and "OSWorld" not in p.parts  # skip vendored OSWorld
     and "__pycache__" not in p.parts
+    and p.name != "daily_improve.py"  # never let the AI edit this script itself
 ]
 
 SYSTEM_PROMPT = """You are a senior software engineer. Review the given code and suggest ONE small, concrete improvement. Output in this exact format:
@@ -183,7 +184,14 @@ def build_prompt(files: list[Path]) -> str:
     return "\n\n".join(parts)
 
 
-|\Z)", response, re.DOTALL)
+def parse_response(response: str) -> tuple[str | None, str | None, str | None]:
+    """Parse FILE/OLD/NEW from AI response. Returns (file, old, new) or (None, None, None)."""
+    if response.strip().upper().split("\n")[0].strip() == "SKIP":
+        return None, None, None
+
+    import re
+    file_match = re.search(r"FILE:\s*(.+)", response)
+    old_match = re.search(r"OLD:\s*\n?(.*?)(?=\nNEW:|\Z)", response, re.DOTALL)
     new_match = re.search(r"NEW:\s*\n?(.*?)(?=\n\w+:|\Z)", response, re.DOTALL)
 
     if not (file_match and old_match and new_match):
@@ -213,6 +221,16 @@ def apply_change(file_path: str, old_text: str, new_text: str) -> bool:
 
     new_content = content.replace(old_text, new_text, 1)
     fp.write_text(new_content, encoding="utf-8")
+
+    # Make sure we didn't break the file
+    if fp.suffix == ".py":
+        try:
+            compile(new_content, str(fp), "exec")
+        except SyntaxError as e:
+            print(f"Change introduces SyntaxError in {file_path}: {e} — reverting")
+            fp.write_text(content, encoding="utf-8")
+            return False
+
     print(f"Applied change to {file_path}")
     return True
 
@@ -245,10 +263,11 @@ def main():
         fallback_commit()
         sys.exit(0)
 
-    # 5. Apply change
+    # 5. Apply change (falls back to philosophy if OLD not found or change breaks syntax)
     if not apply_change(file_path, old_text, new_text):
-        print("Failed to apply change, exiting")
-        sys.exit(1)
+        print("Failed to apply change — inserting philosophy instead")
+        fallback_commit()
+        sys.exit(0)
 
     # 6. Commit & push
     subprocess.run(["git", "config", "user.name", "boris-dotv"], check=True)
