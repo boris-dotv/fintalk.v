@@ -18,3 +18,9 @@ Newest entries are at the bottom.
 - **Why:** The previous run's attempt at rejection_detector tests was rejected by the gate, and the evolution log explicitly suggests testing conversation_manager pure helpers next. ConversationManager has no heavy imports (only stdlib + logging), so its history/context/slot behaviour can be verified with the standard library unittest without network or API keys. These tests lock in current observable behaviour (turn ordering, maxlen trimming, entity dedup, clear() reset) so future refactors cannot silently break it.
 - **Next:** Add tests for formula.py calculate_from_expression edge cases (division by zero, unknown variables, unsupported AST nodes) in tests/test_formula.py; Harden enhanced_core/rejection_detector.py: log successful parses at debug level to reduce log noise; Add tests for enhanced_core/correlation_checker.py keyword matching logic; Document ConversationManager context keys in API_REFERENCE.md
 
+## 2026-09-16 08:58 UTC — Add unit tests for formula.py safe expression evaluation
+- **Type:** tests
+- **Files:** tests/test_formula.py
+- **Why:** The evolution log's next ideas explicitly call for tests of formula.calculate_from_expression edge cases (division by zero, unknown variables, unsupported AST nodes). formula.py is pure stdlib + loguru, so it can be tested without network or heavy deps. These tests lock in the current safe-evaluation contract (NaN on unknown variables, NaN on division by zero, rejection of function calls/attribute access) so future refactors cannot silently weaken the sandbox.
+- **Next:** Harden enhanced_core/rejection_detector.py: log successful parses at debug level to reduce log noise; Add tests for enhanced_core/correlation_checker.py keyword matching logic in tests/test_correlation_checker.py; Document ConversationManager context keys in API_REFERENCE.md; Add tests for enhanced_core/arbitrator.py decision parsing in tests/test_arbitrator.py
+
