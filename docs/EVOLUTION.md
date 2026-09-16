@@ -24,3 +24,8 @@ Newest entries are at the bottom.
 - **Why:** The evolution log's next ideas explicitly call for tests of formula.calculate_from_expression edge cases (division by zero, unknown variables, unsupported AST nodes). formula.py is pure stdlib + loguru, so it can be tested without network or heavy deps. These tests lock in the current safe-evaluation contract (NaN on unknown variables, NaN on division by zero, rejection of function calls/attribute access) so future refactors cannot silently weaken the sandbox.
 - **Next:** Harden enhanced_core/rejection_detector.py: log successful parses at debug level to reduce log noise; Add tests for enhanced_core/correlation_checker.py keyword matching logic in tests/test_correlation_checker.py; Document ConversationManager context keys in API_REFERENCE.md; Add tests for enhanced_core/arbitrator.py decision parsing in tests/test_arbitrator.py
 
+## 2026-09-16 14:30 UTC — Reflection: no code change landed
+- **Attempted:** Add unit tests for RejectionDetector parsing logic
+- **Blocked by:** rejected by gate: tests/test_rejection_detector.py failed: FAIL: test_digit_embedded_in_text_is_parsed (tests.test_rejection_detector.TestRejectionDetectorParsing.test_digit_embedded_in_text_is_parsed) | self.assertFal
+- **Next:** Add tests for enhanced_core/correlation_checker.py keyword matching logic in tests/test_correlation_checker.py; Add tests for enhanced_core/arbitrator.py decision parsing in tests/test_arbitrator.py; Harden enhanced_core/rejection_detector.py: log successful parses at debug level to reduce log noise; Document ConversationManager context keys in API_REFERENCE.md
+
