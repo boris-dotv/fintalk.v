@@ -62,3 +62,9 @@ Newest entries are at the bottom.
 - **Why:** as_completed(future_to_task, timeout=timeout) raises concurrent.futures.TimeoutError when the overall timeout elapses, but the code only catches the builtin TimeoutError inside the per-future loop, so a timeout propagates out of execute_parallel and the 'ensure all tasks have results' backfill never runs. The same flaw exists in execute_parallel_with_callbacks. Wrapping the collection loop in try/except concurrent.futures.TimeoutError lets the existing backfill fill in the missing tasks, matching the documented contract that every task gets a TaskResult.
 - **Next:** —
 
+## 2026-09-17 22:34 UTC — Add unit tests for ParallelExecutor result aggregation
+- **Type:** tests
+- **Files:** tests/test_parallel_executor.py
+- **Why:** The evolution log repeatedly lists tests for enhanced_core/parallel_executor.py result aggregation as a next idea, and the module is pure stdlib (logging, typing, concurrent.futures, dataclasses) so it can be tested without network or heavy deps. Reading the implementation shows clear observable contracts: empty task dict returns {}, non-callable values and non-positive timeout/max_workers raise ValueError, every submitted task gets a TaskResult even on timeout, exceptions are captured into TaskResult.error, and callbacks fire on success/error. These tests lock in that contract so future refac
+- **Next:** Harden enhanced_core/rejection_detector.py: log successful parses at debug level to reduce log noise; Document ConversationManager context keys in API_REFERENCE.md; Add tests for enhanced_core/function_registry.py registration/lookup logic in tests/test_function_registry.py; Add tests for enhanced_core/streaming_nlg.py pure formatting helpers in tests/test_streaming_nlg.py
+
