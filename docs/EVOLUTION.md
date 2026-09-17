@@ -40,3 +40,9 @@ Newest entries are at the bottom.
 - **Blocked by:** rejected by gate: tests/test_rejection_detector.py failed: ERROR: test_empty_llm_response_defaults_to_not_rejected (tests.test_rejection_detector.TestRejectionDetector.test_empty_llm_response_defaults_to_not_rejected) 
 - **Next:** Harden enhanced_core/rejection_detector.py: log successful parses at debug level to reduce log noise; Document ConversationManager context keys in API_REFERENCE.md; Add tests for enhanced_core/query_rewriter.py prompt construction in tests/test_query_rewriter.py; Add tests for enhanced_core/function_registry.py registration/lookup logic in tests/test_function_registry.py
 
+## 2026-09-17 02:51 UTC — Add unit tests for QueryRewriter pure logic
+- **Type:** tests
+- **Files:** tests/test_query_rewriter.py
+- **Why:** The evolution log repeatedly lists tests for enhanced_core/query_rewriter.py prompt construction as a next idea, and the module is pure stdlib (logging + typing) with an injected llm_caller, so it can be tested without network or heavy deps. Reading the implementation shows a duplicated _is_bad_rewrite definition (the second silently overrides the first) and clear observable contracts: empty/whitespace queries are returned stripped, missing history short-circuits, bad rewrites (empty or low character overlap) fall back to the original query, and good rewrites are stripped and returned. These t
+- **Next:** Harden enhanced_core/rejection_detector.py: log successful parses at debug level to reduce log noise; Add tests for enhanced_core/function_registry.py registration/lookup logic in tests/test_function_registry.py; Remove the duplicated _is_bad_rewrite definition in enhanced_core/query_rewriter.py (second silently overrides first); Document ConversationManager context keys in API_REFERENCE.md
+
