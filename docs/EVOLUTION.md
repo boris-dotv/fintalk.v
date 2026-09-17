@@ -46,3 +46,8 @@ Newest entries are at the bottom.
 - **Why:** The evolution log repeatedly lists tests for enhanced_core/query_rewriter.py prompt construction as a next idea, and the module is pure stdlib (logging + typing) with an injected llm_caller, so it can be tested without network or heavy deps. Reading the implementation shows a duplicated _is_bad_rewrite definition (the second silently overrides the first) and clear observable contracts: empty/whitespace queries are returned stripped, missing history short-circuits, bad rewrites (empty or low character overlap) fall back to the original query, and good rewrites are stripped and returned. These t
 - **Next:** Harden enhanced_core/rejection_detector.py: log successful parses at debug level to reduce log noise; Add tests for enhanced_core/function_registry.py registration/lookup logic in tests/test_function_registry.py; Remove the duplicated _is_bad_rewrite definition in enhanced_core/query_rewriter.py (second silently overrides first); Document ConversationManager context keys in API_REFERENCE.md
 
+## 2026-09-17 09:04 UTC — Reflection: no code change landed
+- **Attempted:** Remove duplicated _is_bad_rewrite in query_rewriter.py
+- **Blocked by:** rejected by gate: edit 0: old == new (no-op)
+- **Next:** Harden enhanced_core/rejection_detector.py: log successful parses at debug level to reduce log noise; Add tests for enhanced_core/function_registry.py registration/lookup logic in tests/test_function_registry.py; Document ConversationManager context keys in API_REFERENCE.md; Add tests for enhanced_core/streaming_nlg.py pure formatting helpers in tests/test_streaming_nlg.py
+
