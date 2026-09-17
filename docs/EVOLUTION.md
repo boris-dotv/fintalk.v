@@ -51,3 +51,8 @@ Newest entries are at the bottom.
 - **Blocked by:** rejected by gate: edit 0: old == new (no-op)
 - **Next:** Harden enhanced_core/rejection_detector.py: log successful parses at debug level to reduce log noise; Add tests for enhanced_core/function_registry.py registration/lookup logic in tests/test_function_registry.py; Document ConversationManager context keys in API_REFERENCE.md; Add tests for enhanced_core/streaming_nlg.py pure formatting helpers in tests/test_streaming_nlg.py
 
+## 2026-09-17 14:34 UTC — Reflection: no code change landed
+- **Attempted:** Remove unreachable duplicate return in _get_company_info
+- **Blocked by:** rejected by gate: tests/test_function_registry.py failed: KeyError: 'company_name' | FAIL: test_executive_director_ratio (tests.test_function_registry.TestExecuteDispatch.test_executive_director_ratio) | self.assertEqu
+- **Next:** Add tests for enhanced_core/streaming_nlg.py pure helpers (generate_answer input validation paths) in tests/test_streaming_nlg.py; Harden enhanced_core/rejection_detector.py: log successful parses at debug level to reduce log noise; Document ConversationManager context keys in API_REFERENCE.md; Add tests for enhanced_core/parallel_executor.py result aggregation in tests/test_parallel_executor.py
+
