@@ -7,7 +7,7 @@ Parallel Executor - 并行模型调用执行器
 import logging
 import time
 from typing import Dict, Any, List, Callable, Optional
-from concurrent.futures import ThreadPoolExecutor, as_completed
+from concurrent.futures import ThreadPoolExecutor, as_completed, TimeoutError as FuturesTimeoutError
 from dataclasses import dataclass, field
 
 logger = logging.getLogger(__name__)
@@ -83,24 +83,27 @@ class ParallelExecutor:
                 future_to_task[future] = task_name
 
             # 收集结果
-            for future in as_completed(future_to_task, timeout=timeout):
-                task_name = future_to_task[future]
-                try:
-                    result = future.result()
-                    results[task_name] = result
-                    logger.info(f"   ✅ Task '{task_name}' completed: {result.execution_time:.3f}s")
-                except TimeoutError:
-                    logger.error(f"   ⏰ Task '{task_name}' timed out after {timeout}s")
-                    results[task_name] = TaskResult(
-                        task_name=task_name,
-                        error=f"Task timed out after {timeout}s"
-                    )
-                except Exception as e:
-                    logger.error(f"   ❌ Task '{task_name}' failed: {e}")
-                    results[task_name] = TaskResult(
-                        task_name=task_name,
-                        error=str(e)
-                    )
+            try:
+                for future in as_completed(future_to_task, timeout=timeout):
+                    task_name = future_to_task[future]
+                    try:
+                        result = future.result()
+                        results[task_name] = result
+                        logger.info(f"   ✅ Task '{task_name}' completed: {result.execution_time:.3f}s")
+                    except TimeoutError:
+                        logger.error(f"   ⏰ Task '{task_name}' timed out after {timeout}s")
+                        results[task_name] = TaskResult(
+                            task_name=task_name,
+                            error=f"Task timed out after {timeout}s"
+                        )
+                    except Exception as e:
+                        logger.error(f"   ❌ Task '{task_name}' failed: {e}")
+                        results[task_name] = TaskResult(
+                            task_name=task_name,
+                            error=str(e)
+                        )
+            except FuturesTimeoutError:
+                logger.error(f"   ⏰ Overall parallel execution timed out after {timeout}s")
 
             # Cancel any remaining futures that didn't complete
             for future in future_to_task:
@@ -182,13 +185,16 @@ class ParallelExecutor:
                                          task_name, task_func, on_complete, on_error)
                 future_to_task[future] = task_name
 
-            for future in as_completed(future_to_task, timeout=timeout):
-                task_name = future_to_task[future]
-                try:
-                    result = future.result()
-                    results[task_name] = result
-                except Exception as e:
-                    logger.error(f"Task '{task_name}' callback error: {e}")
+            try:
+                for future in as_completed(future_to_task, timeout=timeout):
+                    task_name = future_to_task[future]
+                    try:
+                        result = future.result()
+                        results[task_name] = result
+                    except Exception as e:
+                        logger.error(f"Task '{task_name}' callback error: {e}")
+            except FuturesTimeoutError:
+                logger.error(f"   ⏰ Overall parallel execution timed out after {timeout}s")
 
             # Cancel any remaining futures that didn't complete
             for future in future_to_task:

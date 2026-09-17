@@ -56,3 +56,9 @@ Newest entries are at the bottom.
 - **Blocked by:** rejected by gate: tests/test_function_registry.py failed: KeyError: 'company_name' | FAIL: test_executive_director_ratio (tests.test_function_registry.TestExecuteDispatch.test_executive_director_ratio) | self.assertEqu
 - **Next:** Add tests for enhanced_core/streaming_nlg.py pure helpers (generate_answer input validation paths) in tests/test_streaming_nlg.py; Harden enhanced_core/rejection_detector.py: log successful parses at debug level to reduce log noise; Document ConversationManager context keys in API_REFERENCE.md; Add tests for enhanced_core/parallel_executor.py result aggregation in tests/test_parallel_executor.py
 
+## 2026-09-17 19:28 UTC — Fix timeout handling in ParallelExecutor.execute_parallel
+- **Type:** bugfix
+- **Files:** enhanced_core/parallel_executor.py
+- **Why:** as_completed(future_to_task, timeout=timeout) raises concurrent.futures.TimeoutError when the overall timeout elapses, but the code only catches the builtin TimeoutError inside the per-future loop, so a timeout propagates out of execute_parallel and the 'ensure all tasks have results' backfill never runs. The same flaw exists in execute_parallel_with_callbacks. Wrapping the collection loop in try/except concurrent.futures.TimeoutError lets the existing backfill fill in the missing tasks, matching the documented contract that every task gets a TaskResult.
+- **Next:** —
+
