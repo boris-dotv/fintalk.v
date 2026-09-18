@@ -242,10 +242,6 @@ class FinancialFunctionRegistry:
             return {"error": f"No data for {company_name}"}
         return {"company": company_name, "info": result[0], "status": "success"}
 
-        if result:
-            return {"company": company_name, "info": result[0], "status": "success"}
-        return {"error": f"No data for {company_name}"}
-
     def _get_executive_director_ratio(self, company_name: str) -> Dict:
         """获取执行董事比率"""
         from formula import find_formula_for_query, calculate_from_expression
