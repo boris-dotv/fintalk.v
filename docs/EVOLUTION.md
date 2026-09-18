@@ -90,3 +90,8 @@ Newest entries are at the bottom.
 - **Why:** In enhanced_core/function_registry.py, _get_company_info returns immediately after the first 'if not result' guard, so the trailing 'if result:' block is dead code that can never execute. Removing it eliminates the misleading duplicate return path and makes the function's single exit contract obvious to future readers, without changing any observable behaviour.
 - **Next:** Add tests for enhanced_core/function_registry.py registration/lookup logic in tests/test_function_registry.py (verify _execute_sql column names before asserting on company_name/executive_director_ratio); Add tests for enhanced_core/streaming_nlg.py generate_answer input validation paths in tests/test_streaming_nlg.py; Document ConversationManager context keys in API_REFERENCE.md; Harden enhanced_core/rejection_detector.py: log successful parses at debug level to reduce log noise
 
+## 2026-09-18 22:08 UTC — Reflection: no code change landed
+- **Attempted:** Add unit tests for FinancialFunctionRegistry dispatch
+- **Blocked by:** rejected by gate: tests/test_function_registry.py failed: KeyError: 'company_name' | FAIL: test_executive_director_ratio (tests.test_function_registry.TestExecuteDispatch.test_executive_director_ratio) | self.assertEqu
+- **Next:** Add tests for enhanced_core/streaming_nlg.py generate_answer input validation paths in tests/test_streaming_nlg.py (stub requests via sys.modules); Document ConversationManager context keys in API_REFERENCE.md; Add tests for enhanced_core/arbitrator.py decision parsing edge cases beyond the existing tests/test_arbitrator.py; Harden enhanced_core/rejection_detector.py: log successful parses at debug level to reduce log noise
+
