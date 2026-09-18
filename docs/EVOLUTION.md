@@ -73,3 +73,8 @@ Newest entries are at the bottom.
 - **Blocked by:** rejected by gate: tests/test_rejection_detector.py failed: FAIL: test_none_response_defaults_to_accept (tests.test_rejection_detector.TestRejectionDetectorParsing.test_none_response_defaults_to_accept) | self.assertTru
 - **Next:** Harden enhanced_core/rejection_detector.py: log successful parses at debug level to reduce log noise; Document ConversationManager context keys in API_REFERENCE.md; Add tests for enhanced_core/function_registry.py registration/lookup logic in tests/test_function_registry.py; Add tests for enhanced_core/streaming_nlg.py pure formatting helpers in tests/test_streaming_nlg.py
 
+## 2026-09-18 08:39 UTC — Reflection: no code change landed
+- **Attempted:** Add unit tests for RejectionDetector parsing logic
+- **Blocked by:** rejected by gate: tests/test_rejection_detector.py failed: FAIL: test_none_response_defaults_to_accept (tests.test_rejection_detector.TestRejectionDetectorParsing.test_none_response_defaults_to_accept) | self.assertTru
+- **Next:** Harden enhanced_core/rejection_detector.py: log successful parses at debug level to reduce log noise; Document ConversationManager context keys in API_REFERENCE.md; Add tests for enhanced_core/function_registry.py registration/lookup logic in tests/test_function_registry.py (note: previous attempt failed on KeyError 'company_name' and executive_director_ratio — verify _execute_sql column names before asserting); Add tests for enhanced_core/streaming_nlg.py pure formatting helpers in tests/test_streaming_nlg.py; Remove the unreachable duplicate return block after the first return in enhanced_core/function_registry.py _get_company_info
+
