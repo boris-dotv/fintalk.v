@@ -64,15 +64,15 @@ Decision:"""
         # Robust parsing — LLM output may include whitespace, punctuation, or extra text
         # e.g. "1", "0", " 1 ", "1 (accept)", "Decision: 0"
         # Also handle case where result is None or empty string
-        result_str = str(result).strip() if result else ""
+        result_str = str(result).strip() if result is not None else ""
         match = re.search(r'\b([01])\b', result_str) if result_str else None
         if match:
             accept = match.group(1) == "1"
-            logger.info(f"   🛡️  Rejection check: {query[:50]}... -> {'Accept' if accept else 'Reject'}")
+            logger.debug(f"   🛡️  Rejection check: {query[:50]}... -> {'Accept' if accept else 'Reject'}")
             return accept
 
         # If LLM response is unparseable, fall back to keyword heuristics
-        lowered = str(result).lower()
+        lowered = result_str.lower()
         if any(kw in lowered for kw in ("accept", "yes", "within scope")):
             logger.info(f"   🛡️  Rejection check (heuristic): {query[:50]}... -> Accept")
             return True
@@ -80,5 +80,5 @@ Decision:"""
             logger.info(f"   🛡️  Rejection check (heuristic): {query[:50]}... -> Reject")
             return False
 
-        logger.warning(f"   🛡️  Rejection check unparseable, defaulting to accept: {query[:50]}... Raw LLM output: {result}")
+        logger.warning(f"   🛡️  Rejection check unparseable, defaulting to accept: {query[:50]}... Raw LLM output: {result!r}")
         return True  # 默认接受（安全默认，避免误拒）
