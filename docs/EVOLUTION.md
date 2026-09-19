@@ -95,3 +95,9 @@ Newest entries are at the bottom.
 - **Blocked by:** rejected by gate: tests/test_function_registry.py failed: KeyError: 'company_name' | FAIL: test_executive_director_ratio (tests.test_function_registry.TestExecuteDispatch.test_executive_director_ratio) | self.assertEqu
 - **Next:** Add tests for enhanced_core/streaming_nlg.py generate_answer input validation paths in tests/test_streaming_nlg.py (stub requests via sys.modules); Document ConversationManager context keys in API_REFERENCE.md; Add tests for enhanced_core/arbitrator.py decision parsing edge cases beyond the existing tests/test_arbitrator.py; Harden enhanced_core/rejection_detector.py: log successful parses at debug level to reduce log noise
 
+## 2026-09-19 02:37 UTC — Add unit tests for StreamingNLG input validation paths
+- **Type:** tests
+- **Files:** tests/test_streaming_nlg.py
+- **Why:** The evolution log repeatedly lists tests for enhanced_core/streaming_nlg.py generate_answer input validation as a next idea. The validation branches (invalid/empty data, empty/invalid query) return before any network call, so they are pure and testable with the standard library by stubbing the 'requests' module via sys.modules. These tests lock in the guard contract so future refactors cannot silently start issuing HTTP requests for bad input.
+- **Next:** Document ConversationManager context keys in API_REFERENCE.md; Add tests for enhanced_core/function_registry.py registration/lookup logic in tests/test_function_registry.py (verify _execute_sql column names before asserting on company_name/executive_director_ratio); Harden enhanced_core/rejection_detector.py: log successful parses at debug level to reduce log noise; Add tests for enhanced_core/streaming_nlg.py generate_answer success path with a fake requests.post returning a choices payload
+
