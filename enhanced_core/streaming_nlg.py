@@ -143,7 +143,7 @@ class StreamingNLG:
 Based on the query result, provide a clear and professional answer.
 
 Query: {query}
-Result: {json.dumps(data, indent=2, default=str)}
+Result: {data_str}
 
 Provide a concise answer (under 100 words) that:
 1. Directly answers the question
