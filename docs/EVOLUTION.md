@@ -165,3 +165,8 @@ Newest entries are at the bottom.
 - **Why:** The evolution log repeatedly lists ConversationManager context/history tests as a next idea, and a prior attempt failed because it asserted on empty-query behaviour without reading the implementation. Reading the code shows clear observable contracts: add_turn appends to a bounded deque, _update_context sets last_company (case-insensitive, first match wins) and always refreshes last_query/last_user_query/last_query_time, get_history_text only includes non-empty assistant lines, clear() resets context and slots, and get_stats reports counts. These tests lock in that contract with the standard l
 - **Next:** Document ConversationManager context keys in API_REFERENCE.md; Add tests for StreamingNLG.generate_streaming input validation and stream parsing with a fake requests.post returning iter_lines; Harden enhanced_core/rejection_detector.py: log successful parses at debug level to reduce log noise; Add tests for enhanced_core/function_registry.py registration/lookup logic (verify _execute_sql column names before asserting)
 
+## 2026-09-21 02:46 UTC — Reflection: no code change landed
+- **Attempted:** Add tests for RejectionDetector keyword heuristic ordering
+- **Blocked by:** rejected by gate: new_file 0: tests/test_rejection_detector_heuristics.py already exists
+- **Next:** Document ConversationManager context keys in API_REFERENCE.md; Add tests for StreamingNLG.generate_streaming input validation and stream parsing with a fake requests.post returning iter_lines; Add tests for enhanced_core/function_registry.py registration/lookup logic (verify _execute_sql column names before asserting); Harden enhanced_core/rejection_detector.py: log successful parses at debug level to reduce log noise
+
