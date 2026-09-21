@@ -170,3 +170,8 @@ Newest entries are at the bottom.
 - **Blocked by:** rejected by gate: new_file 0: tests/test_rejection_detector_heuristics.py already exists
 - **Next:** Document ConversationManager context keys in API_REFERENCE.md; Add tests for StreamingNLG.generate_streaming input validation and stream parsing with a fake requests.post returning iter_lines; Add tests for enhanced_core/function_registry.py registration/lookup logic (verify _execute_sql column names before asserting); Harden enhanced_core/rejection_detector.py: log successful parses at debug level to reduce log noise
 
+## 2026-09-21 09:29 UTC — Reflection: no code change landed
+- **Attempted:** Add tests for FunctionRegistry dispatch and helpers
+- **Blocked by:** rejected by gate: new_file 0: tests/test_function_registry.py already exists
+- **Next:** Document ConversationManager context keys in API_REFERENCE.md; Add tests for StreamingNLG.generate_streaming input validation and stream parsing with a fake requests.post returning iter_lines; Harden enhanced_core/rejection_detector.py: log successful parses at debug level to reduce log noise; Add tests for enhanced_core/parallel_executor.py timeout/error paths beyond tests/test_parallel_executor.py
+
