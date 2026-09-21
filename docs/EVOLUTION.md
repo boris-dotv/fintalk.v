@@ -175,3 +175,9 @@ Newest entries are at the bottom.
 - **Blocked by:** rejected by gate: new_file 0: tests/test_function_registry.py already exists
 - **Next:** Document ConversationManager context keys in API_REFERENCE.md; Add tests for StreamingNLG.generate_streaming input validation and stream parsing with a fake requests.post returning iter_lines; Harden enhanced_core/rejection_detector.py: log successful parses at debug level to reduce log noise; Add tests for enhanced_core/parallel_executor.py timeout/error paths beyond tests/test_parallel_executor.py
 
+## 2026-09-21 16:08 UTC — Add tests for ParallelExecutor timeout and error paths
+- **Type:** tests
+- **Files:** tests/test_parallel_executor_timeout.py
+- **Why:** The evolution log repeatedly lists tests for enhanced_core/parallel_executor.py timeout/error paths as a next idea, and the module is pure stdlib (logging, time, concurrent.futures, dataclasses) so it is fully testable without network or heavy deps. Reading the implementation shows clear observable contracts: empty task dicts return {} without raising, non-positive max_workers or timeout raise ValueError, non-callable task values raise ValueError, a task raising an exception yields a TaskResult with error set and result None, and an overall timeout still returns a TaskResult for every submitte
+- **Next:** Document ConversationManager context keys in API_REFERENCE.md; Add tests for StreamingNLG.generate_streaming input validation and stream parsing with a fake requests.post returning iter_lines; Harden enhanced_core/rejection_detector.py: log successful parses at debug level to reduce log noise; Add tests for enhanced_core/query_rewriter.py rewrite prompt construction edge cases beyond tests/test_query_rewriter.py
+
