@@ -208,3 +208,8 @@ Newest entries are at the bottom.
 - **Why:** The evolution log repeatedly lists hardening/tests for enhanced_core/rejection_detector.py, and existing tests cover digit parsing, keyword heuristics, and the unparseable default. What is not locked in is the regex boundary behaviour: the \b([01])\b pattern means a bare '0'/'1' wins, but a digit embedded in a longer number (e.g. '10', '2024') must NOT be treated as a decision, and the first matching digit wins when several appear. These tests pin that contract so a future refactor of the regex cannot silently change accept/reject decisions.
 - **Next:** Add tests for StreamingNLG.generate_streaming input validation and stream parsing with a fake requests.post returning iter_lines; Harden enhanced_core/rejection_detector.py: log successful parses at debug level to reduce log noise; Document ConversationManager context keys in API_REFERENCE.md; Add tests for enhanced_core/function_registry.py registration/lookup logic (verify _execute_sql column names before asserting)
 
+## 2026-09-22 20:44 UTC — Reflection: no code change landed
+- **Attempted:** Add tests for FinancialFunctionRegistry dispatch and helpers
+- **Blocked by:** rejected by gate: new_file 0: tests/test_function_registry.py already exists
+- **Next:** Add tests for StreamingNLG.generate_streaming input validation and stream parsing with a fake requests.post returning iter_lines; Harden enhanced_core/rejection_detector.py: log successful parses at debug level to reduce log noise; Document ConversationManager context keys in API_REFERENCE.md; Add tests for enhanced_core/query_rewriter.py rewrite prompt construction edge cases beyond tests/test_query_rewriter.py
+
