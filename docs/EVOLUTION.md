@@ -197,3 +197,8 @@ Newest entries are at the bottom.
 - **Why:** enhanced_core/query_rewriter.py defines _is_bad_rewrite twice with identical bodies (once before _build_rewrite_prompt and once after). The second definition silently shadows the first, which is dead code and confusing for maintainers; a previous attempt to fix this was rejected because the replacement text did not match verbatim. Removing the first duplicate leaves the surviving method identical in behaviour, so no caller or test is affected, and it eliminates the shadowing hazard.
 - **Next:** Add tests for StreamingNLG.generate_streaming input validation and stream parsing with a fake requests.post returning iter_lines; Harden enhanced_core/rejection_detector.py: log successful parses at debug level to reduce log noise; Document ConversationManager context keys in API_REFERENCE.md; Add tests for enhanced_core/query_rewriter.py rewrite prompt construction edge cases beyond tests/test_query_rewriter.py
 
+## 2026-09-22 12:59 UTC — Reflection: no code change landed
+- **Attempted:** Add tests for QueryRewriter rewrite prompt edge cases
+- **Blocked by:** rejected by gate: tests/test_query_rewriter_prompt.py failed: FAIL: test_query_is_stripped_before_embedding (tests.test_query_rewriter_prompt.TestRewritePromptConstruction.test_query_is_stripped_before_embedding) | sel
+- **Next:** Add tests for StreamingNLG.generate_streaming input validation and stream parsing with a fake requests.post returning iter_lines; Harden enhanced_core/rejection_detector.py: log successful parses at debug level to reduce log noise; Document ConversationManager context keys in API_REFERENCE.md; Add tests for enhanced_core/function_registry.py registration/lookup logic (verify _execute_sql column names before asserting)
+
