@@ -186,3 +186,8 @@ Newest entries are at the bottom.
 - **Blocked by:** rejected by gate: tests/test_parallel_executor_callbacks.py failed: test_execution_time_recorded_on_success (tests.test_parallel_executor_callbacks.TestCallbackErrors.test_execution_time_recorded_on_success) ... ok | t
 - **Next:** Document ConversationManager context keys in API_REFERENCE.md; Add tests for StreamingNLG.generate_streaming input validation and stream parsing with a fake requests.post returning iter_lines; Harden enhanced_core/rejection_detector.py: log successful parses at debug level to reduce log noise; Add tests for enhanced_core/query_rewriter.py rewrite prompt construction edge cases beyond tests/test_query_rewriter.py
 
+## 2026-09-22 00:28 UTC — Reflection: no code change landed
+- **Attempted:** Remove duplicate _is_bad_rewrite in query_rewriter.py
+- **Blocked by:** rejected by gate: edit 0: 'old' occurs 0 times in enhanced_core/query_rewriter.py (need exactly 1)
+- **Next:** Add tests for StreamingNLG.generate_streaming input validation and stream parsing with a fake requests.post returning iter_lines; Harden enhanced_core/rejection_detector.py: log successful parses at debug level to reduce log noise; Document ConversationManager context keys in API_REFERENCE.md; Add tests for enhanced_core/query_rewriter.py rewrite prompt construction edge cases beyond tests/test_query_rewriter.py
+
