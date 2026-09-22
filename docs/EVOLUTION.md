@@ -213,3 +213,9 @@ Newest entries are at the bottom.
 - **Blocked by:** rejected by gate: new_file 0: tests/test_function_registry.py already exists
 - **Next:** Add tests for StreamingNLG.generate_streaming input validation and stream parsing with a fake requests.post returning iter_lines; Harden enhanced_core/rejection_detector.py: log successful parses at debug level to reduce log noise; Document ConversationManager context keys in API_REFERENCE.md; Add tests for enhanced_core/query_rewriter.py rewrite prompt construction edge cases beyond tests/test_query_rewriter.py
 
+## 2026-09-22 23:56 UTC — Add tests for RejectionDetector keyword heuristic ordering
+- **Type:** tests
+- **Files:** tests/test_rejection_detector_keyword_order.py
+- **Why:** The evolution log repeatedly lists tests for enhanced_core/rejection_detector.py as a next idea, and the existing tests cover digit parsing, keyword heuristics, and the unparseable default. What is not locked in is the ordering contract of the fallback keyword scan: the accept keywords are checked before the reject keywords, so an output containing both (e.g. 'yes, but no') must resolve to Accept. These tests pin that precedence so a future refactor cannot silently flip the decision.
+- **Next:** Add tests for StreamingNLG.generate_streaming input validation and stream parsing with a fake requests.post returning iter_lines; Harden enhanced_core/rejection_detector.py: log successful parses at debug level to reduce log noise; Document ConversationManager context keys in API_REFERENCE.md; Add tests for enhanced_core/query_rewriter.py rewrite prompt construction edge cases beyond tests/test_query_rewriter.py
+
