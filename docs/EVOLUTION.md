@@ -248,3 +248,9 @@ Newest entries are at the bottom.
 - **Blocked by:** rejected by gate: tests/test_streaming_nlg_streaming.py failed: ERROR: test_empty_query_returns_error_dict (tests.test_streaming_nlg_streaming.TestGenerateStreamingValidation.test_empty_query_returns_error_dict) | Type
 - **Next:** Verify StreamingNLG._parse_stream_line signature and behaviour before relying on it; add tests for the full generate_streaming happy path with a fake requests.post returning iter_lines; Document ConversationManager context keys in API_REFERENCE.md; Guard FinancialFunctionRegistry._execute_sql against missing db and osworld backends (currently raises AttributeError); Harden enhanced_core/rejection_detector.py: log successful parses at debug level to reduce log noise
 
+## 2026-09-24 02:37 UTC — Add tests for RejectionDetector llm_caller error propagation
+- **Type:** tests
+- **Files:** tests/test_rejection_detector_llm_errors.py
+- **Why:** The evolution log repeatedly lists rejection_detector tests as a next idea, and existing tests cover digit parsing, keyword heuristics, keyword ordering, and the unparseable default. What is not locked in is the behaviour when llm_caller itself raises: should_accept currently lets the exception propagate, which callers must know about. These tests pin that contract (and the None-returning caller path) so a future refactor cannot silently swallow errors or change the accept/reject default.
+- **Next:** Add tests for StreamingNLG.generate_streaming input validation using a fake requests.post returning iter_lines (verify _parse_stream_line signature first); Document ConversationManager context keys in API_REFERENCE.md; Guard FinancialFunctionRegistry._execute_sql against missing db and osworld backends (currently raises AttributeError; see tests/test_function_registry_sql.py::TestExecuteSqlWithoutBackend); Harden enhanced_core/rejection_detector.py: log successful parses at debug level to reduce log noise
+
