@@ -310,3 +310,8 @@ Newest entries are at the bottom.
 - **Blocked by:** rejected by gate: new_file 0: tests/test_rejection_detector_unparseable.py already exists
 - **Next:** Add tests for StreamingNLG.generate_streaming input validation using a fake requests.post returning iter_lines (verify _parse_stream_line signature first); Document ConversationManager context keys in API_REFERENCE.md; Guard FinancialFunctionRegistry._execute_sql against missing db and osworld backends (currently raises AttributeError; see tests/test_function_registry_sql.py::TestExecuteSqlWithoutBackend); Harden enhanced_core/rejection_detector.py: log successful parses at debug level to reduce log noise
 
+## 2026-09-26 08:58 UTC — Reflection: no code change landed
+- **Attempted:** Add tests for RejectionDetector keyword-order precedence
+- **Blocked by:** rejected by gate: new_file 0: tests/test_rejection_detector_keyword_order.py already exists
+- **Next:** Add tests for StreamingNLG.generate_streaming input validation using a fake requests.post returning iter_lines (verify _parse_stream_line signature first); Document ConversationManager context keys in API_REFERENCE.md; Guard FinancialFunctionRegistry._execute_sql against missing db and osworld backends (currently raises AttributeError; see tests/test_function_registry_sql.py::TestExecuteSqlWithoutBackend); Harden enhanced_core/rejection_detector.py: log successful parses at debug level to reduce log noise
+
