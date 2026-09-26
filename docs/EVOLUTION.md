@@ -315,3 +315,8 @@ Newest entries are at the bottom.
 - **Blocked by:** rejected by gate: new_file 0: tests/test_rejection_detector_keyword_order.py already exists
 - **Next:** Add tests for StreamingNLG.generate_streaming input validation using a fake requests.post returning iter_lines (verify _parse_stream_line signature first); Document ConversationManager context keys in API_REFERENCE.md; Guard FinancialFunctionRegistry._execute_sql against missing db and osworld backends (currently raises AttributeError; see tests/test_function_registry_sql.py::TestExecuteSqlWithoutBackend); Harden enhanced_core/rejection_detector.py: log successful parses at debug level to reduce log noise
 
+## 2026-09-26 13:59 UTC — Reflection: no code change landed
+- **Attempted:** Guard _execute_sql against missing db/osworld backends
+- **Blocked by:** rejected by gate: edit 0: 'old' occurs 0 times in enhanced_core/function_registry.py (need exactly 1)
+- **Next:** Add tests for StreamingNLG.generate_streaming input validation using a fake requests.post returning iter_lines (verify _parse_stream_line signature first); Document ConversationManager context keys in API_REFERENCE.md; Harden enhanced_core/rejection_detector.py: log successful parses at debug level to reduce log noise; Update tests/test_function_registry_sql.py::TestExecuteSqlWithoutBackend to assert the new empty-list contract instead of AttributeError
+
